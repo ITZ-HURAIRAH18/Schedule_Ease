@@ -8,11 +8,7 @@
   "functions": {
     "server.js": {
       "memory": 1024,
-      "maxDuration": 30,
-      "excludePatterns": [
-        "node_modules/**",
-        ".git/**"
-      ]
+      "maxDuration": 30
     }
   },
   "rewrites": [
