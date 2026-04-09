@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "buildCommand": "npm install",
+  "env": {
+    "MONGO_URI": "@mongo_uri",
+    "NODE_ENV": "production"
+  },
+  "functions": {
+    "server.js": {
+      "memory": 1024,
+      "maxDuration": 30,
+      "excludePatterns": [
+        "node_modules/**",
+        ".git/**"
+      ]
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/server.js"
+    }
+  ]
+}
