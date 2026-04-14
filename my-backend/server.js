@@ -17,15 +17,20 @@ import meetingRoutes from "./routes/meetingRoutes.js";
 dotenv.config();
 const app = express();
 
-// ✅ Configure CORS for development
+// ✅ Configure CORS for development and production
 const corsOptions = {
   origin: (origin, callback) => {
     const allowedOrigins = [
+      // Local development
       'http://localhost:5173',
       'http://localhost:3000',
       'http://127.0.0.1:5173',
       'http://127.0.0.1:3000',
-      process.env.FRONTEND_URL
+      // Production
+      'https://schedule-ease-a4ur.vercel.app',
+      'https://schedule-ease-zeta.vercel.app',
+      'https://localhost:5173', // HTTPS localhost
+      process.env.FRONTEND_URL?.replace(/\/$/, ''), // Remove trailing slash from .env
     ].filter(Boolean);
     
     if (!origin || allowedOrigins.includes(origin)) {
@@ -112,7 +117,10 @@ if (process.env.NODE_ENV !== "production") {
         'http://localhost:5173',
         'http://localhost:3000',
         'http://127.0.0.1:5173',
-        'http://127.0.0.1:3000'
+        'http://127.0.0.1:3000',
+        'https://schedule-ease-a4ur.vercel.app',
+        'https://schedule-ease-zeta.vercel.app',
+        'https://localhost:5173'
       ],
       methods: ["GET", "POST"],
       credentials: true,
