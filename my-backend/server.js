@@ -16,7 +16,30 @@ import meetingRoutes from "./routes/meetingRoutes.js";
 
 dotenv.config();
 const app = express();
-app.use(cors());
+
+// ✅ Configure CORS for development
+const corsOptions = {
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'http://127.0.0.1:5173',
+      'http://127.0.0.1:3000',
+      process.env.FRONTEND_URL
+    ].filter(Boolean);
+    
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('CORS not allowed'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // ✅ Initialize DB connection on first request
@@ -84,17 +107,23 @@ if (process.env.NODE_ENV !== "production") {
   }
 
   io = new Server(server, {
-  cors: {
-    origin: "*", // Allow all origins for development
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-  transports: ['websocket', 'polling'], // Support both transports
-  allowEIO3: true, // Backward compatibility
-  pingTimeout: 60000, // 60 seconds
-  pingInterval: 25000, // 25 seconds
-  connectTimeout: 45000, // 45 seconds
-});
+    cors: {
+      origin: [
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'http://127.0.0.1:5173',
+        'http://127.0.0.1:3000'
+      ],
+      methods: ["GET", "POST"],
+      credentials: true,
+      allowedHeaders: ['Content-Type', 'Authorization']
+    },
+    transports: ['websocket', 'polling'],
+    allowEIO3: true,
+    pingTimeout: 60000,
+    pingInterval: 25000,
+    connectTimeout: 45000,
+  });
 
 // ✅ Track meeting rooms
 const meetingRooms = {};
