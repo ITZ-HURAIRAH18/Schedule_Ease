@@ -1,7 +1,7 @@
 // src/pages/admin/AdminDashboard.jsx
 import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
-import AdminHeader from "../../components/adminHeader";
+import AdminHeader from "../../components/AdminHeader";
 import { io } from "socket.io-client";
 import { getSocketUrl } from "../../utils/apiConfig";
 

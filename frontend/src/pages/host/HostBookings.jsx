@@ -1,7 +1,7 @@
 // src/pages/host/HostBookings.jsx
 import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
-import HostHeader from "../../components/hostHeader";
+import HostHeader from "../../components/HostHeader";
 import {
   CalendarDaysIcon,
   ClockIcon,

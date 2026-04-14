@@ -1,7 +1,7 @@
 // src/pages/admin/AdminStats.jsx
 import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
-import AdminHeader from "../../components/adminHeader";
+import AdminHeader from "../../components/AdminHeader";
 import {
   CalendarDaysIcon,
   UserGroupIcon,

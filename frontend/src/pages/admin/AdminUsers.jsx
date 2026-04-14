@@ -1,7 +1,7 @@
 // src/pages/admin/AdminUsers.jsx
 import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
-import AdminHeader from "../../components/adminHeader";
+import AdminHeader from "../../components/AdminHeader";
 import { Search, Trash2, Ban, CheckCircleIcon, XCircleIcon } from "lucide-react";
 
 const AdminUsers = () => {

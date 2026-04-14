@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
-import UserHeader from "../../components/userHeader";
+import UserHeader from "../../components/UserHeader";
 import toast, { Toaster } from "react-hot-toast";
 import {
   CalendarDaysIcon,

@@ -1,7 +1,7 @@
 // src/pages/host/HostDashboard.jsx  (pagination only)
 import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
-import HostHeader from "../../components/hostHeader";
+import HostHeader from "../../components/HostHeader";
 import { io } from "socket.io-client";
 import { getSocketUrl } from "../../utils/apiConfig";
 import {

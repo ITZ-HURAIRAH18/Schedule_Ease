@@ -1,7 +1,7 @@
 // src/pages/user/UserDashboard.jsx
 import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
-import UserHeader from "../../components/userHeader";
+import UserHeader from "../../components/UserHeader";
 import {
   CalendarDaysIcon,
   ClockIcon,
