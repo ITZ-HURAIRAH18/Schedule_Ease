@@ -41,6 +41,15 @@ app.use("/api/host", hostRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/meetings", meetingRoutes);
 
+// ✅ Root route
+app.get("/", (req, res) => {
+  res.json({ 
+    message: "Schedule Ease API is running",
+    status: "OK",
+    version: "1.0.0"
+  });
+});
+
 // ✅ Health check
 app.get("/api/health", (req, res) => {
   res.json({ status: "OK" });
