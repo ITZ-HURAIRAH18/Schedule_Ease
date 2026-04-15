@@ -16,7 +16,7 @@ const transport = nodemailer.createTransport({
 
 /**
  * Send email with subject + custom HTML template
- * 
+ *
  * @param {string} userId - MongoDB user ID
  * @param {string} subject - Email subject
  * @param {string} htmlTemplate - Email HTML content
@@ -24,7 +24,10 @@ const transport = nodemailer.createTransport({
  */
 export const sendEmail = async (userId, subject, htmlTemplate, sendToAdmin = false) => {
   const user = await User.findById(userId);
-  if (!user) throw new Error("User not found, cannot send email");
+  if (!user) {
+    console.warn("⚠️ User not found, cannot send email to:", userId);
+    return { success: false, message: "User not found" };
+  }
 
   try {
     // 1️⃣ Send to user
@@ -35,6 +38,7 @@ export const sendEmail = async (userId, subject, htmlTemplate, sendToAdmin = fal
       html: htmlTemplate,
     };
     await transport.sendMail(userMailOptions);
+    console.log("✅ Email sent to:", user.email);
 
     // 2️⃣ Send separately to admin (if enabled)
     if (sendToAdmin && process.env.ADMIN_EMAIL) {
@@ -45,11 +49,14 @@ export const sendEmail = async (userId, subject, htmlTemplate, sendToAdmin = fal
         html: htmlTemplate,
       };
       await transport.sendMail(adminMailOptions);
+      console.log("✅ Admin copy sent to:", process.env.ADMIN_EMAIL);
     }
 
     return { success: true, message: "Emails sent successfully" };
   } catch (error) {
-    throw new Error(error.message);
+    console.error("❌ Email sending failed:", error.message);
+    // Return error info instead of throwing
+    return { success: false, message: error.message };
   }
 };
 

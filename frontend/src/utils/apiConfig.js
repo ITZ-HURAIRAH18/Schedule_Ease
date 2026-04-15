@@ -9,27 +9,25 @@ export const getApiBaseUrl = () => {
   }
 
   // Otherwise, derive from current window location
-  const protocol = window.location.protocol;
   const hostname = window.location.hostname;
   const port = '5000'; // Backend port
 
   // Log for debugging
   console.log('🌐 API URL Detection:', {
-    protocol,
     hostname,
     port,
     fullLocation: window.location.href
   });
 
-  // If accessing via localhost, use localhost:5000
+  // For localhost development, ALWAYS use HTTP (backend uses self-signed HTTPS certs)
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    const url = `${protocol}//${hostname}:${port}`;
+    const url = `http://${hostname}:${port}`;
     console.log('📍 Using localhost API URL:', url);
     return url;
   }
 
-  // For network IPs (including mobile), use the same hostname with backend port
-  const url = `${protocol}//${hostname}:${port}`;
+  // For network IPs (including mobile), use HTTP
+  const url = `http://${hostname}:${port}`;
   console.log('📍 Using network API URL:', url);
   return url;
 };

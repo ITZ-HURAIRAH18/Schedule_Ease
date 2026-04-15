@@ -6,6 +6,7 @@ import https from "https";
 import fs from "fs";
 import { Server } from "socket.io";
 import connectDB from "./config/db.js";
+import { setIO, isIOInitialized } from "./config/socket.js";
 
 // ✅ Import routes
 import authRoutes from "./routes/authRoutes.js";
@@ -16,6 +17,16 @@ import meetingRoutes from "./routes/meetingRoutes.js";
 
 dotenv.config();
 const app = express();
+
+// ✅ Global error handlers for unhandled promise rejections
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("❌ Unhandled Rejection at:", promise, "reason:", reason);
+});
+
+process.on("uncaughtException", (error) => {
+  console.error("❌ Uncaught Exception:", error);
+  // Log but don't exit - allows server to continue
+});
 
 // ✅ Configure CORS for development and production
 const corsOptions = {
@@ -47,18 +58,29 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// ✅ Initialize DB connection on first request
+// ✅ Initialize DB connection once at startup
 let dbConnected = false;
-app.use(async (req, res, next) => {
-  if (!dbConnected) {
-    try {
-      await connectDB();
-      dbConnected = true;
-    } catch (error) {
-      console.error("DB connection failed:", error.message);
-      return res.status(500).json({ error: "Database connection failed" });
-    }
+let dbError = null;
+
+const initDB = async () => {
+  try {
+    await connectDB();
+    dbConnected = true;
+    console.log("✅ Database initialized successfully");
+  } catch (error) {
+    dbConnected = false;
+    dbError = error.message;
+    console.error("⚠️ Database initialization failed (continuing without DB):", error.message);
+    console.error("❌ MongoDB URI:", process.env.MONGO_URI ? "SET but failed to connect" : "NOT SET");
   }
+};
+
+// Start DB connection attempt immediately
+initDB();
+
+// Middleware to check DB status
+app.use((req, res, next) => {
+  res.locals.dbStatus = dbConnected ? 'connected' : `disconnected (${dbError})`;
   next();
 });
 
@@ -74,7 +96,16 @@ app.get("/", (req, res) => {
   res.json({ 
     message: "Schedule Ease API is running",
     status: "OK",
-    version: "1.0.0"
+    version: "1.0.0",
+    database: res.locals.dbStatus
+  });
+});
+
+// ✅ Database status endpoint
+app.get("/api/db-status", (req, res) => {
+  res.json({ 
+    connected: dbConnected,
+    error: dbError || null
   });
 });
 
@@ -133,6 +164,9 @@ if (process.env.NODE_ENV !== "production") {
     connectTimeout: 45000,
   });
 
+  // ✅ Register the io instance with our singleton manager
+  setIO(io);
+
 // ✅ Track meeting rooms
 const meetingRooms = {};
 
@@ -142,16 +176,29 @@ const meetingRooms = {};
 io.on("connection", (socket) => {
   console.log("🟢 Dashboard/Global Client Connected:", socket.id);
 
+  // Add error handler for this socket
+  socket.on("error", (error) => {
+    console.error(`❌ Socket error for ${socket.id}:`, error);
+  });
+
   // Chat / broadcast messages
   socket.on("send_message", (msg) => {
-    console.log("💬 Global Message:", msg);
-    io.emit("receive_message", msg);
+    try {
+      console.log("💬 Global Message:", msg);
+      io.emit("receive_message", msg);
+    } catch (error) {
+      console.error("❌ Error broadcasting message:", error);
+    }
   });
 
   // Host joins private room for dashboard live updates
   socket.on("join_host_room", (hostId) => {
-    socket.join(hostId);
-    console.log(`🏠 Host ${hostId} joined private dashboard room`);
+    try {
+      socket.join(hostId);
+      console.log(`🏠 Host ${hostId} joined private dashboard room`);
+    } catch (error) {
+      console.error("❌ Error joining host room:", error);
+    }
   });
 
   // ✅ Dashboard disconnect
@@ -168,45 +215,62 @@ io.on("connection", (socket) => {
   meetingNamespace.on("connection", (socket) => {
     console.log("🎥 Meeting Client Connected:", socket.id);
 
+    // Add error handler for this socket
+    socket.on("error", (error) => {
+      console.error(`❌ Meeting socket error for ${socket.id}:`, error);
+    });
+
     // Join specific meeting room
     socket.on("join_meeting_room", (roomId) => {
-      if (!meetingRooms[roomId]) meetingRooms[roomId] = [];
-      meetingRooms[roomId].push(socket.id);
-      socket.join(roomId);
-      console.log(`👥 ${socket.id} joined meeting room ${roomId}`);
+      try {
+        if (!meetingRooms[roomId]) meetingRooms[roomId] = [];
+        meetingRooms[roomId].push(socket.id);
+        socket.join(roomId);
+        console.log(`👥 ${socket.id} joined meeting room ${roomId}`);
 
-      const users = meetingRooms[roomId];
+        const users = meetingRooms[roomId];
 
-      // Assign roles for WebRTC
-      if (users.length === 1) {
-        socket.emit("meeting_role", { initiator: false });
-      } else if (users.length === 2) {
-        socket.emit("meeting_role", { initiator: true });
-        const [firstUser] = users;
-        meetingNamespace.to(firstUser).emit("peer_ready");
-      } else {
-        socket.emit("room_full");
+        // Assign roles for WebRTC
+        if (users.length === 1) {
+          socket.emit("meeting_role", { initiator: false });
+        } else if (users.length === 2) {
+          socket.emit("meeting_role", { initiator: true });
+          const [firstUser] = users;
+          meetingNamespace.to(firstUser).emit("peer_ready");
+        } else {
+          socket.emit("room_full");
+        }
+      } catch (error) {
+        console.error("❌ Error joining meeting room:", error);
       }
     });
 
     // WebRTC signaling between peers
     socket.on("signal", ({ roomId, signal, sender }) => {
-      socket.to(roomId).emit("signal", { signal, sender });
+      try {
+        socket.to(roomId).emit("signal", { signal, sender });
+      } catch (error) {
+        console.error("❌ Error sending signal:", error);
+      }
     });
 
     // ✅ MEETING disconnect (separate from global)
     socket.on("disconnect", () => {
-      console.log("❌ Meeting Client Disconnected:", socket.id);
+      try {
+        console.log("❌ Meeting Client Disconnected:", socket.id);
 
-      for (const roomId in meetingRooms) {
-        meetingRooms[roomId] = meetingRooms[roomId].filter(
-          (id) => id !== socket.id
-        );
+        for (const roomId in meetingRooms) {
+          meetingRooms[roomId] = meetingRooms[roomId].filter(
+            (id) => id !== socket.id
+          );
 
-        if (meetingRooms[roomId].length === 0) {
-          delete meetingRooms[roomId];
-          console.log(`🧹 Meeting room ${roomId} deleted (empty)`);
+          if (meetingRooms[roomId].length === 0) {
+            delete meetingRooms[roomId];
+            console.log(`🧹 Meeting room ${roomId} deleted (empty)`);
+          }
         }
+      } catch (error) {
+        console.error("❌ Error handling meeting disconnect:", error);
       }
     });
   });

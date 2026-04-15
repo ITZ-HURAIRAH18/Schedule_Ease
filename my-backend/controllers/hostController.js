@@ -1,8 +1,8 @@
-import mongoose from "mongoose"; // ✅ add this line
+import mongoose from "mongoose";
 import Availability from "../models/Availability.js";
 import Booking from "../models/Booking.js";
 import User from "../models/User.js";
-import { io } from "../server.js";
+import { safeEmit, safeToEmit } from "../config/socket.js";
 import { v4 as uuidv4 } from "uuid";
 
 
@@ -94,7 +94,7 @@ export const emitHostDashboardUpdate = async (hostId) => {
 
     const availability = await Availability.findOne({ hostId });
 
-    io.to(hostId.toString()).emit("host_dashboard_updated", {
+    safeToEmit(hostId.toString(), "host_dashboard_updated", {
       stats: {
         totalBookings,
         upcomingBookings,
@@ -472,12 +472,16 @@ export const updateBookingStatus = async (req, res) => {
 
     await booking.save();
 
-    // ✅ Emit real-time update to clients
-    io.emit("booking_status_updated", {
-      bookingId,
-      status,
-      meetingRoom: booking.meetingRoom,
-    });
+    // ✅ Emit real-time update to clients (safely)
+    try {
+      safeEmit("booking_status_updated", {
+        bookingId,
+        status,
+        meetingRoom: booking.meetingRoom,
+      });
+    } catch (socketError) {
+      console.warn("⚠️ Socket emit failed (non-critical):", socketError.message);
+    }
 
     // ✅ Update host dashboard
     await emitHostDashboardUpdate(booking.hostId);

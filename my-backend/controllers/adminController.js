@@ -1,7 +1,7 @@
 // controllers/adminController.js
 import User from "../models/User.js";       // Your User model
 import Booking from "../models/Booking.js"; // Your Booking model
-import { io } from "../server.js";
+// No socket import needed - admin controller doesn't emit events directly
 
 // Get all users
 export const getAllUsers = async (req, res) => {

@@ -9,7 +9,7 @@ import {
   adminNewUserTemplate,
 } from "../emails/templates.js";
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-import { io } from "../server.js";
+import { safeEmit } from "../config/socket.js";
 
 
 const generateToken = (user) =>
@@ -38,42 +38,54 @@ export const signup = async (req, res) => {
         .json({ message: "Email already registered. Please login." });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    // await User.create({ fullName, email, password: hashedPassword, role });
     const newUser = await User.create({
       fullName,
       email,
       password: hashedPassword,
       role,
     });
-    const totalUsers = await User.countDocuments();
-    const totalBookings = await Booking.countDocuments();
-    const recentUsers = await User.find()
-      .sort({ createdAt: -1 })
-      .limit(5)
-      .select("fullName email role");
+    
+    // Emit dashboard update safely (won't crash if socket not ready)
+    try {
+      const totalUsers = await User.countDocuments();
+      const totalBookings = await Booking.countDocuments();
+      const recentUsers = await User.find()
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .select("fullName email role");
+      safeEmit("dashboard_updated", { totalUsers, totalBookings, recentUsers });
+    } catch (socketError) {
+      console.warn("⚠️ Socket emit failed (non-critical):", socketError.message);
+    }
 
-    // ✅ Emit full dashboard update
-    io.emit("dashboard_updated", { totalUsers, totalBookings, recentUsers });
     res.json({
       success: true,
       message: "Signup successful. Please login now.",
     });
 
-    // Send welcome email to user ONLY
-    await sendEmail(
-      newUser._id,
-      "🎉 Welcome to Schedulr Ease!",
-      userWelcomeTemplate(newUser),
-      false // ❌ don't send to admin
-    );
+    // Send welcome email to user ONLY (with error handling)
+    try {
+      await sendEmail(
+        newUser._id,
+        "🎉 Welcome to Schedulr Ease!",
+        userWelcomeTemplate(newUser),
+        false
+      );
+    } catch (emailError) {
+      console.error("⚠️ Failed to send welcome email:", emailError.message);
+    }
 
-    // Send new user alert to admin ONLY
-    await sendEmail(
-      newUser._id,
-      "👤 New User Registered on Schedulr Ease",
-      adminNewUserTemplate(newUser),
-      true // ✅ send only to admin
-    );
+    // Send new user alert to admin ONLY (with error handling)
+    try {
+      await sendEmail(
+        newUser._id,
+        "👤 New User Registered on Schedulr Ease",
+        adminNewUserTemplate(newUser),
+        true
+      );
+    } catch (emailError) {
+      console.error("⚠️ Failed to send admin notification:", emailError.message);
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -133,15 +145,20 @@ export const googleSignup = async (req, res) => {
       isGoogleAccount: true,
       role: allowedRole,
     });
-    const totalUsers = await User.countDocuments();
-    const totalBookings = await Booking.countDocuments();
-    const recentUsers = await User.find()
-      .sort({ createdAt: -1 })
-      .limit(5)
-      .select("fullName email role");
-
-    // ✅ Emit full dashboard update
-    io.emit("dashboard_updated", { totalUsers, totalBookings, recentUsers });
+    
+    // Emit dashboard update safely
+    try {
+      const totalUsers = await User.countDocuments();
+      const totalBookings = await Booking.countDocuments();
+      const recentUsers = await User.find()
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .select("fullName email role");
+      safeEmit("dashboard_updated", { totalUsers, totalBookings, recentUsers });
+    } catch (socketError) {
+      console.warn("⚠️ Socket emit failed (non-critical):", socketError.message);
+    }
+    
     res.json({
       success: true,
       message: "Signup successful. Please login with Google.",

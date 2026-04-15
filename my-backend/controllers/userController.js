@@ -1,7 +1,7 @@
 import Booking from "../models/Booking.js";
 import Availability from "../models/Availability.js";
 import User from "../models/User.js";
-import { io } from "../server.js";
+import { safeEmit } from "../config/socket.js";
 import { emitHostDashboardUpdate } from "./hostController.js";
 
 
@@ -109,14 +109,26 @@ export const createBooking = async (req, res) => {
     });
 
     console.log("✅ Booking created successfully:", booking);
-    const totalUsers = await User.countDocuments();
-    const totalBookings = await Booking.countDocuments();
-    const recentUsers = await User.find()
-      .sort({ createdAt: -1 })
-      .limit(5)
-      .select("fullName email role");
-    io.emit("dashboard_updated", { totalUsers, totalBookings, recentUsers });
-     emitHostDashboardUpdate(hostId);
+    
+    // Emit dashboard updates safely
+    try {
+      const totalUsers = await User.countDocuments();
+      const totalBookings = await Booking.countDocuments();
+      const recentUsers = await User.find()
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .select("fullName email role");
+      safeEmit("dashboard_updated", { totalUsers, totalBookings, recentUsers });
+    } catch (socketError) {
+      console.warn("⚠️ Socket emit failed (non-critical):", socketError.message);
+    }
+    
+    try {
+      emitHostDashboardUpdate(hostId);
+    } catch (hostUpdateError) {
+      console.warn("⚠️ Host dashboard update failed (non-critical):", hostUpdateError.message);
+    }
+    
     res.status(201).json({
       message: "Booking request submitted successfully",
       booking,
