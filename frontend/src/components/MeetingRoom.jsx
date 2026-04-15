@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Peer from "simple-peer";
 import io from "socket.io-client";
 import axiosInstance from "../api/axiosInstance";
-import { getSocketUrl } from "../utils/apiConfig";
 import { useAuth } from "../context/AuthContext";
 
 const MeetingRoom = () => {
@@ -329,43 +328,16 @@ const MeetingRoom = () => {
     streamRef.current = localStream;
         if (userVideo.current) userVideo.current.srcObject = localStream;
 
-        // 🌐 Connect to /meeting namespace
-        const socketUrl = getSocketUrl();
+        // 🌐 Connect to /meeting namespace using relative URL (Vite proxy forwards to backend)
         const isNetworkIP = !['localhost', '127.0.0.1'].includes(window.location.hostname);
         const useSecure = window.location.protocol === 'https:';
-        
-        // Pre-check backend availability (this helps trigger certificate acceptance on mobile)
-        if (isNetworkIP && useSecure) {
-          setStatus("Validating backend connection...");
-          try {
-            // Try to fetch from backend API to trigger certificate acceptance dialog
-            const testUrl = `${socketUrl}/api/meetings/${roomId}`;
-            await fetch(testUrl, {
-              method: 'GET',
-              mode: 'cors',
-              credentials: 'omit',
-              headers: {
-                'Accept': 'application/json',
-              },
-            }).catch(() => {
-              // Ignore fetch errors - we're just trying to trigger cert acceptance
-              console.log("Backend pre-check completed (errors are expected for cert acceptance)");
-            });
-          } catch (e) {
-            // Ignore errors - this is just a pre-check
-            console.log("Backend pre-check:", e.message);
-          }
-        }
-        
-        console.log("🔌 Attempting to connect to:", `${socketUrl}/meeting`);
-        console.log("🔒 Connection settings:", { isNetworkIP, useSecure, hostname: window.location.hostname });
-        
+
         // For network IPs, prioritize polling (it handles certificate issues better than websocket)
         // Polling uses XHR which is more forgiving with certificate mismatches
         const transportOrder = isNetworkIP ? ['polling'] : ['websocket', 'polling'];
-        
+
         socketRef.current = io(
-          `${socketUrl}/meeting`,
+          `/meeting`,
           {
             transports: transportOrder,
             upgrade: false, // Disable upgrade for network IPs to avoid certificate issues during upgrade
@@ -398,29 +370,29 @@ const MeetingRoom = () => {
             message: err.message,
             type: err.type,
             description: err.description,
-            url: `${socketUrl}/meeting`,
+            url: `/meeting`,
             protocol: window.location.protocol,
             hostname: window.location.hostname,
             transport: socketRef.current?.io?.engine?.transport?.name,
           };
           console.error("Error details:", errorDetails);
-          
+
           // Provide helpful error message for certificate issues
-          let errorMsg = `Failed to connect to meeting server at ${socketUrl}. `;
-          
-          if (err.message.includes('xhr poll error') || 
+          let errorMsg = `Failed to connect to meeting server. `;
+
+          if (err.message.includes('xhr poll error') ||
               err.message.includes('NetworkError') ||
               err.message.includes('Failed to fetch')) {
             if (isNetworkIP && useSecure) {
               errorMsg += `This may be a certificate mismatch issue. `;
-              errorMsg += `Try visiting ${socketUrl} directly in your browser first to accept the certificate, then refresh this page.`;
+              errorMsg += `Try visiting the site directly in your browser first to accept the certificate, then refresh this page.`;
             } else {
               errorMsg += `Error: ${err.message}. Please check if the backend server is running and accessible.`;
             }
           } else {
             errorMsg += `Error: ${err.message}`;
           }
-          
+
           setError(errorMsg);
           setStatus("Connection failed");
         });

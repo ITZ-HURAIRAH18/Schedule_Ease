@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import HostHeader from "../../components/HostHeader";
 import { io } from "socket.io-client";
-import { getSocketUrl } from "../../utils/apiConfig";
 import {
   CalendarDaysIcon,
   ClockIcon,
@@ -14,7 +13,9 @@ import {
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 
-const socket = io(getSocketUrl(), {
+// Use empty string so socket.io connects to the current origin (e.g. localhost:5173)
+// and the Vite dev server proxy forwards /socket.io to the backend.
+const socket = io("", {
   secure: window.location.protocol === 'https:',
   rejectUnauthorized: false,
 });
