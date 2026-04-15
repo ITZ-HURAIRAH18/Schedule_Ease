@@ -95,29 +95,110 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password, role } = req.body;
-    if (!email || !password || !role)
+
+    // Validate input
+    if (!email || !password || !role) {
       return res.status(400).json({ message: "All fields required" });
+    }
 
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
 
-    if (user.role !== role)
+    console.log(`🔐 Login attempt for email: ${email}, role: ${role}`);
+
+    // Query user with explicit timeout and error handling
+    let user;
+    try {
+      // Add a timeout to the query to prevent hanging
+      user = await Promise.race([
+        User.findOne({ email }).lean(),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Query timeout after 10s')), 10000)
+        )
+      ]);
+    } catch (dbError) {
+      console.error("❌ Database query failed during login:", dbError.message);
+
+      // Check if it's a timeout/connection error
+      if (dbError.message.includes('timeout') || 
+          dbError.message.includes('buffering timed out') ||
+          dbError.message.includes('connection') ||
+          dbError.name === 'MongooseError') {
+        return res.status(503).json({
+          message: "Database service temporarily unavailable. Please try again.",
+          retryAfter: 5
+        });
+      }
+
+      throw dbError;
+    }
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.role !== role) {
       return res.status(403).json({ message: `You cannot login as ${role}` });
-    if (user.suspended)
+    }
+
+    if (user.suspended) {
       return res.status(403).json({
         message: "Your account has been suspended. Please contact support.",
       });
-    if (user.isGoogleAccount)
+    }
+
+    if (user.isGoogleAccount) {
       return res.status(400).json({ message: "Use Google Sign-In" });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
+    if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
+    }
 
+    // Generate JWT token
     const token = generateToken(user);
-    res.json({ success: true, token, user });
+
+    console.log(`✅ Login successful for user: ${user.email}`);
+
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        profilePicture: user.profilePicture,
+        createdAt: user.createdAt
+      }
+    });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error("❌ Login error:", err.message);
+    console.error("❌ Login stack:", err.stack);
+
+    // Handle specific MongoDB connection errors
+    if (err.message && err.message.includes('buffering timed out')) {
+      return res.status(503).json({
+        message: "Database connection timeout. Please try again.",
+        retryAfter: 5
+      });
+    }
+
+    if (err.message && err.message.includes('timeout')) {
+      return res.status(503).json({
+        message: "Request timeout. Please try again.",
+        retryAfter: 5
+      });
+    }
+
+    res.status(500).json({
+      message: "Internal server error during login",
+      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
   }
 };
 

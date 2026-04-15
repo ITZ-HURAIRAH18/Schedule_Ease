@@ -1,11 +1,15 @@
-import express from "express";
 import dotenv from "dotenv";
+
+// ✅ Load environment variables FIRST before any other imports
+dotenv.config();
+
+import express from "express";
 import cors from "cors";
 import http from "http";
 import https from "https";
 import fs from "fs";
 import { Server } from "socket.io";
-import connectDB from "./config/db.js";
+import { connectDB, isDbConnected, waitForConnection } from "./config/db.js";
 import { setIO, isIOInitialized } from "./config/socket.js";
 
 // ✅ Import routes
@@ -15,7 +19,6 @@ import hostRoutes from "./routes/hostRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import meetingRoutes from "./routes/meetingRoutes.js";
 
-dotenv.config();
 const app = express();
 
 // ✅ Global error handlers for unhandled promise rejections
@@ -43,7 +46,7 @@ const corsOptions = {
       'https://localhost:5173', // HTTPS localhost
       process.env.FRONTEND_URL?.replace(/\/$/, ''), // Remove trailing slash from .env
     ].filter(Boolean);
-    
+
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -58,30 +61,95 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// ✅ Initialize DB connection once at startup
+// ✅ Initialize DB connection with proper error handling
 let dbConnected = false;
 let dbError = null;
+let dbInitializationPromise = null;
 
 const initDB = async () => {
-  try {
-    await connectDB();
-    dbConnected = true;
-    console.log("✅ Database initialized successfully");
-  } catch (error) {
-    dbConnected = false;
-    dbError = error.message;
-    console.error("⚠️ Database initialization failed (continuing without DB):", error.message);
-    console.error("❌ MongoDB URI:", process.env.MONGO_URI ? "SET but failed to connect" : "NOT SET");
+  // Return existing promise if initialization is already in progress
+  if (dbInitializationPromise) {
+    return dbInitializationPromise;
   }
+
+  dbInitializationPromise = (async () => {
+    try {
+      console.log("🔄 Initializing database connection...");
+      await connectDB();
+
+      // Wait for connection to be fully established
+      const ready = await waitForConnection(30000);
+
+      if (ready && isDbConnected()) {
+        dbConnected = true;
+        dbError = null;
+        console.log("✅ Database initialized successfully");
+      } else {
+        throw new Error("Database connection not established within timeout");
+      }
+    } catch (error) {
+      dbConnected = false;
+      dbError = error.message;
+      console.error("⚠️ Database initialization failed:", error.message);
+      console.error("❌ MongoDB URI:", process.env.MONGO_URI ? "SET but failed to connect" : "NOT SET");
+      throw error;
+    } finally {
+      dbInitializationPromise = null;
+    }
+  })();
+
+  return dbInitializationPromise;
 };
 
-// Start DB connection attempt immediately
-initDB();
+// Start DB connection attempt immediately and ensure it's ready before processing requests
+initDB().catch((error) => {
+  console.error("❌ Database initialization failed:", error.message);
+  // Don't exit - allow server to start but requests will get 503 until DB connects
+});
 
-// Middleware to check DB status
-app.use((req, res, next) => {
-  res.locals.dbStatus = dbConnected ? 'connected' : `disconnected (${dbError})`;
-  next();
+// Middleware to check DB status before handling requests
+// This ensures requests wait for DB connection to be ready
+app.use(async (req, res, next) => {
+  // Skip DB check for health/status endpoints
+  if (req.path === '/api/health' || req.path === '/api/db-status' || req.path === '/') {
+    return next();
+  }
+
+  // For API routes, ensure DB is connected
+  if (req.path.startsWith('/api/')) {
+    try {
+      // If DB is already connected, proceed immediately
+      if (isDbConnected()) {
+        res.locals.dbStatus = 'connected';
+        return next();
+      }
+
+      // Wait for DB connection (with 15s timeout for mobile/slow networks)
+      console.log(`⏳ Waiting for DB connection for request: ${req.path}`);
+      const ready = await waitForConnection(15000);
+
+      if (!ready || !isDbConnected()) {
+        console.error("❌ Database not ready for request:", req.path);
+        return res.status(503).json({
+          error: 'Service unavailable',
+          message: 'Database connection is being established. Please try again in a moment.',
+          retryAfter: 5
+        });
+      }
+
+      res.locals.dbStatus = 'connected';
+      next();
+    } catch (error) {
+      console.error("❌ DB connection check failed:", error.message);
+      return res.status(503).json({
+        error: 'Database unavailable',
+        message: 'Please try again later',
+        retryAfter: 5
+      });
+    }
+  } else {
+    next();
+  }
 });
 
 // ✅ Routes
