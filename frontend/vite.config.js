@@ -11,6 +11,20 @@ export default defineConfig({
     https: true, // ✅ Enable HTTPS for camera/mic access on mobile
     strictPort: false, // ✅ Allow port fallback if 5173 is in use
     open: false, // ✅ Don't auto-open browser (let user control)
+    // ✅ Proxy API requests to backend to avoid CORS issues
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5001', // Backend HTTP server
+        changeOrigin: true,
+        secure: false,
+      },
+      '/socket.io': {
+        target: 'http://localhost:5001', // Backend HTTP server
+        changeOrigin: true,
+        secure: false,
+        ws: true, // Enable WebSocket proxying
+      },
+    },
   },
   define: {
     global: 'window', // ✅ Fix "global is not defined" error for browser builds

@@ -125,21 +125,37 @@ app.use((err, req, res, next) => {
 // ===============================
 let server;
 let io;
+let httpServer; // Secondary HTTP server for browser compatibility
 
 if (process.env.NODE_ENV !== "production") {
   // Local development setup with socket.io
+  let useHTTPS = false;
+  let sslOptions;
+  
   try {
     const keyPath = new URL("./localhost-key.pem", import.meta.url);
     const certPath = new URL("./localhost.pem", import.meta.url);
-    const sslOptions = {
+    sslOptions = {
       key: fs.readFileSync(keyPath),
       cert: fs.readFileSync(certPath),
     };
-    server = https.createServer(sslOptions, app);
+    useHTTPS = true;
     console.log("🔐 HTTPS enabled (localhost-key.pem, localhost.pem)");
   } catch (err) {
     console.warn("⚠️ HTTPS certificates not found. Using HTTP for development");
+  }
+
+  // Create primary server (HTTPS if certs available, otherwise HTTP)
+  if (useHTTPS) {
+    server = https.createServer(sslOptions, app);
+  } else {
     server = http.createServer(app);
+  }
+
+  // Create secondary HTTP server for browser compatibility (when using HTTPS)
+  if (useHTTPS) {
+    httpServer = http.createServer(app);
+    console.log("🌐 HTTP server also available on port 5001 for browser compatibility");
   }
 
   io = new Server(server, {
@@ -281,6 +297,14 @@ io.on("connection", (socket) => {
   server.listen(PORT, HOST, () =>
     console.log(`✅ Development server running on ${HOST}:${PORT}`)
   );
+  
+  // Start HTTP server on port 5001 if HTTPS is enabled
+  if (httpServer) {
+    const HTTP_PORT = 5001;
+    httpServer.listen(HTTP_PORT, HOST, () =>
+      console.log(`✅ HTTP fallback server running on ${HOST}:${HTTP_PORT}`)
+    );
+  }
 }
 
 // ===============================

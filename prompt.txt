@@ -1,58 +1,27 @@
-Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=j9l8e86y:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=j9vcgfn2:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=j9vcgx32:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=j9zz54gs:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=j9zz6es5:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=ja42x2lw:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=ja42wdjt:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-client:85 [GSI_LOGGER]: google.accounts.id.initialize() is called multiple times. This could cause unexpected behavior and only the last initialized instance will be used.
-_.G @ client:85Understand this warning
-user:1 The request has been aborted.Understand this error
+Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
+simple-peer.js?v=e7ec3635:2738 Module "util" has been externalized for browser compatibility. Cannot access "util.debuglog" in client code. See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+get @ simple-peer.js?v=e7ec3635:2738Understand this warning
+simple-peer.js?v=e7ec3635:2738 Module "util" has been externalized for browser compatibility. Cannot access "util.inspect" in client code. See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+get @ simple-peer.js?v=e7ec3635:2738Understand this warning
+hook.bundle.js:1 [locatorjs]: ok
+o @ hook.bundle.js:1Understand this warning
+:5000/socket.io/?EIO=4&transport=polling&t=k7ok5js5:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
+:5000/socket.io/?EIO=4&transport=polling&t=k7ol3yny:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
 client:86 [GSI_LOGGER]: FedCM get() rejects with AbortError: signal is aborted without reason
 _.H @ client:86Understand this error
 user:1 The request has been aborted.Understand this error
-client:86 [GSI_LOGGER]: FedCM get() rejects with AbortError: signal is aborted without reason
-_.H @ client:86Understand this error
-button?type=standard&theme=filled_black&size=large&text=signup_with&shape=rectangular&logo_alignmen…:1 [Intervention] Slow network is detected. See https://www.chromestatus.com/feature/5636954674692096 for more details. Fallback font will be used while loading: https://fonts.gstatic.com/s/roboto/v48/KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2
-:5000/socket.io/?EIO=4&transport=polling&t=ja8z7r18:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=ja8z8s95:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jad71mjp:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jad72gjn:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jaite4o7:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jaitfj6z:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jan0anq7:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jan14d33:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
+:5000/socket.io/?EIO=4&transport=polling&t=k7qdmc0l:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
+:5000/socket.io/?EIO=4&transport=polling&t=k7qdoaw9:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
+:5000/socket.io/?EIO=4&transport=polling&t=k7ro6pou:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
+:5000/socket.io/?EIO=4&transport=polling&t=k7sv8lxd:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
+:5000/socket.io/?EIO=4&transport=polling&t=k7w2iqzr:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
+:5000/socket.io/?EIO=4&transport=polling&t=k7wdwxnt:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
+:5000/socket.io/?EIO=4&transport=polling&t=k7zts7ag:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
+:5000/socket.io/?EIO=4&transport=polling&t=k80e166g:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
 :5000/api/auth/signup:1  Failed to load resource: net::ERR_INVALID_HTTP_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jar42kuw:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jar4vgoq:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jav7zdl1:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jav8ornb:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jazgyur4:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jazgx09e:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jb43l1i0:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jb43lmdc:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jb8rbzwt:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jb8rbh2f:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jbdcxmxz:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jbdcx8wh:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jbj3sllo:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jbj3sqjc:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jbne4rao:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jbne5646:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jbunhjld:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jbunhk06:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jbzqehu7:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jbzqhyc4:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jc4d5d0i:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jc4d7s2v:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jcaof7sh:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jcaodah7:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jcfdd7c7:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jcfde42f:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jcjhgrr2:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-:5000/socket.io/?EIO=4&transport=polling&t=jcjhfxjy:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
-socket__io-client.js?v=e7ec3635:858  GET http://localhost:5000/socket.io/?EIO=4&transport=polling&t=jcnybxf0 net::ERR_EMPTY_RESPONSE
+:5000/socket.io/?EIO=4&transport=polling&t=k83xgqet:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
+:5000/socket.io/?EIO=4&transport=polling&t=k84hp15a:1  Failed to load resource: net::ERR_EMPTY_RESPONSEUnderstand this error
+socket__io-client.js?v=e7ec3635:858  GET http://localhost:5000/socket.io/?EIO=4&transport=polling&t=k8835x2y net::ERR_EMPTY_RESPONSE
 _create @ socket__io-client.js?v=e7ec3635:858
 _Request @ socket__io-client.js?v=e7ec3635:798
 request @ socket__io-client.js?v=e7ec3635:953
@@ -66,7 +35,7 @@ SocketWithUpgrade @ socket__io-client.js?v=e7ec3635:1633
 Socket @ socket__io-client.js?v=e7ec3635:1759
 open @ socket__io-client.js?v=e7ec3635:3125
 (anonymous) @ socket__io-client.js?v=e7ec3635:3343Understand this error
-socket__io-client.js?v=e7ec3635:858  GET http://localhost:5000/socket.io/?EIO=4&transport=polling&t=jcnycbnf net::ERR_EMPTY_RESPONSE
+socket__io-client.js?v=e7ec3635:858  GET http://localhost:5000/socket.io/?EIO=4&transport=polling&t=k88ly5dj net::ERR_EMPTY_RESPONSE
 _create @ socket__io-client.js?v=e7ec3635:858
 _Request @ socket__io-client.js?v=e7ec3635:798
 request @ socket__io-client.js?v=e7ec3635:953
@@ -81,57 +50,85 @@ Socket @ socket__io-client.js?v=e7ec3635:1759
 open @ socket__io-client.js?v=e7ec3635:3125
 (anonymous) @ socket__io-client.js?v=e7ec3635:3343Understand this error
 
-wheni login it show mwe this
-
-Active code page: 65001
-
-E:\My Projects\Nexagen Project>cd my-backend               
-
-E:\My Projects\Nexagen Project\my-backend>npm run dev
-
-> my-backend@1.0.0 dev
-> nodemon server.js
-
-[nodemon] 3.1.10
-[nodemon] to restart at any time, enter `rs`
-[nodemon] watching path(s): *.*
-[nodemon] watching extensions: js,mjs,cjs,json
-[nodemon] starting `node server.js`
-[dotenv@17.2.3] injecting env (10) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
-[dotenv@17.2.3] injecting env (0) from .env -- tip: 📡 add observability to secrets: https://dotenvx.com/ops
+observability to secrets: https://dotenvx.com/ops
 🔐 HTTPS enabled (localhost-key.pem, localhost.pem)
-(node:15220) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+✅ Socket.io instance initialized
+(node:9660) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:15220) [MONGODB DRIVER] Warning: useUnifiedTopology is a deprecated option: useUnifiedTopology has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+(node:9660) [MONGODB DRIVER] Warning: useUnifiedTopology is a deprecated option: useUnifiedTopology has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
 ✅ Development server running on 0.0.0.0:5000
 ✅ MongoDB connected: ac-rejoess-shard-00-00.sktz1b5.mongodb.net
 ✅ Database initialized successfully
-
-E:\My Projects\Nexagen Project\my-backend>npm run dev  
-
-> my-backend@1.0.0 dev
-> nodemon server.js
-
-[nodemon] 3.1.10
-[nodemon] to restart at any time, enter `rs`
-[nodemon] watching path(s): *.*
-[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] restarting due to changes...
 [nodemon] starting `node server.js`
-[dotenv@17.2.3] injecting env (10) from .env -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+[dotenv@17.2.3] injecting env (10) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+🔐 HTTPS enabled (localhost-key.pem, localhost.pem)
+✅ Socket.io instance initialized
+(node:15248) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:15248) [MONGODB DRIVER] Warning: useUnifiedTopology is a deprecated option: useUnifiedTopology has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+✅ Development server running on 0.0.0.0:5000
+✅ MongoDB connected: ac-rejoess-shard-00-01.sktz1b5.mongodb.net
+✅ Database initialized successfully
+[nodemon] restarting due to changes...
+[nodemon] starting `node server.js`
+[dotenv@17.2.3] injecting env (10) from .env -- tip: ⚙️  override existing env vars with { override: true }
 [dotenv@17.2.3] injecting env (0) from .env -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
 🔐 HTTPS enabled (localhost-key.pem, localhost.pem)
-(node:9384) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+✅ Socket.io instance initialized
+(node:3984) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:9384) [MONGODB DRIVER] Warning: useUnifiedTopology is a deprecated option: useUnifiedTopology has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+(node:3984) [MONGODB DRIVER] Warning: useUnifiedTopology is a deprecated option: useUnifiedTopology has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+✅ Development server running on 0.0.0.0:5000
+✅ MongoDB connected: ac-rejoess-shard-00-00.sktz1b5.mongodb.net
+✅ Database initialized successfully
+[nodemon] restarting due to changes...
+[nodemon] restarting due to changes...
+[nodemon] starting `node server.js`
+[dotenv@17.2.3] injecting env (10) from .env -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+🔐 HTTPS enabled (localhost-key.pem, localhost.pem)
+✅ Socket.io instance initialized
+(node:10588) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10588) [MONGODB DRIVER] Warning: useUnifiedTopology is a deprecated option: useUnifiedTopology has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+✅ Development server running on 0.0.0.0:5000
+✅ MongoDB connected: ac-rejoess-shard-00-01.sktz1b5.mongodb.net
+✅ Database initialized successfully
+[nodemon] restarting due to changes...
+[nodemon] starting `node server.js`
+[dotenv@17.2.3] injecting env (10) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+🔐 HTTPS enabled (localhost-key.pem, localhost.pem)
+✅ Socket.io instance initialized
+(node:3548) [MONGODB DRIVER] Warning: useNewUrlParser is a deprecated option: useNewUrlParser has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:3548) [MONGODB DRIVER] Warning: useUnifiedTopology is a deprecated option: useUnifiedTopology has no effect since Node.js Driver version 4.0.0 and will be removed in the next major version
+✅ Development server running on 0.0.0.0:5000
+✅ MongoDB connected: ac-rejoess-shard-00-00.sktz1b5.mongodb.net
+✅ Database initialized successfully
+[nodemon] restarting due to changes...
+[nodemon] starting `node server.js`
+[dotenv@17.2.3] injecting env (10) from .env -- tip: ⚙️  override existing env vars with { override: true }
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+🔐 HTTPS enabled (localhost-key.pem, localhost.pem)
+✅ Socket.io instance initialized
 ✅ Development server running on 0.0.0.0:5000
 ✅ MongoDB connected: ac-rejoess-shard-00-00.sktz1b5.mongodb.net
 ✅ Database initialized successfully
 
-  VITE v7.1.5  ready in 4957 ms
+  VITE v7.1.5  ready in 1449 ms
 
   ➜  Local:   https://localhost:5173/
   ➜  Network: https://172.19.208.1:5173/
   ➜  Network: https://192.168.0.104:5173/
   ➜  press h + enter to show help
 
-E:\My Projects\Nexagen Project\frontend>npm run dev
+
+Tis is is frotned env file 
+
+# For local development, uncomment this:
+VITE_API_BASE=http://localhost:5000
+
+# For production, comment above and uncomment below:
+# VITE_API_BASE=https://schedule-ease-a4ur.vercel.app
