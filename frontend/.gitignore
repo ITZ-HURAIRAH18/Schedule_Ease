@@ -15,6 +15,15 @@ dist-ssr
 
 # Local environment files
 .env
+.env.local
+.env.*.local
+
+# Production environment files with secrets (use Vercel dashboard env vars instead)
+.env.production.local
+
+# Template files (safe to commit)
+# .env.example - DO NOT ignore this
+# .env.production - CAN be committed (contains only public URLs, no secrets)
 
 # Editor directories and files
 .vscode/*

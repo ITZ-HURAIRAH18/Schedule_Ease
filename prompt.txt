@@ -1,210 +1,201 @@
-2hook.bundle.js:1 [locatorjs]: loading: No valid renderers found.
-o @ hook.bundle.js:1Understand this warning
-react-dom_client.js?v=e7ec3635:17995 Download the React DevTools for a better development experience: https://react.dev/link/react-devtools
-apiConfig.js:8 📍 Using explicit API URL from env: http://localhost:5000
-simple-peer.js?v=e7ec3635:2738 Module "util" has been externalized for browser compatibility. Cannot access "util.debuglog" in client code. See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
-get @ simple-peer.js?v=e7ec3635:2738Understand this warning
-simple-peer.js?v=e7ec3635:2738 Module "util" has been externalized for browser compatibility. Cannot access "util.inspect" in client code. See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
-get @ simple-peer.js?v=e7ec3635:2738Understand this warning
-hook.bundle.js:1 [locatorjs]: ok
-o @ hook.bundle.js:1Understand this warning
-:5173/socket.io/?EIO=4&transport=polling&t=ketse0x3:1  Failed to load resource: the server responded with a status of 404 (Not Found)Understand this error
-:5173/socket.io/?EIO=4&transport=polling&t=kett1u3m:1  Failed to load resource: the server responded with a status of 404 (Not Found)Understand this error
-:5173/socket.io/?EIO=4&transport=polling&t=keua9vg5:1  Failed to load resource: the server responded with a status of 404 (Not Found)Understand this error
-:5173/socket.io/?EIO=4&transport=polling&t=keulbudb:1  Failed to load resource: the server responded with a status of 404 (Not Found)Understand this error
-:5173/socket.io/?EIO=4&transport=polling&t=kevnu220:1  Failed to load resource: the server responded with a status of 404 (Not Found)Understand this error
+Now Good its work in this local but on produ tion i desploy it on verscl it gie me eor not login 
+
+https://schedule-ease-a4ur.vercel.app/login/user this is frontend and backenc deploy n 
+https://schedule-ease-zeta.vercel.app/
+
+Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5by36w07:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5c0nl8ns:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5c2polbm:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+client:85 [GSI_LOGGER]: google.accounts.id.initialize() is called multiple times. This could cause unexpected behavior and only the last initialized instance will be used.
+_.G @ client:85Understand this warning
 user:1 The request has been aborted.Understand this error
 client:86 [GSI_LOGGER]: FedCM get() rejects with AbortError: signal is aborted without reason
 _.H @ client:86Understand this error
-:5173/socket.io/?EIO=4&transport=polling&t=kevuucmy:1  Failed to load resource: the server responded with a status of 404 (Not Found)Understand this error
-:5173/socket.io/?EIO=4&transport=polling&t=kexinmcg:1  Failed to load resource: the server responded with a status of 404 (Not Found)Understand this error
-:5173/socket.io/?EIO=4&transport=polling&t=kf05vnpc:1  Failed to load resource: the server responded with a status of 404 (Not Found)Understand this error
-client:380 Cross-Origin-Opener-Policy policy would block the window.postMessage call.
-Fu @ client:380Understand this error
-client:380 Cross-Origin-Opener-Policy policy would block the window.postMessage call.
-Fu @ client:380Understand this error
-:5173/socket.io/?EIO=4&transport=polling&t=kf1e83m5:1  Failed to load resource: the server responded with a status of 404 (Not Found)Understand this error
-:5000/api/auth/google-signup:1  Failed to load resource: net::ERR_INVALID_HTTP_RESPONSEUnderstand this error
-:5173/socket.io/?EIO=4&transport=polling&t=kf47lg0w:1  Failed to load resource: the server responded with a status of 404 (Not Found)Understand this error
-socket__io-client.js?v=e7ec3635:858  GET https://localhost:5173/socket.io/?EIO=4&transport=polling&t=kf5rxznf 404 (Not Found)
-_create @ socket__io-client.js?v=e7ec3635:858
-_Request @ socket__io-client.js?v=e7ec3635:798
-request @ socket__io-client.js?v=e7ec3635:953
-doPoll @ socket__io-client.js?v=e7ec3635:775
-_poll @ socket__io-client.js?v=e7ec3635:646
-doOpen @ socket__io-client.js?v=e7ec3635:607
-open @ socket__io-client.js?v=e7ec3635:503
-_open @ socket__io-client.js?v=e7ec3635:1328
-_SocketWithoutUpgrade @ socket__io-client.js?v=e7ec3635:1289
-SocketWithUpgrade @ socket__io-client.js?v=e7ec3635:1633
-Socket @ socket__io-client.js?v=e7ec3635:1759
-open @ socket__io-client.js?v=e7ec3635:3125
-(anonymous) @ socket__io-client.js?v=e7ec3635:3343Understand this error
-socket__io-client.js?v=e7ec3635:858  GET https://localhost:5173/socket.io/?EIO=4&transport=polling&t=kf831u2f 404 (Not Found)
-_create @ socket__io-client.js?v=e7ec3635:858
-_Request @ socket__io-client.js?v=e7ec3635:798
-request @ socket__io-client.js?v=e7ec3635:953
-doPoll @ socket__io-client.js?v=e7ec3635:775
-_poll @ socket__io-client.js?v=e7ec3635:646
-doOpen @ socket__io-client.js?v=e7ec3635:607
-open @ socket__io-client.js?v=e7ec3635:503
-_open @ socket__io-client.js?v=e7ec3635:1328
-_SocketWithoutUpgrade @ socket__io-client.js?v=e7ec3635:1289
-SocketWithUpgrade @ socket__io-client.js?v=e7ec3635:1633
-Socket @ socket__io-client.js?v=e7ec3635:1759
-open @ socket__io-client.js?v=e7ec3635:3125
-(anonymous) @ socket__io-client.js?v=e7ec3635:3343Understand this error
-socket__io-client.js?v=e7ec3635:858  GET https://localhost:5173/socket.io/?EIO=4&transport=polling&t=kf9ofbqb 404 (Not Found)
-_create @ socket__io-client.js?v=e7ec3635:858
-_Request @ socket__io-client.js?v=e7ec3635:798
-request @ socket__io-client.js?v=e7ec3635:953
-doPoll @ socket__io-client.js?v=e7ec3635:775
-_poll @ socket__io-client.js?v=e7ec3635:646
-doOpen @ socket__io-client.js?v=e7ec3635:607
-open @ socket__io-client.js?v=e7ec3635:503
-_open @ socket__io-client.js?v=e7ec3635:1328
-_SocketWithoutUpgrade @ socket__io-client.js?v=e7ec3635:1289
-SocketWithUpgrade @ socket__io-client.js?v=e7ec3635:1633
-Socket @ socket__io-client.js?v=e7ec3635:1759
-open @ socket__io-client.js?v=e7ec3635:3125
-(anonymous) @ socket__io-client.js?v=e7ec3635:3343
+index-BBK6eylF.js:62 Mixed Content: The page at 'https://schedule-ease-a4ur.vercel.app/login/user' was loaded over HTTPS, but requested an insecure XMLHttpRequest endpoint 'http://schedule-ease-a4ur.vercel.app:5001/api/auth/login'. This request has been blocked; the content must be served over HTTPS.
+(anonymous) @ index-BBK6eylF.js:62Understand this error
+accounts.google.com/gsi/log?client_id=77809119535-r5ivv8inbitphbo2rcf5bik2d7grgf5g.apps.googleusercontent.com&as=QSGxIPtzIPCPiNC4KMGMYClX1cxmTdbGXlU2Za%2ByltY&bs=uHWgQdjpOu8iAam7AOfXz7ajN70elyT%2BDMysLB4ORgk&event=onetap.card.prompt.apiCall&enable_itp_optimization=21:1  Failed to load resource: net::ERR_CONNECTION_CLOSEDUnderstand this error
+accounts.google.com/gsi/log?client_id=77809119535-r5ivv8inbitphbo2rcf5bik2d7grgf5g.apps.googleusercontent.com&as=QSGxIPtzIPCPiNC4KMGMYClX1cxmTdbGXlU2Za%2ByltY&bs=uHWgQdjpOu8iAam7AOfXz7ajN70elyT%2BDMysLB4ORgk&event=onetap.closed.tappedOutside&enable_itp_optimization=21:1  Failed to load resource: net::ERR_CONNECTION_CLOSEDUnderstand this error
+/socket.io/?EIO=4&transport=polling&t=5cocail7:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5c6o6old:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5c517oec:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5cpzengt:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5d80ftvi:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5dusanzp:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5ecj1jja:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5drw5vmh:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5dapn623:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5eezc7wz:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5etwys9s:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5etwz1ja:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5exvbmtu:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5exva2m3:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5f1z4kt1:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5f1z83xt:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5f6kbnw6:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5f6kc7op:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5fakgddp:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5fakh3po:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+button?type=standard&theme=filled_black&size=large&text=signin_with&shape=rectangular&logo_alignmen…:1  Failed to load resource: the server responded with a status of 403 ()Understand this error
+m=credential_button_library:86 [GSI_LOGGER]: The given origin is not allowed for the given client ID.
+_.H @ m=credential_button_library:86
+_.dh @ m=credential_button_library:156
+(anonymous) @ m=credential_button_library:317
+(anonymous) @ button?type=standard&theme=filled_black&size=large&text=signin_with&shape=rectangular&logo_alignment=undefined&width=undefined&locale=undefined&click_listener=undefined&is_fedcm_supported=true&client_id=77809119535-r5ivv8inbitphbo2rcf5bik2d7grgf5g.apps.googleusercontent.com&iframe_id=gsi_367586_233042&cas=QSGxIPtzIPCPiNC4KMGMYClX1cxmTdbGXlU2Za%2ByltY:1Understand this error
+/socket.io/?EIO=4&transport=polling&t=5ff4c3r8:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5ff4f096:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5fj3a4yw:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5fj37ern:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5fn32uzq:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5fna1b2y:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5fr1j7jq:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5freyht2:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5fvbmu8p:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5fw3g3co:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5fzycnmi:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5g0px9qw:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5g4kvvlq:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5g5ctlsq:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5g97v64j:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5g9q0puu:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5gda38bs:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5gdrs1z2:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5gh893l0:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5gigwmg5:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5glkicez:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5gn72w9d:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5gq6ygu7:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5grqlhfd:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5gyvgv22:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5h07uul3:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5h3b8dy1:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5h4ulitl:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5h7xtt49:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5h9hgcpu:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5he44bg4:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5hlugfvr:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5hmlgwtz:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5hqgn0t9:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5hr8h5ac:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5hv3kmvq:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5hvvacel:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5hzq8z12:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5i0hnmh5:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5i4cmk12:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5i54nqb5:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5i8z62j6:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5i9rajga:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5idoc95a:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+/socket.io/?EIO=4&transport=polling&t=5idskgvk:1  Failed to load resource: the server responded with a status of 404 ()Understand this error
+index-BBK6eylF.js:65  GET https://schedule-ease-a4ur.vercel.app/socket.io/?EIO=4&transport=polling&t=5ihmqn8u 404 (Not Found)
+_create @ index-BBK6eylF.js:65
+jn @ index-BBK6eylF.js:65
+request @ index-BBK6eylF.js:65
+doPoll @ index-BBK6eylF.js:65
+_poll @ index-BBK6eylF.js:65
+doOpen @ index-BBK6eylF.js:65
+open @ index-BBK6eylF.js:65
+_open @ index-BBK6eylF.js:65
+_r @ index-BBK6eylF.js:65
+s_ @ index-BBK6eylF.js:65
+l_ @ index-BBK6eylF.js:65
+open @ index-BBK6eylF.js:65
+(anonymous) @ index-BBK6eylF.js:65Understand this error
+index-BBK6eylF.js:65  GET https://schedule-ease-a4ur.vercel.app/socket.io/?EIO=4&transport=polling&t=5ihrxl64 404 (Not Found)
+_create @ index-BBK6eylF.js:65
+jn @ index-BBK6eylF.js:65
+request @ index-BBK6eylF.js:65
+doPoll @ index-BBK6eylF.js:65
+_poll @ index-BBK6eylF.js:65
+doOpen @ index-BBK6eylF.js:65
+open @ index-BBK6eylF.js:65
+_open @ index-BBK6eylF.js:65
+_r @ index-BBK6eylF.js:65
+s_ @ index-BBK6eylF.js:65
+l_ @ index-BBK6eylF.js:65
+open @ index-BBK6eylF.js:65
+(anonymous) @ index-BBK6eylF.js:65Understand this error
+index-BBK6eylF.js:65  GET https://schedule-ease-a4ur.vercel.app/socket.io/?EIO=4&transport=polling&t=5ilk1jlc 404 (Not Found)
+_create @ index-BBK6eylF.js:65
+jn @ index-BBK6eylF.js:65
+request @ index-BBK6eylF.js:65
+doPoll @ index-BBK6eylF.js:65
+_poll @ index-BBK6eylF.js:65
+doOpen @ index-BBK6eylF.js:65
+open @ index-BBK6eylF.js:65
+_open @ index-BBK6eylF.js:65
+_r @ index-BBK6eylF.js:65
+s_ @ index-BBK6eylF.js:65
+l_ @ index-BBK6eylF.js:65
+open @ index-BBK6eylF.js:65
+(anonymous) @ index-BBK6eylF.js:65
 setTimeout
-reconnect @ socket__io-client.js?v=e7ec3635:3337
-(anonymous) @ socket__io-client.js?v=e7ec3635:3346
-onError @ socket__io-client.js?v=e7ec3635:3139
-Emitter.emit @ socket__io-client.js?v=e7ec3635:354
-_onError @ socket__io-client.js?v=e7ec3635:1597
-Emitter.emit @ socket__io-client.js?v=e7ec3635:354
-onError @ socket__io-client.js?v=e7ec3635:495
-(anonymous) @ socket__io-client.js?v=e7ec3635:778
-Emitter.emit @ socket__io-client.js?v=e7ec3635:354
-_onError @ socket__io-client.js?v=e7ec3635:876
-(anonymous) @ socket__io-client.js?v=e7ec3635:854
+reconnect @ index-BBK6eylF.js:65
+(anonymous) @ index-BBK6eylF.js:65
+d @ index-BBK6eylF.js:65
+ht.emit @ index-BBK6eylF.js:65
+_onError @ index-BBK6eylF.js:65
+ht.emit @ index-BBK6eylF.js:65
+onError @ index-BBK6eylF.js:65
+(anonymous) @ index-BBK6eylF.js:65
+ht.emit @ index-BBK6eylF.js:65
+_onError @ index-BBK6eylF.js:65
+(anonymous) @ index-BBK6eylF.js:65
 setTimeout
-xhr.onreadystatechange @ socket__io-client.js?v=e7ec3635:853
+l.onreadystatechange @ index-BBK6eylF.js:65
 XMLHttpRequest.send
-_create @ socket__io-client.js?v=e7ec3635:858
-_Request @ socket__io-client.js?v=e7ec3635:798
-request @ socket__io-client.js?v=e7ec3635:953
-doPoll @ socket__io-client.js?v=e7ec3635:775
-_poll @ socket__io-client.js?v=e7ec3635:646
-doOpen @ socket__io-client.js?v=e7ec3635:607
-open @ socket__io-client.js?v=e7ec3635:503
-_open @ socket__io-client.js?v=e7ec3635:1328
-_SocketWithoutUpgrade @ socket__io-client.js?v=e7ec3635:1289
-SocketWithUpgrade @ socket__io-client.js?v=e7ec3635:1633
-Socket @ socket__io-client.js?v=e7ec3635:1759
-open @ socket__io-client.js?v=e7ec3635:3125
-(anonymous) @ socket__io-client.js?v=e7ec3635:3343Understand this error
-socket__io-client.js?v=e7ec3635:858  GET https://localhost:5173/socket.io/?EIO=4&transport=polling&t=kfbyr6un 404 (Not Found)
-_create @ socket__io-client.js?v=e7ec3635:858
-_Request @ socket__io-client.js?v=e7ec3635:798
-request @ socket__io-client.js?v=e7ec3635:953
-doPoll @ socket__io-client.js?v=e7ec3635:775
-_poll @ socket__io-client.js?v=e7ec3635:646
-doOpen @ socket__io-client.js?v=e7ec3635:607
-open @ socket__io-client.js?v=e7ec3635:503
-_open @ socket__io-client.js?v=e7ec3635:1328
-_SocketWithoutUpgrade @ socket__io-client.js?v=e7ec3635:1289
-SocketWithUpgrade @ socket__io-client.js?v=e7ec3635:1633
-Socket @ socket__io-client.js?v=e7ec3635:1759
-open @ socket__io-client.js?v=e7ec3635:3125
-(anonymous) @ socket__io-client.js?v=e7ec3635:3343
+_create @ index-BBK6eylF.js:65
+jn @ index-BBK6eylF.js:65
+request @ index-BBK6eylF.js:65
+doPoll @ index-BBK6eylF.js:65
+_poll @ index-BBK6eylF.js:65
+doOpen @ index-BBK6eylF.js:65
+open @ index-BBK6eylF.js:65
+_open @ index-BBK6eylF.js:65
+_r @ index-BBK6eylF.js:65
+s_ @ index-BBK6eylF.js:65
+l_ @ index-BBK6eylF.js:65
+open @ index-BBK6eylF.js:65
+(anonymous) @ index-BBK6eylF.js:65Understand this error
+index-BBK6eylF.js:65  GET https://schedule-ease-a4ur.vercel.app/socket.io/?EIO=4&transport=polling&t=5ilpcy05 404 (Not Found)
+_create @ index-BBK6eylF.js:65
+jn @ index-BBK6eylF.js:65
+request @ index-BBK6eylF.js:65
+doPoll @ index-BBK6eylF.js:65
+_poll @ index-BBK6eylF.js:65
+doOpen @ index-BBK6eylF.js:65
+open @ index-BBK6eylF.js:65
+_open @ index-BBK6eylF.js:65
+_r @ index-BBK6eylF.js:65
+s_ @ index-BBK6eylF.js:65
+l_ @ index-BBK6eylF.js:65
+open @ index-BBK6eylF.js:65
+(anonymous) @ index-BBK6eylF.js:65
 setTimeout
-reconnect @ socket__io-client.js?v=e7ec3635:3337
-(anonymous) @ socket__io-client.js?v=e7ec3635:3346
-onError @ socket__io-client.js?v=e7ec3635:3139
-Emitter.emit @ socket__io-client.js?v=e7ec3635:354
-_onError @ socket__io-client.js?v=e7ec3635:1597
-Emitter.emit @ socket__io-client.js?v=e7ec3635:354
-onError @ socket__io-client.js?v=e7ec3635:495
-(anonymous) @ socket__io-client.js?v=e7ec3635:778
-Emitter.emit @ socket__io-client.js?v=e7ec3635:354
-_onError @ socket__io-client.js?v=e7ec3635:876
-(anonymous) @ socket__io-client.js?v=e7ec3635:854
+reconnect @ index-BBK6eylF.js:65
+(anonymous) @ index-BBK6eylF.js:65
+d @ index-BBK6eylF.js:65
+ht.emit @ index-BBK6eylF.js:65
+_onError @ index-BBK6eylF.js:65
+ht.emit @ index-BBK6eylF.js:65
+onError @ index-BBK6eylF.js:65
+(anonymous) @ index-BBK6eylF.js:65
+ht.emit @ index-BBK6eylF.js:65
+_onError @ index-BBK6eylF.js:65
+(anonymous) @ index-BBK6eylF.js:65
 setTimeout
-xhr.onreadystatechange @ socket__io-client.js?v=e7ec3635:853
+l.onreadystatechange @ index-BBK6eylF.js:65
 XMLHttpRequest.send
-_create @ socket__io-client.js?v=e7ec3635:858
-_Request @ socket__io-client.js?v=e7ec3635:798
-request @ socket__io-client.js?v=e7ec3635:953
-doPoll @ socket__io-client.js?v=e7ec3635:775
-_poll @ socket__io-client.js?v=e7ec3635:646
-doOpen @ socket__io-client.js?v=e7ec3635:607
-open @ socket__io-client.js?v=e7ec3635:503
-_open @ socket__io-client.js?v=e7ec3635:1328
-_SocketWithoutUpgrade @ socket__io-client.js?v=e7ec3635:1289
-SocketWithUpgrade @ socket__io-client.js?v=e7ec3635:1633
-Socket @ socket__io-client.js?v=e7ec3635:1759
-open @ socket__io-client.js?v=e7ec3635:3125
-(anonymous) @ socket__io-client.js?v=e7ec3635:3343Understand this error
-socket__io-client.js?v=e7ec3635:858  GET https://localhost:5173/socket.io/?EIO=4&transport=polling&t=kfdk0w3o 404 (Not Found)
-_create @ socket__io-client.js?v=e7ec3635:858
-_Request @ socket__io-client.js?v=e7ec3635:798
-request @ socket__io-client.js?v=e7ec3635:953
-doPoll @ socket__io-client.js?v=e7ec3635:775
-_poll @ socket__io-client.js?v=e7ec3635:646
-doOpen @ socket__io-client.js?v=e7ec3635:607
-open @ socket__io-client.js?v=e7ec3635:503
-_open @ socket__io-client.js?v=e7ec3635:1328
-_SocketWithoutUpgrade @ socket__io-client.js?v=e7ec3635:1289
-SocketWithUpgrade @ socket__io-client.js?v=e7ec3635:1633
-Socket @ socket__io-client.js?v=e7ec3635:1759
-open @ socket__io-client.js?v=e7ec3635:3125
-(anonymous) @ socket__io-client.js?v=e7ec3635:3343
-setTimeout
-reconnect @ socket__io-client.js?v=e7ec3635:3337
-(anonymous) @ socket__io-client.js?v=e7ec3635:3346
-onError @ socket__io-client.js?v=e7ec3635:3139
-Emitter.emit @ socket__io-client.js?v=e7ec3635:354
-_onError @ socket__io-client.js?v=e7ec3635:1597
-Emitter.emit @ socket__io-client.js?v=e7ec3635:354
-onError @ socket__io-client.js?v=e7ec3635:495
-(anonymous) @ socket__io-client.js?v=e7ec3635:778
-Emitter.emit @ socket__io-client.js?v=e7ec3635:354
-_onError @ socket__io-client.js?v=e7ec3635:876
-(anonymous) @ socket__io-client.js?v=e7ec3635:854
-setTimeout
-xhr.onreadystatechange @ socket__io-client.js?v=e7ec3635:853
-XMLHttpRequest.send
-_create @ socket__io-client.js?v=e7ec3635:858
-_Request @ socket__io-client.js?v=e7ec3635:798
-request @ socket__io-client.js?v=e7ec3635:953
-doPoll @ socket__io-client.js?v=e7ec3635:775
-_poll @ socket__io-client.js?v=e7ec3635:646
-doOpen @ socket__io-client.js?v=e7ec3635:607
-open @ socket__io-client.js?v=e7ec3635:503
-_open @ socket__io-client.js?v=e7ec3635:1328
-_SocketWithoutUpgrade @ socket__io-client.js?v=e7ec3635:1289
-SocketWithUpgrade @ socket__io-client.js?v=e7ec3635:1633
-Socket @ socket__io-client.js?v=e7ec3635:1759
-open @ socket__io-client.js?v=e7ec3635:3125
-(anonymous) @ socket__io-client.js?v=e7ec3635:3343
-setTimeout
-reconnect @ socket__io-client.js?v=e7ec3635:3337
-(anonymous) @ socket__io-client.js?v=e7ec3635:3346
-onError @ socket__io-client.js?v=e7ec3635:3139
-Emitter.emit @ socket__io-client.js?v=e7ec3635:354
-_onError @ socket__io-client.js?v=e7ec3635:1597
-Emitter.emit @ socket__io-client.js?v=e7ec3635:354
-onError @ socket__io-client.js?v=e7ec3635:495
-(anonymous) @ socket__io-client.js?v=e7ec3635:778
-Emitter.emit @ socket__io-client.js?v=e7ec3635:354
-_onError @ socket__io-client.js?v=e7ec3635:876
-(anonymous) @ socket__io-client.js?v=e7ec3635:854
-setTimeout
-xhr.onreadystatechange @ socket__io-client.js?v=e7ec3635:853
-XMLHttpRequest.send
-_create @ socket__io-client.js?v=e7ec3635:858
-_Request @ socket__io-client.js?v=e7ec3635:798
-request @ socket__io-client.js?v=e7ec3635:953
-doPoll @ socket__io-client.js?v=e7ec3635:775
-_poll @ socket__io-client.js?v=e7ec3635:646
-doOpen @ socket__io-client.js?v=e7ec3635:607
-open @ socket__io-client.js?v=e7ec3635:503
-_open @ socket__io-client.js?v=e7ec3635:1328
-_SocketWithoutUpgrade @ socket__io-client.js?v=e7ec3635:1289
-SocketWithUpgrade @ socket__io-client.js?v=e7ec3635:1633
-Socket @ socket__io-client.js?v=e7ec3635:1759
-open @ socket__io-client.js?v=e7ec3635:3125
-(anonymous) @ socket__io-client.js?v=e7ec3635:3343Understand this error
+_create @ index-BBK6eylF.js:65
+jn @ index-BBK6eylF.js:65
+request @ index-BBK6eylF.js:65
+doPoll @ index-BBK6eylF.js:65
+_poll @ index-BBK6eylF.js:65
+doOpen @ index-BBK6eylF.js:65
+open @ index-BBK6eylF.js:65
+_open @ index-BBK6eylF.js:65
+_r @ index-BBK6eylF.js:65
+s_ @ index-BBK6eylF.js:65
+l_ @ index-BBK6eylF.js:65
+open @ index-BBK6eylF.js:65
+(anonymous) @ index-BBK6eylF.js:65Understand this error

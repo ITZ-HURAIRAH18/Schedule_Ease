@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Peer from "simple-peer";
 import io from "socket.io-client";
+import { getSocketUrl } from "../utils/apiConfig";
 import axiosInstance from "../api/axiosInstance";
 import { useAuth } from "../context/AuthContext";
 
@@ -328,19 +329,23 @@ const MeetingRoom = () => {
     streamRef.current = localStream;
         if (userVideo.current) userVideo.current.srcObject = localStream;
 
-        // 🌐 Connect to /meeting namespace using relative URL (Vite proxy forwards to backend)
+        // 🌐 Connect to /meeting namespace on the backend server
+        const socketUrl = getSocketUrl();
+        const meetingNamespaceUrl = socketUrl
+          ? `${socketUrl}/meeting`
+          : `/meeting`; // relative URL for dev (Vite proxy)
         const isNetworkIP = !['localhost', '127.0.0.1'].includes(window.location.hostname);
         const useSecure = window.location.protocol === 'https:';
 
-        // For network IPs, prioritize polling (it handles certificate issues better than websocket)
-        // Polling uses XHR which is more forgiving with certificate mismatches
-        const transportOrder = isNetworkIP ? ['polling'] : ['websocket', 'polling'];
+        // For production (Vercel), use websocket transport
+        // For development with network IPs, prioritize polling for certificate tolerance
+        const transportOrder = import.meta.env.DEV && isNetworkIP ? ['polling'] : ['websocket', 'polling'];
 
         socketRef.current = io(
-          `/meeting`,
+          meetingNamespaceUrl,
           {
             transports: transportOrder,
-            upgrade: false, // Disable upgrade for network IPs to avoid certificate issues during upgrade
+            upgrade: !import.meta.env.DEV || !isNetworkIP, // Allow upgrade in production
             rememberUpgrade: false,
             secure: useSecure,
             rejectUnauthorized: false, // Note: browsers still validate certificates, this only affects Node.js
@@ -350,7 +355,7 @@ const MeetingRoom = () => {
             reconnectionDelayMax: 15000,
             reconnectionAttempts: 5,
             autoConnect: true,
-            forceNew: isNetworkIP, // Force new connection for network IPs
+            forceNew: isNetworkIP && import.meta.env.DEV, // Force new connection for network IPs in dev only
             withCredentials: false,
             // Additional options for better mobile support
             path: '/socket.io/',

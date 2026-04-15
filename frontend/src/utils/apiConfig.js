@@ -1,6 +1,10 @@
 /**
- * Get the API base URL dynamically based on the current hostname.
- * This allows the app to work when accessed via localhost or network IP.
+ * Get the API base URL dynamically based on the environment.
+ *
+ * Priority:
+ * 1. VITE_API_BASE environment variable (explicit override)
+ * 2. Vite dev server proxy (development - relative URLs)
+ * 3. Fallback production URL (hardcoded backend URL)
  */
 export const getApiBaseUrl = () => {
   // If VITE_API_BASE is explicitly set, use it
@@ -16,37 +20,29 @@ export const getApiBaseUrl = () => {
     return '';
   }
 
-  // Otherwise, derive from current window location
-  const hostname = window.location.hostname;
-  
-  // When frontend runs on HTTPS (localhost:5173), backend HTTP runs on port 5001
-  // When frontend runs on HTTP, backend HTTP runs on port 5000
-  const isFrontendHTTPS = window.location.protocol === 'https:';
-  const backendPort = isFrontendHTTPS ? '5001' : '5000';
-
-  // Log for debugging
-  console.log('🌐 API URL Detection:', {
-    hostname,
-    frontendProtocol: window.location.protocol,
-    backendPort,
-    fullLocation: window.location.href
-  });
-
-  // Use HTTP to connect to backend's HTTP server
-  const url = `http://${hostname}:${backendPort}`;
-  console.log('📍 Using API URL:', url);
-  return url;
+  // Production fallback: use the deployed backend URL
+  // When deployed on Vercel, the frontend should always talk to the backend's Vercel URL
+  const productionBackendUrl = 'https://schedule-ease-zeta.vercel.app';
+  console.log('📍 Using production backend URL:', productionBackendUrl);
+  return productionBackendUrl;
 };
 
 /**
  * Get the Socket.IO server URL (without the namespace path)
  */
 export const getSocketUrl = () => {
+  // If VITE_API_BASE is explicitly set, use it
+  if (import.meta.env.VITE_API_BASE) {
+    return import.meta.env.VITE_API_BASE;
+  }
+
   // For development with Vite proxy, use empty string (relative URLs)
   // The Vite dev server will proxy /socket.io requests to the backend
   if (import.meta.env.DEV) {
     return '';
   }
-  
-  return getApiBaseUrl();
+
+  // Production fallback: use the deployed backend URL
+  const productionBackendUrl = 'https://schedule-ease-zeta.vercel.app';
+  return productionBackendUrl;
 };

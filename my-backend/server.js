@@ -121,17 +121,22 @@ app.use((err, req, res, next) => {
 });
 
 // ===============================
-// SOCKET.IO Setup (Local Development Only)
+// SOCKET.IO Setup (All Environments)
 // ===============================
 let server;
 let io;
-let httpServer; // Secondary HTTP server for browser compatibility
+let httpServer;
 
-if (process.env.NODE_ENV !== "production") {
+// For Vercel serverless, we can't maintain persistent WebSocket connections
+// Socket.IO will be initialized but won't work in serverless environment
+// Alternative: Use a dedicated WebSocket service (Pusher, Ably, Supabase Realtime)
+const isServerless = process.env.VERCEL || process.env.NODE_ENV === "production";
+
+if (!isServerless) {
   // Local development setup with socket.io
   let useHTTPS = false;
   let sslOptions;
-  
+
   try {
     const keyPath = new URL("./localhost-key.pem", import.meta.url);
     const certPath = new URL("./localhost.pem", import.meta.url);
@@ -182,46 +187,57 @@ if (process.env.NODE_ENV !== "production") {
 
   // ✅ Register the io instance with our singleton manager
   setIO(io);
+} else {
+  // Production (Vercel serverless) - Socket.IO cannot work here
+  // Log warning and provide alternative
+  console.log("⚠️ Running on Vercel serverless - Socket.IO WebSockets are not supported");
+  console.log("💡 Consider using: Pusher, Ably, or Supabase Realtime for production WebSockets");
+  console.log("💡 Alternative: Use HTTP polling/polling for real-time updates");
+  
+  // Don't initialize Socket.IO in serverless environment
+  // The setIO will not be called, and safeEmit will log warnings
+}
 
-// ✅ Track meeting rooms
+// ✅ Track meeting rooms (only used in development)
 const meetingRooms = {};
 
 // ===============================
 // 🌍 GLOBAL SOCKET (dashboard, host updates, chat)
 // ===============================
-io.on("connection", (socket) => {
-  console.log("🟢 Dashboard/Global Client Connected:", socket.id);
+if (!isServerless && io) {
+  io.on("connection", (socket) => {
+    console.log("🟢 Dashboard/Global Client Connected:", socket.id);
 
-  // Add error handler for this socket
-  socket.on("error", (error) => {
-    console.error(`❌ Socket error for ${socket.id}:`, error);
-  });
+    // Add error handler for this socket
+    socket.on("error", (error) => {
+      console.error(`❌ Socket error for ${socket.id}:`, error);
+    });
 
-  // Chat / broadcast messages
-  socket.on("send_message", (msg) => {
-    try {
-      console.log("💬 Global Message:", msg);
-      io.emit("receive_message", msg);
-    } catch (error) {
-      console.error("❌ Error broadcasting message:", error);
-    }
-  });
+    // Chat / broadcast messages
+    socket.on("send_message", (msg) => {
+      try {
+        console.log("💬 Global Message:", msg);
+        io.emit("receive_message", msg);
+      } catch (error) {
+        console.error("❌ Error broadcasting message:", error);
+      }
+    });
 
-  // Host joins private room for dashboard live updates
-  socket.on("join_host_room", (hostId) => {
-    try {
-      socket.join(hostId);
-      console.log(`🏠 Host ${hostId} joined private dashboard room`);
-    } catch (error) {
-      console.error("❌ Error joining host room:", error);
-    }
-  });
+    // Host joins private room for dashboard live updates
+    socket.on("join_host_room", (hostId) => {
+      try {
+        socket.join(hostId);
+        console.log(`🏠 Host ${hostId} joined private dashboard room`);
+      } catch (error) {
+        console.error("❌ Error joining host room:", error);
+      }
+    });
 
-  // ✅ Dashboard disconnect
-  socket.on("disconnect", () => {
-    console.log("🔴 Dashboard/Global Client Disconnected:", socket.id);
+    // ✅ Dashboard disconnect
+    socket.on("disconnect", () => {
+      console.log("🔴 Dashboard/Global Client Disconnected:", socket.id);
+    });
   });
-});
 
   // ===============================
   // 🎥 MEETING SOCKET NAMESPACE
@@ -297,7 +313,7 @@ io.on("connection", (socket) => {
   server.listen(PORT, HOST, () =>
     console.log(`✅ Development server running on ${HOST}:${PORT}`)
   );
-  
+
   // Start HTTP server on port 5001 if HTTPS is enabled
   if (httpServer) {
     const HTTP_PORT = 5001;
