@@ -30,6 +30,7 @@ const HostDashboard = () => {
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const pageSize = 5;
 
   useEffect(() => {
@@ -37,10 +38,14 @@ const HostDashboard = () => {
       try {
         const res = await axiosInstance.get("/host/dashboard");
         setData(res.data);
-        socket.emit("join_host_room", res.data.hostId);
+        if (res.data?.hostId) {
+          socket.emit("join_host_room", res.data.hostId);
+        }
+        setError(null);
         setTimeout(() => setIsLoading(false), 600);
       } catch (err) {
         console.error("Failed to fetch dashboard data", err);
+        setError(err.response?.data?.message || err.message || "Failed to load dashboard. The server might be busy.");
         setIsLoading(false);
       }
     };
@@ -64,16 +69,28 @@ const HostDashboard = () => {
     pastBookings: { icon: Clock, color: "#92694A", bg: "#F7F0EA", label: "Past Sessions" },
   };
 
-  if (isLoading) return (
+  if (error) return (
     <div className="min-h-screen bg-[#FAFAF8] flex flex-col">
       <HostHeader />
-      <div className="flex-1 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#E8E4DF] border-t-[#C8622A] rounded-full animate-spin" />
+      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+        <div className="w-16 h-16 bg-[#FEF2F2] rounded-full flex items-center justify-center mb-4">
+          <AlertCircle className="w-8 h-8 text-[#B91C1C]" />
+        </div>
+        <h2 className="text-[20px] font-semibold text-[#1A1A1A] mb-2">Service Temporarily Unavailable</h2>
+        <p className="text-[#8A8A8A] max-w-md mb-6">{error}</p>
+        <button 
+          onClick={() => window.location.reload()}
+          className="px-6 py-2.5 bg-[#C8622A] text-white rounded-lg font-semibold text-[14px] hover:bg-[#A84E20] transition-all"
+        >
+          Retry Connection
+        </button>
       </div>
     </div>
   );
 
-  const { stats } = data;
+  if (!data) return null;
+
+  const { stats = {} } = data;
 
   return (
     <div className="min-h-screen bg-[#FAFAF8] page-enter">

@@ -1,7 +1,5 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
-import Peer from "simple-peer";
-import io from "socket.io-client";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Mic, 

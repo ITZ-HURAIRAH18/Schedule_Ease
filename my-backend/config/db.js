@@ -36,13 +36,12 @@ const connectDB = async () => {
   // Check MONGO_URI is set (after dotenv.config() in server.js)
   const MONGO_URI = process.env.MONGO_URI;
   if (!MONGO_URI) {
-    console.error("❌ MONGO_URI environment variable is not set");
+    console.error("❌ [DB] MONGO_URI environment variable is not set");
     throw new Error("MONGO_URI environment variable is missing");
   }
 
   const MASKED_URI = MONGO_URI.replace(/:[^:]*@/, ":****@");
-  console.log("🔍 Attempting to connect to MongoDB...");
-  console.log("📍 Connection URI (masked):", MASKED_URI);
+  console.log("🔍 [DB] Attempting to connect to MongoDB...");
 
   // Check if connection is still valid and not too old
   const now = Date.now();
@@ -51,13 +50,13 @@ const connectDB = async () => {
     mongoose.connection.readyState === 1 &&
     now - lastConnectionTime < MAX_CONNECTION_AGE_MS
   ) {
-    console.log("✅ Using cached MongoDB connection");
+    console.log("✅ [DB] Using cached MongoDB connection");
     return cachedConnection;
   }
 
   // If connection is too old, close it gracefully before reconnecting
   if (cachedConnection && mongoose.connection.readyState === 1) {
-    console.log("♻️ Refreshing stale MongoDB connection (age limit reached)");
+    console.log("♻️ [DB] Refreshing stale MongoDB connection (age limit reached)");
     try {
       await mongoose.disconnect();
     } catch (e) {
@@ -69,12 +68,11 @@ const connectDB = async () => {
 
   // Return existing connection promise if connection is in progress
   if (connectionPromise) {
-    console.log("⏳ MongoDB connection in progress, reusing promise");
+    console.log("⏳ [DB] MongoDB connection in progress, reusing promise");
     return connectionPromise;
   }
 
-  console.log("🔍 Establishing new MongoDB connection...");
-  console.log("📍 URI:", MASKED_URI);
+  console.log("🔍 [DB] Establishing new MongoDB connection...");
 
   // Create new connection promise
   connectionPromise = (async () => {
@@ -118,16 +116,16 @@ const connectDB = async () => {
       // Set up connection event listeners
       setupConnectionListeners(mongoose.connection);
 
-      console.log(`✅ MongoDB connected successfully: ${connection.connection.host}`);
+      console.log(`✅ [DB] MongoDB connected successfully: ${connection.connection.host}`);
       return cachedConnection;
     } catch (error) {
-      console.error(`❌ MongoDB connection failed: ${error.message}`);
-      console.error("📋 Error code:", error.code);
-      console.error("📋 Error name:", error.name);
+      console.error(`❌ [DB] MongoDB connection failed: ${error.message}`);
+      console.error("📋 [DB] Error code:", error.code);
+      console.error("📋 [DB] Error name:", error.name);
 
       // Reset promise on failure so next attempt can retry
       connectionPromise = null;
-
+      console.error("💡 [DB] TIP: Verify your MONGO_URI and network firewall settings.");
       throw error;
     }
   })();
@@ -141,7 +139,7 @@ const connectDB = async () => {
  */
 const setupConnectionListeners = (connection) => {
   connection.on("error", (error) => {
-    console.error("❌ MongoDB connection error:", error.message);
+    console.error("❌ [DB] MongoDB connection error:", error.message);
     // Clear cache on error to force reconnection
     cachedConnection = null;
     connectionPromise = null;
