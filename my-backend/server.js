@@ -118,6 +118,7 @@ app.use(async (req, res, next) => {
 
   // For API routes, ensure DB is connected
   if (req.path.startsWith('/api/')) {
+    try {
       // If DB failed to initialize, return the specific error
       if (dbError) {
         console.error("❌ DB check: Previous initialization failed:", dbError);
