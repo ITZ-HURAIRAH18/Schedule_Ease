@@ -469,9 +469,10 @@ export const updateBookingStatus = async (req, res) => {
         booking.meetingRoom = uuidv4();
       }
 
-      // 3. Create Daily.co Room (Zoom-like experience)
+      // 3. Create Professional Meeting Link (Daily.co with Jitsi Fallback)
       if (!booking.meetingLink) {
         try {
+          // Attempt Daily.co (Premium Experience)
           const response = await axios.post(
             "https://api.daily.co/v1/rooms",
             {
@@ -479,9 +480,7 @@ export const updateBookingStatus = async (req, res) => {
               properties: {
                 enable_screenshare: true,
                 enable_chat: true,
-                start_video_off: false,
-                start_audio_off: false,
-                exp: Math.floor(booking.accessEnd.getTime() / 1000), // Link expires when meeting ends
+                exp: Math.floor(booking.accessEnd.getTime() / 1000), 
               },
             },
             {
@@ -489,12 +488,18 @@ export const updateBookingStatus = async (req, res) => {
                 Authorization: `Bearer ${process.env.DAILY_API_KEY}`,
                 "Content-Type": "application/json",
               },
+              timeout: 5000 // Quick timeout to fallback if Daily is slow
             }
           );
           booking.meetingLink = response.data.url;
+          console.log("💎 Daily.co Room Created:", booking.meetingLink);
         } catch (dailyError) {
-          console.error("⚠️ Daily.co Room Creation Failed:", dailyError.response?.data || dailyError.message);
-          // Fallback to internal room is already handled by step 2 setup
+          console.warn("⚠️ Daily.co Failed, Falling back to Jitsi Meet...");
+          // Fallback to Jitsi Meet (Rock-solid open source alternative)
+          // Using a random-enough name to prevent collisions
+          const jitsiRoomId = `NexGen-${bookingId}-${Math.random().toString(36).substring(7)}`;
+          booking.meetingLink = `https://meet.jit.si/${jitsiRoomId}`;
+          console.log("🛠️ Jitsi Fallback Link Generated:", booking.meetingLink);
         }
       }
     }
