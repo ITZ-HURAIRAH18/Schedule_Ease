@@ -71,7 +71,6 @@ const MeetingRoom = () => {
   };
 
   useEffect(() => {
-    let mounted = true;
     const load = async () => {
       try {
         const res = await axiosInstance.get(`/meetings/${roomId}`);
@@ -84,7 +83,20 @@ const MeetingRoom = () => {
         setError("Meeting session not found or expired.");
       }
     };
-    if (roomId) load();
+    if (roomId) {
+      load();
+      // Auto-refresh meeting info every 5 seconds if link is missing
+      const interval = setInterval(() => {
+        // We only poll if the component is mounted AND we don't have a link yet
+        if (mounted && (!meetingInfo || !meetingInfo.meetingLink)) {
+          load();
+        }
+      }, 5000);
+      return () => {
+        mounted = false;
+        clearInterval(interval);
+      };
+    }
     return () => { mounted = false; };
   }, [roomId]);
 

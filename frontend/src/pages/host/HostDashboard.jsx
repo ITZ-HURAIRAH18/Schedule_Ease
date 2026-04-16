@@ -55,6 +55,16 @@ const HostDashboard = () => {
         if (res.data?.hostId) {
           socket.emit("join_host_room", res.data.hostId);
         }
+        
+        // ✨ Proactive Link Sync: If any confirmed booking is missing a link, fix it now
+        if (res.data.recentBookings) {
+          res.data.recentBookings.forEach(async (b) => {
+            if (b.status === 'confirmed' && !b.meetingRoom) {
+              try { await axiosInstance.put(`/host/bookings/update-status/${b._id}`, { status: 'confirmed' }); } catch {}
+            }
+          });
+        }
+
         setError(null);
         setTimeout(() => setIsLoading(false), 600);
       } catch (err) {
@@ -220,18 +230,28 @@ const BookingRow = ({ booking, navigate }) => {
   const [joinAllowed, setJoinAllowed] = useState(false);
   
   useEffect(() => {
-    if (!meetingRoom) return;
-    const check = async () => {
+    let mounted = true;
+    const load = async () => {
       try {
         const res = await axiosInstance.get(`/meetings/${meetingRoom}`);
-        setJoinAllowed(!!res.data?.valid);
+        if (mounted) {
+          setJoinAllowed(!!res.data?.valid);
+        }
       } catch (err) {
         console.error('Meeting check error:', err);
       }
     };
-    check();
-    const id = setInterval(check, 30000);
-    return () => clearInterval(id);
+    if (meetingRoom) {
+      load();
+      const interval = setInterval(() => {
+        if (!joinAllowed) load();
+      }, 5000);
+      return () => {
+        mounted = false;
+        clearInterval(interval);
+      };
+    }
+    return () => { mounted = false; };
   }, [meetingRoom]);
 
   const initials = (guest?.name || "G").charAt(0).toUpperCase();
