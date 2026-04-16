@@ -1,14 +1,16 @@
 import mongoose from "mongoose";
 import dns from "dns";
 
-// ✅ Force use of Google and Cloudflare DNS for SRV resolution
-// This fixes "querySrv ECONNREFUSED" errors common with some ISPs
+// ✅ Optional: Custom DNS for SRV resolution
+// Only enable if you experience "querySrv ECONNREFUSED" errors
+/*
 try {
   dns.setServers(['8.8.8.8', '1.1.1.1']);
   console.log("📡 DNS servers set to 8.8.8.8, 1.1.1.1 for MongoDB SRV resolution");
 } catch (err) {
   console.warn("⚠️ Failed to set custom DNS servers:", err.message);
 }
+*/
 
 /**
  * MongoDB Connection Manager - Production Optimized
@@ -179,10 +181,24 @@ const isDbConnected = () => {
 const waitForConnection = async (timeoutMs = 30000) => {
   if (isDbConnected()) return true;
 
+  // If there's an active connection attempt, wait for it
+  if (connectionPromise) {
+    try {
+      await Promise.race([
+        connectionPromise,
+        new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), timeoutMs))
+      ]);
+      return isDbConnected();
+    } catch (e) {
+      return isDbConnected();
+    }
+  }
+
+  // Fallback to polling if needed (should rarely happen with connectionPromise)
   const startTime = Date.now();
   while (Date.now() - startTime < timeoutMs) {
     if (isDbConnected()) return true;
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise(resolve => setTimeout(resolve, 200));
   }
 
   return false;

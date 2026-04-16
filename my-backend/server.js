@@ -118,22 +118,25 @@ app.use(async (req, res, next) => {
 
   // For API routes, ensure DB is connected
   if (req.path.startsWith('/api/')) {
-    try {
-      // If DB is already connected, proceed immediately
-      if (isDbConnected()) {
-        res.locals.dbStatus = 'connected';
-        return next();
+      // If DB failed to initialize, return the specific error
+      if (dbError) {
+        console.error("❌ DB check: Previous initialization failed:", dbError);
+        return res.status(503).json({
+          error: 'Database unavailable',
+          message: `Database connection failed: ${dbError}`,
+          retryAfter: 10
+        });
       }
 
-      // Wait for DB connection (with 15s timeout for mobile/slow networks)
+      // Wait for DB connection (with 10s timeout for serverless)
       console.log(`⏳ Waiting for DB connection for request: ${req.path}`);
-      const ready = await waitForConnection(15000);
+      const ready = await waitForConnection(10000);
 
       if (!ready || !isDbConnected()) {
         console.error("❌ Database not ready for request:", req.path);
         return res.status(503).json({
           error: 'Service unavailable',
-          message: 'Database connection is being established. Please try again in a moment.',
+          message: 'Database connection is taking longer than expected. Please check your MONGO_URI and IP whitelist in MongoDB Atlas.',
           retryAfter: 5
         });
       }
