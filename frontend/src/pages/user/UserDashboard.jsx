@@ -12,13 +12,7 @@ import {
   UserCircleIcon
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
-
-/* ---------- global helpers ---------- */
-const formatDate = (d) =>
-  new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(d));
-
-const formatTime = (d) =>
-  new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: '2-digit', hour12: true }).format(new Date(d));
+import { formatDate, formatTime } from "../../utils/timeUtils";
 /* ---------- render ---------- */
 const UserDashboard = () => {
   const [bookings, setBookings] = useState([]);

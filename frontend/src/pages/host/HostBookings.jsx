@@ -10,10 +10,7 @@ import {
   CheckCircleIcon,
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
-const formatDate = (d) =>
-  new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(d));
-const formatTime = (d) =>
-  new Intl.DateTimeFormat(undefined, { timeStyle: "short" }).format(new Date(d));
+import { formatDate, formatTime } from "../../utils/timeUtils";
 
 const HostBookings = () => {
   const [bookings, setBookings] = useState([]);

@@ -4,6 +4,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axiosInstance from "../../api/axiosInstance";
 import UserHeader from "../../components/UserHeader";
 import toast, { Toaster } from "react-hot-toast";
+import { formatTime, getUserTimezone } from "../../utils/timeUtils";
 import {
   CalendarDaysIcon,
   ClockIcon,
@@ -52,55 +53,81 @@ const BookingForm = () => {
     }
   }, [hostId]);
 
+// ✅ Calculate end time correctly (without timezone manipulation)
 useEffect(() => {
   if (form.start && Number(form.duration) > 0) {
-    const start = new Date(form.start);
-    const end = new Date(start.getTime() + Number(form.duration) * 60000);
-    const offset = end.getTimezoneOffset();
+    const startDateInput = form.start; // "2026-04-16T06:21" from datetime-local
+    // Parse the local time properly
+    const [datePart, timePart] = startDateInput.split("T");
+    const [year, month, day] = datePart.split("-").map(Number);
+    const [hours, minutes] = timePart.split(":").map(Number);
+    
+    // Create date in UTC assuming the input is in the user's local time
+    // This is the correct way to handle datetime-local inputs
+    const startDate = new Date(year, month - 1, day, hours, minutes);
+    const endDate = new Date(startDate.getTime() + Number(form.duration) * 60000);
+    
+    // Convert back to datetime-local format
+    const endString = endDate.getFullYear() +
+      "-" + String(endDate.getMonth() + 1).padStart(2, "0") +
+      "-" + String(endDate.getDate()).padStart(2, "0") +
+      "T" + String(endDate.getHours()).padStart(2, "0") +
+      ":" + String(endDate.getMinutes()).padStart(2, "0");
+    
     setForm((p) => ({
       ...p,
-      end: new Date(end.getTime() - offset * 60000)
-        .toISOString()
-        .slice(0, 16),
+      end: endString,
     }));
   }
 }, [form.start, form.duration]);
 
-  // When host is loaded, set default duration from host availability (or from navigation state)
-  useEffect(() => {
-    const preferred = location.state?.duration;
-    if (host && (preferred || (host.durations && host.durations.length))) {
-      setForm((p) => ({
-        ...p,
-        duration: preferred ?? host.durations[0],
-      }));
-    }
-  }, [host]);
-
-  /* ---------- helpers ---------- */
-  const formatTime = (t) => {
-    if (!t) return "";
-    t = t.split(":").slice(0, 2).join(":");
-    if (/am|pm/i.test(t)) return t;
-    const [h, m] = t.split(":").map(Number);
-    return `${(h % 12 || 12).toString().padStart(2, "0")}:${m.toString().padStart(2, "0")} ${h >= 12 ? "PM" : "AM"}`;
-  };
+// When host is loaded, set default duration from host availability (or from navigation state)
+useEffect(() => {
+  const preferred = location.state?.duration;
+  if (host && (preferred || (host.durations && host.durations.length))) {
+    setForm((p) => ({
+      ...p,
+      duration: preferred ?? host.durations[0],
+    }));
+  }
+}, [host]);
 
   /* ---------- submit ---------- */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
+      // ✅ Convert datetime-local strings to ISO with timezone
+      // The datetime-local input gives us: "2026-04-16T06:21"
+      // We treat this as the user's local time and keep it as-is for backend
+      const convertToUTC = (localDatetimeString) => {
+        if (!localDatetimeString) return "";
+        // Parse the local datetime string
+        const [datePart, timePart] = localDatetimeString.split("T");
+        const [year, month, day] = datePart.split("-").map(Number);
+        const [hours, minutes] = timePart.split(":").map(Number);
+        
+        // Create Date object (interpreted in user's local time)
+        const localDate = new Date(year, month - 1, day, hours, minutes, 0);
+        
+        // Convert to UTC by accounting for timezone offset
+        const timezoneOffset = localDate.getTimezoneOffset() * 60000;
+        const utcDate = new Date(localDate.getTime() + timezoneOffset);
+        
+        return utcDate.toISOString();
+      };
+      
       const payload = {
         hostId,
         availabilityId,
-        start: form.start,
-        end: form.end,
+        start: convertToUTC(form.start),
+        end: convertToUTC(form.end),
         duration: form.duration,
+        timezone: getUserTimezone(), // ✅ Include user's timezone
         guest: { name: form.name, email: form.email, phone: form.phone },
         createdByUserId: user.id || user._id,
       };
-      console.log(payload, "payload fron booking..")
+      console.log(payload, "payload from booking..")
 
       const { data } = await axiosInstance.post("/user/bookings", payload);
       toast.success(data.message || "Booking created!");

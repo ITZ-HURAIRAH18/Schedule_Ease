@@ -10,6 +10,7 @@ import {
   CheckCircleIcon,
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
+import { formatDate, formatTime } from "../../utils/timeUtils";
 
 const Bookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -53,21 +54,6 @@ const Bookings = () => {
       <ExclamationCircleIcon className="w-4 h-4" />
     );
 
-  const formatDate = (d) =>
-    new Intl.DateTimeFormat(undefined, {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }).format(new Date(d));
-
-  const formatTime = (d) =>
-    new Intl.DateTimeFormat(undefined, {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true,
-    }).format(new Date(d));
-
-  /* ------------ render ------------ */
   return (
     <div className="min-h-screen bg-gray-50">
       <UserHeader />

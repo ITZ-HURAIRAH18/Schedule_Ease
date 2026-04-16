@@ -13,6 +13,7 @@ import {
   VideoCameraIcon,
 } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
+import { formatDate, formatTime } from "../../utils/timeUtils";
 
 // Connect to the backend Socket.IO server using the correct backend URL
 const socket = io(getSocketUrl(), {
