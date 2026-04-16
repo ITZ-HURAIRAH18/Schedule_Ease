@@ -1,23 +1,9 @@
-// src/pages/user/Bookings.jsx
 import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import UserHeader from "../../components/UserHeader";
-import MeshBackground from "../../components/MeshBackground";
-import Tilt from "../../components/Tilt";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Calendar,
-  Clock,
-  Video,
-  CheckCircle2,
-  XCircle,
-  AlertCircle,
-  Search,
-  Filter,
-  ArrowRight
-} from "lucide-react";
+import { Calendar, Search, Filter, ArrowRight, Video } from "lucide-react";
 import { formatDate, formatTime } from "../../utils/timeUtils";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Bookings = () => {
   const [bookings, setBookings] = useState([]);
@@ -32,7 +18,6 @@ const Bookings = () => {
         const res = await axiosInstance.get("/user/bookings");
         setBookings(res.data.bookings || []);
       } catch (err) {
-        console.error("❌ Error fetching bookings:", err);
         setError(err.response?.data?.message || "Failed to fetch bookings.");
       } finally {
         setLoading(false);
@@ -41,143 +26,90 @@ const Bookings = () => {
     fetchBookings();
   }, []);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.4 } }
-  };
-
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="min-h-screen pb-20"
-    >
-      <MeshBackground />
+    <div className="min-h-screen bg-[#FAFAF8]">
       <UserHeader />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-32">
+      <div className="max-w-[900px] mx-auto px-6 py-12">
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
-            <motion.h1 
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              className="text-4xl font-black text-gray-900 tracking-tight"
-            >
-              My Bookings
-            </motion.h1>
-            <motion.p 
-              initial={{ y: -20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.1 }}
-              className="text-gray-500 mt-2 text-lg"
-            >
+            <h1 className="text-[28px] font-semibold text-[#1A1A1A]">Booking History</h1>
+            <p className="text-[14px] text-[#4A4A4A] mt-1">
               A history of your scheduled and past meetings.
-            </motion.p>
+            </p>
           </div>
           
           <div className="flex gap-3">
             <div className="relative group">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8A8A]" />
               <input 
                 type="text" 
-                placeholder="Search bookings..." 
-                className="pl-10 pr-4 py-2.5 bg-white/50 backdrop-blur-md border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                placeholder="Search..." 
+                className="pl-9 pr-4 h-[40px] bg-white border border-[#E8E4DF] rounded-[10px] text-[14px] focus:outline-none focus:border-[#C8622A] transition-all w-[200px]"
               />
             </div>
-            <button className="p-2.5 bg-white/50 backdrop-blur-md border border-gray-200 rounded-xl hover:bg-white transition-colors">
-              <Filter className="w-5 h-5 text-gray-600" />
+            <button className="w-[40px] h-[40px] flex items-center justify-center bg-white border border-[#E8E4DF] rounded-[10px] hover:bg-[#F5F3F0] transition-colors">
+              <Filter className="w-4 h-4 text-[#4A4A4A]" />
             </button>
           </div>
         </header>
 
         {loading ? (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {[1, 2, 3, 4, 5, 6].map((n) => <SkeletonCard key={n} />)}
+          <div className="grid md:grid-cols-2 gap-5">
+            {[1, 2, 3, 4].map((n) => <SkeletonCard key={n} />)}
           </div>
         ) : error ? (
-          <ErrorMsg msg={error} />
+          <div className="p-6 bg-[#FEF2F2] border border-[#FEF2F2] rounded-[12px] text-[#B91C1C] text-[14px]">
+            {error}
+          </div>
         ) : bookings.length === 0 ? (
           <EmptyState />
         ) : (
-          <motion.div 
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
-          >
+          <div className="grid md:grid-cols-2 gap-5">
             {bookings.map((b) => (
-              <motion.div key={b._id} variants={itemVariants}>
-                <Tilt>
-                  <BookingCard
-                    booking={b}
-                    formatDate={formatDate}
-                    formatTime={formatTime}
-                    navigate={navigate}
-                  />
-                </Tilt>
-              </motion.div>
+              <BookingCard
+                key={b._id}
+                booking={b}
+                formatDate={formatDate}
+                formatTime={formatTime}
+                navigate={navigate}
+              />
             ))}
-          </motion.div>
+          </div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 };
 
-/* ---------- sub-components ---------- */
-
 const SkeletonCard = () => (
-  <div className="bg-white/40 backdrop-blur-md rounded-2xl p-6 border border-white/40 shadow-sm animate-pulse h-64 flex flex-col justify-between">
-    <div>
-      <div className="flex items-center gap-4 mb-6">
-        <div className="w-12 h-12 rounded-full bg-gray-200" />
-        <div className="flex-1 space-y-2">
-          <div className="h-4 bg-gray-200 rounded w-2/3" />
-          <div className="h-3 bg-gray-200 rounded w-1/3" />
-        </div>
-      </div>
-      <div className="space-y-3">
-        <div className="h-4 bg-gray-200 rounded w-full" />
-        <div className="h-4 bg-gray-200 rounded w-5/6" />
-      </div>
+  <div className="bg-white border border-[#E8E4DF] rounded-[16px] p-6 h-[200px] animate-pulse">
+    <div className="flex justify-between mb-4">
+      <div className="w-12 h-12 rounded-full bg-[#F5F3F0]" />
+      <div className="w-20 h-6 bg-[#F5F3F0] rounded-[6px]" />
     </div>
-    <div className="h-10 bg-gray-200 rounded-full w-full" />
-  </div>
-);
-
-const ErrorMsg = ({ msg }) => (
-  <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 text-rose-700 max-w-xl mx-auto flex items-center gap-4">
-    <div className="w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center shrink-0">
-      <AlertCircle className="w-6 h-6" />
-    </div>
-    <div>
-      <h3 className="font-bold">Error Loading Bookings</h3>
-      <p className="text-sm opacity-90">{msg}</p>
+    <div className="space-y-3">
+      <div className="h-4 bg-[#F5F3F0] rounded w-1/2" />
+      <div className="h-6 bg-[#F5F3F0] rounded w-3/4" />
     </div>
   </div>
 );
 
 const EmptyState = () => (
-  <div className="text-center py-24 bg-white/30 backdrop-blur-md rounded-[2.5rem] border border-dashed border-gray-300">
-    <div className="w-20 h-20 bg-gray-100 rounded-3xl flex items-center justify-center mx-auto mb-6 transform rotate-6 hover:rotate-0 transition-transform duration-500">
-      <Calendar className="h-10 w-10 text-gray-400" />
+  <div className="text-center py-20 bg-white border border-[#E8E4DF] rounded-[16px]">
+    <div className="w-16 h-16 bg-[#F5F3F0] rounded-full flex items-center justify-center mx-auto mb-4">
+      <Calendar className="h-8 w-8 text-[#8A8A8A]" />
     </div>
-    <h3 className="text-2xl font-bold text-gray-900">Your schedule is empty</h3>
-    <p className="mt-2 text-gray-500 max-w-xs mx-auto mb-8">
-      Start booking meetings with our professional hosts to see them here.
+    <h3 className="text-[16px] font-medium text-[#1A1A1A]">Your schedule is empty</h3>
+    <p className="text-[14px] text-[#8A8A8A] mt-1 mb-8">
+      Start booking meetings with our professional hosts.
     </p>
-    <button className="inline-flex items-center gap-2 px-8 py-3 bg-gray-900 text-white rounded-full font-bold hover:bg-indigo-600 transition-all hover:scale-105 shadow-xl">
+    <Link 
+      to="/user/availability"
+      className="inline-flex items-center gap-2 px-8 py-2.5 bg-[#C8622A] text-white text-[14px] font-medium rounded-[10px] hover:bg-[#A84E20] transition-all"
+    >
       Find a Host <ArrowRight className="w-4 h-4" />
-    </button>
+    </Link>
   </div>
 );
 
@@ -185,78 +117,60 @@ const BookingCard = ({ booking, formatDate, formatTime, navigate }) => {
   const { hostId, start, end, status, meetingRoom } = booking;
   const hostName = hostId?.fullName || "Unknown Host";
 
-  const getStatusConfig = (s) => {
+  const getStatusStyle = (s) => {
     switch (s) {
       case "confirmed":
-        return { 
-          icon: CheckCircle2, 
-          color: "text-emerald-600", 
-          bg: "bg-emerald-50", 
-          border: "border-emerald-100",
-          glow: "shadow-[0_0_15px_rgba(16,185,129,0.25)]"
-        };
+        return "bg-[#EDF7F1] text-[#2D7D52]";
       case "cancelled":
-        return { icon: XCircle, color: "text-rose-600", bg: "bg-rose-50", border: "border-rose-100", glow: "" };
+        return "bg-[#FEF2F2] text-[#B91C1C]";
       default:
-        return { icon: AlertCircle, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-100", glow: "" };
+        return "bg-[#FEF3E2] text-[#B45309]";
     }
   };
 
-  const config = getStatusConfig(status);
+  const getInitials = (name) => name.split(' ').map(n => n[0]).join('').toUpperCase();
 
   return (
-    <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-100 border-l-4 border-l-[#7C3AED] p-6 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full relative overflow-hidden group">
-      {/* Header */}
-      <div className="flex items-center gap-4 mb-6">
-        <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center text-indigo-700 font-bold border-2 ${status === 'confirmed' ? 'border-emerald-100' : 'border-gray-50'}`}>
-          {hostName.charAt(0).toUpperCase()}
-        </div>
-        <div className="flex-1">
-          <p className="font-bold text-gray-900 text-lg">{hostName}</p>
-          <div className="flex items-center gap-2">
-            <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${config.bg} ${config.color} ${config.border} ${config.glow}`}>
-              {status}
-            </span>
+    <div className="bg-white border border-[#E8E4DF] rounded-[16px] p-6 transition-all duration-200 hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)] flex flex-col h-full relative group">
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-full bg-[#F5F3F0] flex items-center justify-center text-[#92694A] text-[15px] font-semibold border border-[#E8E4DF]">
+            {getInitials(hostName)}
+          </div>
+          <div>
+            <p className="text-[15px] font-semibold text-[#1A1A1A]">{hostName}</p>
+            <p className="text-[12px] text-[#8A8A8A]">Expert Host</p>
           </div>
         </div>
+        <span className={`px-2.5 py-1 rounded-[6px] text-[11px] font-semibold uppercase tracking-wider ${getStatusStyle(status)}`}>
+          {status}
+        </span>
       </div>
 
-      {/* Body */}
       <div className="space-y-4 mb-6 flex-1">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 group-hover:text-indigo-500 transition-colors">
-            <Calendar className="w-4 h-4" />
-          </div>
-          <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-bold">
-            {formatDate(start)}
-          </span>
+        <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#F5F3F0] rounded-[6px]">
+          <Calendar className="w-3.5 h-3.5 text-[#C8622A]" />
+          <span className="text-[13px] text-[#4A4A4A] font-medium">{formatDate(start)}</span>
         </div>
         
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center text-gray-400 group-hover:text-indigo-500 transition-colors">
-            <Clock className="w-4 h-4" />
-          </div>
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-xl font-black text-gray-800">{formatTime(start)}</span>
-            <span className="text-xs text-gray-400 font-bold tracking-tighter uppercase">{formatTime(start).split(' ')[1]}</span>
-            <span className="mx-1 text-gray-300">/</span>
-            <span className="text-sm font-medium text-gray-500">{formatTime(end)}</span>
-          </div>
+          <span className="text-[20px] font-semibold text-[#1A1A1A]">{formatTime(start)}</span>
+          <span className="text-[#8A8A8A]">→</span>
+          <span className="text-[20px] font-semibold text-[#4A4A4A]">{formatTime(end)}</span>
         </div>
       </div>
 
-      {/* Footer */}
       <div className="mt-auto">
         {status === 'confirmed' && meetingRoom ? (
           <button
             onClick={() => navigate(`/meeting/${meetingRoom}`)}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] text-white font-bold hover:shadow-lg hover:shadow-indigo-200 transition-all hover:scale-[1.02]"
+            className="w-full h-[40px] rounded-[10px] bg-[#C8622A] text-white text-[14px] font-medium flex items-center justify-center gap-2 hover:bg-[#A84E20] transition-colors"
           >
             <Video className="w-4 h-4" />
             Join Room
           </button>
         ) : (
-          <div className="w-full py-3 rounded-xl bg-gray-50 text-gray-400 text-center text-xs font-bold border border-gray-100">
+          <div className="w-full h-[40px] rounded-[10px] bg-[#F5F3F0] text-[#8A8A8A] text-[12px] font-medium flex items-center justify-center border border-[#E8E4DF]">
             {status === 'cancelled' ? "Meeting Cancelled" : "Awaiting Host Access"}
           </div>
         )}

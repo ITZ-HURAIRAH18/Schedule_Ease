@@ -13,39 +13,31 @@ import {
   AlertCircle,
   X,
   Loader2,
-  ChevronRight,
-  Filter
+  ChevronRight
 } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
 import AdminHeader from "../../components/AdminHeader";
-import MeshBackground from "../../components/MeshBackground";
-import Tilt from "../../components/Tilt";
 
 // --- Sub-components ---
 
 const ShimmerRow = () => (
-  <div className="flex items-center gap-4 px-8 py-6 border-b border-white/10 animate-pulse">
-    <div className="w-14 h-14 rounded-2xl bg-gray-200/50" />
-    <div className="flex-1 space-y-3">
-      <div className="h-5 bg-gray-200/50 rounded-lg w-1/4" />
-      <div className="h-4 bg-gray-100/50 rounded-lg w-1/3" />
+  <div className="flex items-center gap-4 px-8 py-5 border-b border-[#E8E4DF] animate-pulse">
+    <div className="w-10 h-10 rounded-full bg-[#F5F3F0]" />
+    <div className="flex-1 space-y-2">
+      <div className="h-4 bg-[#F5F3F0] rounded w-1/4" />
+      <div className="h-3 bg-[#F5F3F0] rounded w-1/3" />
     </div>
-    <div className="w-28 h-8 bg-gray-200/50 rounded-full" />
-    <div className="w-28 h-8 bg-gray-200/50 rounded-full" />
-    <div className="flex gap-3">
-      <div className="w-12 h-12 bg-gray-200/50 rounded-2xl" />
-      <div className="w-12 h-12 bg-gray-200/50 rounded-2xl" />
+    <div className="w-20 h-6 bg-[#F5F3F0] rounded-full" />
+    <div className="w-20 h-6 bg-[#F5F3F0] rounded-full" />
+    <div className="flex gap-2">
+      <div className="w-8 h-8 bg-[#F5F3F0] rounded-lg" />
+      <div className="w-8 h-8 bg-[#F5F3F0] rounded-lg" />
     </div>
   </div>
 );
 
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, confirmText, type = "danger", loading }) => {
   if (!isOpen) return null;
-
-  const themes = {
-    danger: "from-rose-500 to-red-600 shadow-rose-200 text-white",
-    warning: "from-amber-500 to-orange-600 shadow-amber-200 text-white",
-  };
 
   return (
     <AnimatePresence>
@@ -54,43 +46,47 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, confirm
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 bg-black/40 backdrop-blur-md"
+          className="absolute inset-0 bg-black/35"
           onClick={onClose}
         />
         <motion.div
-          initial={{ scale: 0.9, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.9, opacity: 0, y: 20 }}
-          className="relative w-full max-w-md bg-white/80 backdrop-blur-2xl border border-white/50 rounded-[3rem] shadow-[0_20px_70px_rgba(0,0,0,0.3)] overflow-hidden"
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.95, opacity: 0 }}
+          className="relative w-full max-w-md bg-white border border-[#E8E4DF] rounded-2xl shadow-xl overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="p-10">
-            <div className="flex justify-between items-start mb-8">
-              <div className={`p-5 rounded-[1.5rem] bg-gradient-to-br ${type === 'danger' ? 'from-rose-50 to-red-50 text-rose-600' : 'from-amber-50 to-orange-50 text-amber-600'} border border-white shadow-inner`}>
-                <AlertCircle size={32} />
+          <div className="p-8">
+            <div className="flex justify-between items-start mb-6">
+              <div className={`p-3 rounded-xl ${type === 'danger' ? 'bg-[#FEF2F2] text-[#B91C1C]' : 'bg-[#FEF3E2] text-[#B45309]'}`}>
+                <AlertCircle size={24} />
               </div>
-              <button onClick={onClose} className="p-3 hover:bg-gray-100 rounded-2xl transition-colors">
-                <X size={24} className="text-gray-400" />
+              <button onClick={onClose} className="p-2 hover:bg-[#F5F3F0] rounded-lg transition-colors">
+                <X size={20} className="text-[#8A8A8A]" />
               </button>
             </div>
             
-            <h3 className="text-3xl font-black text-gray-900 mb-3 leading-tight tracking-tight">{title}</h3>
-            <p className="text-gray-500 text-lg font-medium leading-relaxed">{message}</p>
+            <h3 className="text-xl font-semibold text-[#1A1A1A] mb-2">{title}</h3>
+            <p className="text-[#4A4A4A] text-[14px] leading-relaxed">{message}</p>
           </div>
           
-          <div className="p-8 bg-gray-50/50 border-t border-gray-100 flex gap-4">
+          <div className="p-6 bg-[#F5F3F0] border-t border-[#E8E4DF] flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 px-6 py-5 rounded-2xl bg-white border border-gray-200 text-gray-600 font-black uppercase tracking-widest text-xs hover:bg-gray-50 transition-all active:scale-95 shadow-sm"
+              className="flex-1 px-4 py-2.5 rounded-lg bg-white border border-[#E8E4DF] text-[#4A4A4A] font-medium text-[13px] hover:bg-[#FAFAF8] transition-all"
             >
               Cancel
             </button>
             <button
               onClick={onConfirm}
               disabled={loading}
-              className={`flex-[1.8] px-6 py-5 rounded-2xl bg-gradient-to-br ${themes[type]} shadow-xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-95 disabled:opacity-70`}
+              className={`flex-[1.5] px-4 py-2.5 rounded-lg font-medium text-[13px] flex items-center justify-center gap-2 transition-all ${
+                type === 'danger' 
+                  ? 'bg-[#B91C1C] text-white hover:bg-[#991B1B]' 
+                  : 'bg-[#C8622A] text-white hover:bg-[#A84E20]'
+              }`}
             >
-              {loading ? <Loader2 className="animate-spin" size={20} /> : confirmText}
+              {loading ? <Loader2 className="animate-spin" size={16} /> : confirmText}
             </button>
           </div>
         </motion.div>
@@ -100,135 +96,83 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, confirm
 };
 
 const RoleBadge = ({ role }) => {
-  const configs = {
-    admin: { icon: Crown, bg: "bg-purple-100/50", text: "text-purple-600", border: "border-purple-200", label: "Admin" },
-    host: { icon: Shield, bg: "bg-blue-100/50", text: "text-blue-600", border: "border-blue-200", label: "Host" },
-    user: { icon: User, bg: "bg-gray-100/50", text: "text-gray-600", border: "border-gray-200", label: "User" },
+  const getStyle = (role) => {
+    switch (role?.toLowerCase()) {
+      case "admin": return "bg-[#1A1A1A] text-white";
+      case "host": return "bg-[#F5F3F0] text-[#92694A]";
+      case "user": return "bg-[#FDF0EA] text-[#C8622A]";
+      default: return "bg-[#F5F3F0] text-[#4A4A4A]";
+    }
   };
-  const config = configs[role] || configs.user;
-  const Icon = config.icon;
 
   return (
-    <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] border shadow-sm ${config.bg} ${config.text} ${config.border}`}>
-      <Icon size={12} strokeWidth={3} />
-      {config.label}
+    <span className={`inline-flex items-center px-2.5 py-1 rounded-[6px] text-[11px] font-medium uppercase tracking-wider ${getStyle(role)}`}>
+      {role || "user"}
     </span>
   );
 };
 
 const StatusBadge = ({ suspended }) => (
-  <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] border shadow-sm ${
+  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-[11px] font-medium uppercase tracking-wider border ${
     suspended 
-      ? "bg-rose-100/50 text-rose-600 border-rose-200" 
-      : "bg-emerald-100/50 text-emerald-600 border-emerald-200"
+      ? "bg-[#FEF2F2] text-[#B91C1C] border-[#FCCACA]" 
+      : "bg-[#EDF7F1] text-[#2D7D52] border-[#C6F6D5]"
   }`}>
-    <div className={`w-2 h-2 rounded-full ${suspended ? "bg-rose-500 animate-pulse" : "bg-emerald-500"}`} />
+    <div className={`w-1.5 h-1.5 rounded-full ${suspended ? "bg-[#B91C1C]" : "bg-[#2D7D52]"}`} />
     {suspended ? "Suspended" : "Active"}
   </span>
 );
 
-const ActionButton = ({ onClick, icon: Icon, color, tooltip }) => {
-  const themes = {
-    amber: "bg-amber-50 text-amber-600 hover:bg-amber-600 border-amber-100 shadow-amber-100",
-    emerald: "bg-emerald-50 text-emerald-600 hover:bg-emerald-600 border-emerald-100 shadow-emerald-100",
-    rose: "bg-rose-50 text-rose-600 hover:bg-rose-600 border-rose-100 shadow-rose-100",
-  };
-
-  return (
-    <div className="relative group/btn">
-      <button
-        onClick={onClick}
-        className={`p-4 rounded-2xl border transition-all duration-300 hover:text-white hover:shadow-xl active:scale-90 ${themes[color]}`}
-      >
-        <Icon size={20} strokeWidth={2.5} />
-      </button>
-      
-      {/* Tooltip */}
-      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 px-4 py-2 bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest rounded-xl opacity-0 group-hover/btn:opacity-100 pointer-events-none transition-all duration-300 translate-y-2 group-hover/btn:translate-y-0 z-20 whitespace-nowrap shadow-xl">
-        {tooltip}
-        <div className="absolute top-full left-1/2 -translate-x-1/2 border-[6px] border-transparent border-t-gray-900" />
-      </div>
-    </div>
-  );
-};
-
-const EmptyState = ({ searchTerm }) => (
-  <motion.div
-    initial={{ opacity: 0, scale: 0.9 }}
-    animate={{ opacity: 1, scale: 1 }}
-    className="py-32 flex flex-col items-center justify-center text-center"
-  >
-    <div className="relative mb-8">
-      <div className="absolute inset-0 bg-indigo-200 blur-3xl rounded-full opacity-30 animate-pulse" />
-      <div className="relative w-28 h-28 rounded-[2.5rem] bg-gradient-to-br from-white to-gray-50 border border-white shadow-2xl flex items-center justify-center text-indigo-500">
-        <Users size={48} strokeWidth={1.5} />
-      </div>
-    </div>
-    <h3 className="text-3xl font-black text-gray-900 mb-3 tracking-tight">No users found</h3>
-    <p className="text-gray-500 text-lg font-medium max-w-sm leading-relaxed">
-      {searchTerm 
-        ? `We couldn't find any results for "${searchTerm}". Try a different search term.` 
-        : "There are currently no users matching your filter criteria."}
-    </p>
-  </motion.div>
-);
-
 const UserRow = ({ user, index, onSuspend, onUnsuspend, onDelete }) => (
   <motion.tr
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5, delay: index * 0.05 }}
-    className="group hover:bg-white/70 transition-all duration-500"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.3, delay: index * 0.03 }}
+    className="group hover:bg-[#FAFAF8] transition-colors"
   >
-    <td className="px-8 py-6">
-      <div className="flex items-center gap-5">
-        <div className="relative">
-          <div className="w-16 h-16 rounded-[1.5rem] bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center text-2xl font-black shadow-lg shadow-indigo-200 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]">
-            {(user.fullName || "U").charAt(0).toUpperCase()}
-          </div>
-          {!user.suspended && (
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 border-4 border-white rounded-full shadow-sm" />
-          )}
+    <td className="px-8 py-4">
+      <div className="flex items-center gap-3">
+        <div className="w-9 h-9 rounded-full bg-[#F5F3F0] text-[#92694A] flex items-center justify-center text-sm font-semibold">
+          {(user.fullName || "U").charAt(0).toUpperCase()}
         </div>
-        <div className="flex flex-col">
-          <span className="text-lg font-black text-gray-900 group-hover:text-indigo-600 transition-colors duration-300 leading-tight">
-            {user.fullName}
-          </span>
-          <span className="text-sm font-bold text-gray-400 mt-0.5">
-            {user.email}
-          </span>
+        <div>
+          <p className="text-[14px] font-medium text-[#1A1A1A]">{user.fullName}</p>
+          <p className="text-[12px] text-[#8A8A8A]">{user.email}</p>
         </div>
       </div>
     </td>
-    <td className="px-8 py-6">
+    <td className="px-8 py-4">
       <RoleBadge role={user.role} />
     </td>
-    <td className="px-8 py-6">
+    <td className="px-8 py-4">
       <StatusBadge suspended={user.suspended} />
     </td>
-    <td className="px-8 py-6">
-      <div className="flex items-center justify-center gap-3 opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500 ease-out">
+    <td className="px-8 py-4">
+      <div className="flex items-center justify-end gap-2">
         {!user.suspended ? (
-          <ActionButton
+          <button
             onClick={onSuspend}
-            icon={UserX}
-            color="amber"
-            tooltip="Suspend User"
-          />
+            className="p-2 rounded-md bg-[#FEF3E2] text-[#B45309] hover:bg-[#FDDCAA] transition-colors"
+            title="Suspend User"
+          >
+            <UserX size={16} />
+          </button>
         ) : (
-          <ActionButton
+          <button
             onClick={onUnsuspend}
-            icon={UserCheck}
-            color="emerald"
-            tooltip="Unsuspend User"
-          />
+            className="p-2 rounded-md bg-[#EDF7F1] text-[#2D7D52] hover:bg-[#C6F6D5] transition-colors"
+            title="Unsuspend User"
+          >
+            <UserCheck size={16} />
+          </button>
         )}
-        <ActionButton
+        <button
           onClick={onDelete}
-          icon={Trash2}
-          color="rose"
-          tooltip="Delete User"
-        />
+          className="p-2 rounded-md bg-[#FEF2F2] text-[#B91C1C] hover:bg-[#FCCACA] transition-colors"
+          title="Delete User"
+        >
+          <Trash2 size={16} />
+        </button>
       </div>
     </td>
   </motion.tr>
@@ -294,156 +238,125 @@ const AdminUsers = () => {
   };
 
   const roles = [
-    { id: "all", label: "All Users", icon: Users },
-    { id: "admin", label: "Admins", icon: Crown },
-    { id: "host", label: "Hosts", icon: Shield },
-    { id: "user", label: "Clients", icon: User }
+    { id: "all", label: "All Users" },
+    { id: "admin", label: "Admins" },
+    { id: "host", label: "Hosts" },
+    { id: "user", label: "Clients" }
   ];
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] selection:bg-indigo-100 selection:text-indigo-700">
-      <MeshBackground />
+    <div className="min-h-screen bg-[#FAFAF8] font-['Inter'] selection:bg-[#FDF0EA] selection:text-[#C8622A]">
       <AdminHeader />
 
       <motion.main 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="pt-32 pb-24 px-4 sm:px-6 lg:px-8 relative z-10"
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35 }}
+        className="pt-24 pb-12 px-4 sm:px-6 lg:px-8"
       >
         <div className="max-w-7xl mx-auto">
-          {/* Header & Controls Section */}
-          <div className="mb-16 space-y-10">
-            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-              >
-                <div className="flex items-center gap-4 mb-5">
-                  <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-2xl shadow-indigo-200">
-                    <Users size={28} strokeWidth={2.5} />
-                  </div>
-                  <h2 className="text-xs font-black uppercase tracking-[0.25em] text-indigo-600">Administrative Control</h2>
-                </div>
-                <h1 className="text-5xl sm:text-6xl font-black text-gray-900 tracking-tight leading-[1.1] mb-6">
-                  Manage <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600">Platform Users</span>
-                </h1>
-                <p className="text-xl text-gray-500 font-medium max-w-2xl leading-relaxed">
-                  Oversee your entire community. Modify roles, audit status, and manage access permissions with precision.
-                </p>
-              </motion.div>
+          {/* Header & Controls */}
+          <div className="mb-8">
+            <h1 className="text-[28px] font-semibold text-[#1A1A1A] tracking-tight mb-6">
+              Manage Platform Users
+            </h1>
+            
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              {/* Filter Tabs */}
+              <div className="flex items-center gap-6 border-b border-[#E8E4DF]">
+                {roles.map((role) => (
+                  <button
+                    key={role.id}
+                    onClick={() => setFilteredRole(role.id)}
+                    className={`pb-3 text-[14px] font-medium transition-all relative ${
+                      filteredRole === role.id
+                        ? "text-[#C8622A]"
+                        : "text-[#8A8A8A] hover:text-[#4A4A4A]"
+                    }`}
+                  >
+                    {role.label}
+                    {filteredRole === role.id && (
+                      <motion.div
+                        layoutId="activeTab"
+                        className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#C8622A]"
+                      />
+                    )}
+                  </button>
+                ))}
+              </div>
 
-              {/* Role Segmented Control */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="flex flex-col gap-4"
-              >
-                <div className="flex items-center gap-2 text-gray-400 mb-1 ml-1">
-                  <Filter size={14} />
-                  <span className="text-[10px] font-black uppercase tracking-widest">Filter by role</span>
-                </div>
-                <div className="p-2 bg-white/60 backdrop-blur-2xl border border-white rounded-[2rem] flex gap-1 shadow-xl shadow-gray-200/50 overflow-x-auto no-scrollbar">
-                  {roles.map((role) => (
-                    <button
-                      key={role.id}
-                      onClick={() => setFilteredRole(role.id)}
-                      className={`px-8 py-3.5 rounded-2xl text-xs font-black uppercase tracking-widest flex items-center gap-2.5 transition-all duration-500 whitespace-nowrap ${
-                        filteredRole === role.id
-                          ? "bg-indigo-600 text-white shadow-lg shadow-indigo-200 scale-105"
-                          : "text-gray-500 hover:bg-white hover:text-gray-900"
-                      }`}
-                    >
-                      <role.icon size={14} strokeWidth={2.5} />
-                      {role.label}
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Full-width Search Bar */}
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              className="relative group w-full"
-            >
-              <div className="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-violet-500 to-purple-500 rounded-[2.5rem] blur-2xl opacity-0 group-focus-within:opacity-25 transition duration-1000" />
-              <div className="relative">
-                <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-7 h-7 text-gray-400 group-focus-within:text-indigo-600 group-focus-within:scale-110 transition-all duration-500" />
+              {/* Search */}
+              <div className="relative w-full md:w-80">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8A8A]" />
                 <input
                   type="text"
-                  placeholder="Search by name, email, or role..."
+                  placeholder="Search users..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-20 pr-10 py-8 rounded-[2.5rem] border border-white bg-white/70 backdrop-blur-2xl text-2xl font-bold text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.08)] transition-all duration-500"
+                  className="w-full pl-9 pr-4 py-2 bg-white border border-[#E8E4DF] rounded-lg text-[14px] placeholder:text-[#B0B0B0] focus:outline-none focus:border-[#C8622A] transition-colors"
                 />
               </div>
-            </motion.div>
+            </div>
           </div>
 
-          {/* Table Container with Tilt */}
-          <Tilt className="w-full" maxTilt={3}>
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="bg-white/40 backdrop-blur-3xl rounded-[4rem] border border-white/80 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.12)] overflow-hidden"
-            >
-              <div className="overflow-x-auto no-scrollbar">
-                <table className="w-full text-left border-collapse min-w-[900px]">
-                  <thead>
-                    <tr className="border-b border-gray-100/50">
-                      <th className="px-10 py-8 text-[11px] font-black uppercase tracking-[0.3em] text-gray-400">User Identity</th>
-                      <th className="px-10 py-8 text-[11px] font-black uppercase tracking-[0.3em] text-gray-400">Security Role</th>
-                      <th className="px-10 py-8 text-[11px] font-black uppercase tracking-[0.3em] text-gray-400">Access Status</th>
-                      <th className="px-10 py-8 text-[11px] font-black uppercase tracking-[0.3em] text-gray-400 text-center">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-50/50">
-                    <AnimatePresence mode="popLayout">
-                      {loading ? (
-                        [...Array(6)].map((_, i) => (
-                          <motion.tr key={`shimmer-${i}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                            <td colSpan={4}><ShimmerRow /></td>
-                          </motion.tr>
-                        ))
-                      ) : filteredUsers.length === 0 ? (
-                        <motion.tr key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-                          <td colSpan={4}><EmptyState searchTerm={searchTerm} /></td>
-                        </motion.tr>
-                      ) : (
-                        filteredUsers.map((user, index) => (
-                          <UserRow 
-                            key={user._id} 
-                            user={user} 
-                            index={index}
-                            onSuspend={() => openModal("suspend", user._id)}
-                            onUnsuspend={() => openModal("unsuspend", user._id)}
-                            onDelete={() => openModal("delete", user._id)}
-                          />
-                        ))
-                      )}
-                    </AnimatePresence>
-                  </tbody>
-                </table>
-              </div>
-              
-              {/* Table Footer */}
-              {!loading && filteredUsers.length > 0 && (
-                <div className="px-10 py-6 bg-gray-50/30 border-t border-gray-100/50 flex items-center justify-between">
-                  <p className="text-sm font-bold text-gray-400">
-                    Showing <span className="text-gray-900">{filteredUsers.length}</span> users
-                  </p>
-                  <div className="flex items-center gap-2 text-indigo-600 font-black text-xs uppercase tracking-widest cursor-pointer hover:gap-3 transition-all">
-                    View Audit Logs <ChevronRight size={16} />
-                  </div>
+          {/* Table Container */}
+          <div className="bg-white rounded-2xl border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06)] overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-[#F5F3F0]">
+                    <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.06em] text-[#8A8A8A]">User Identity</th>
+                    <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.06em] text-[#8A8A8A]">Security Role</th>
+                    <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.06em] text-[#8A8A8A]">Access Status</th>
+                    <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.06em] text-[#8A8A8A] text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E8E4DF]">
+                  <AnimatePresence mode="popLayout">
+                    {loading ? (
+                      [...Array(6)].map((_, i) => (
+                        <tr key={`shimmer-${i}`}>
+                          <td colSpan={4}><ShimmerRow /></td>
+                        </tr>
+                      ))
+                    ) : filteredUsers.length === 0 ? (
+                      <tr key="empty">
+                        <td colSpan={4} className="py-20 text-center">
+                          <div className="flex flex-col items-center gap-2">
+                            <Users size={40} className="text-[#E8E4DF]" />
+                            <p className="text-[#8A8A8A] font-medium">No users found</p>
+                          </div>
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredUsers.map((user, index) => (
+                        <UserRow 
+                          key={user._id} 
+                          user={user} 
+                          index={index}
+                          onSuspend={() => openModal("suspend", user._id)}
+                          onUnsuspend={() => openModal("unsuspend", user._id)}
+                          onDelete={() => openModal("delete", user._id)}
+                        />
+                      ))
+                    )}
+                  </AnimatePresence>
+                </tbody>
+              </table>
+            </div>
+            
+            {/* Table Footer */}
+            {!loading && filteredUsers.length > 0 && (
+              <div className="px-8 py-4 bg-[#FAFAF8] border-t border-[#E8E4DF] flex items-center justify-between">
+                <p className="text-[12px] font-medium text-[#8A8A8A]">
+                  Showing <span className="text-[#1A1A1A]">{filteredUsers.length}</span> users
+                </p>
+                <div className="flex items-center gap-1.5 text-[12px] font-medium text-[#C8622A] cursor-pointer hover:gap-2 transition-all">
+                  View Audit Logs <ChevronRight size={14} />
                 </div>
-              )}
-            </motion.div>
-          </Tilt>
+              </div>
+            )}
+          </div>
         </div>
       </motion.main>
 

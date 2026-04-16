@@ -1,22 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-.glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+:root {
+  --page-bg: #FAFAF8;
+  --surface: #FFFFFF;
+  --surface-2: #F5F3F0;
+  --border: #E8E4DF;
+  --border-strong: #D4CEC8;
+  --accent: #C8622A;
+  --accent-dark: #A84E20;
+  --accent-light: #FDF0EA;
+  --brown: #92694A;
+  --brown-light: #F7F0EA;
+  --text-primary: #1A1A1A;
+  --text-secondary: #4A4A4A;
+  --text-muted: #8A8A8A;
+  --success: #2D7D52;
+  --success-bg: #EDF7F1;
+  --warning: #B45309;
+  --warning-bg: #FEF3E2;
+  --danger: #B91C1C;
+  --danger-bg: #FEF2F2;
 }
-.glass-dark {
-  background: rgba(15, 23, 42, 0.7);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+
+body {
+  background-color: var(--page-bg);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
-@keyframes slowDrift {
-  0% { transform: translate(0, 0); }
-  50% { transform: translate(10px, 10px); }
-  100% { transform: translate(0, 0); }
+
+/* Animations */
+.page-enter {
+  animation: pageEnter 350ms ease forwards;
 }
-.animate-backgroundOrbs {
-  animation: slowDrift 20s infinite;
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hover-card {
+  transition: transform 200ms ease, box-shadow 200ms ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+}
+
+.hover-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10), 0 8px 24px rgba(0,0,0,0.06);
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  color: white;
+  transition: background-color 150ms ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-dark);
 }

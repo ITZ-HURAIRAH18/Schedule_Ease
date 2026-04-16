@@ -1,34 +1,27 @@
 // src/pages/host/AddAvailability.jsx
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState } from "react";
 import { 
-  Calendar, 
-  Clock, 
   Plus, 
   Trash2, 
   Globe, 
-  CheckCircle2, 
-  CalendarDays,
-  Settings2,
-  AlertCircle
+  Minus,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import axiosInstance from "../../api/axiosInstance";
 import HostHeader from "../../components/HostHeader";
-import MeshBackground from "../../components/MeshBackground";
 
 const daysOfWeek = [
-  { full: "Monday", short: "Mon" },
-  { full: "Tuesday", short: "Tue" },
-  { full: "Wednesday", short: "Wed" },
-  { full: "Thursday", short: "Thu" },
-  { full: "Friday", short: "Fri" },
-  { full: "Saturday", short: "Sat" },
-  { full: "Sunday", short: "Sun" },
+  { full: "monday", short: "Mon" },
+  { full: "tuesday", short: "Tue" },
+  { full: "wednesday", short: "Wed" },
+  { full: "thursday", short: "Thu" },
+  { full: "friday", short: "Fri" },
+  { full: "saturday", short: "Sat" },
+  { full: "sunday", short: "Sun" },
 ];
 
 const AddAvailability = () => {
-  const [weekly, setWeekly] = useState([{ day: "", start: "09:00", end: "17:00" }]);
+  const [weekly, setWeekly] = useState([{ day: "monday", start: "09:00", end: "17:00" }]);
   const [bufferBefore, setBufferBefore] = useState(15);
   const [bufferAfter, setBufferAfter] = useState(15);
   const [durations, setDurations] = useState(30);
@@ -36,12 +29,8 @@ const AddAvailability = () => {
   const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
   const [blockedDates, setBlockedDates] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
 
-  // Load existing data if any (optional enhancement, but keeping logic for now)
-  // The original didn't have a useEffect to fetch, so we stay consistent.
-
-  const addDay = () => setWeekly([...weekly, { day: "", start: "09:00", end: "17:00" }]);
+  const addDay = () => setWeekly([...weekly, { day: "monday", start: "09:00", end: "17:00" }]);
   const updateDay = (i, f, v) => setWeekly((w) => w.map((s, idx) => (idx === i ? { ...s, [f]: v } : s)));
   const removeDay = (i) => setWeekly((w) => w.filter((_, idx) => idx !== i));
 
@@ -73,362 +62,179 @@ const AddAvailability = () => {
       };
 
       await axiosInstance.post("/host/availability/add", payload);
-      setIsSuccess(true);
       toast.success("Availability saved successfully!");
-      
-      setTimeout(() => {
-        setIsSuccess(false);
-        setIsSaving(false);
-      }, 3000);
+      setIsSaving(false);
     } catch (err) {
       toast.error(err?.response?.data?.message || "Save failed");
       setIsSaving(false);
     }
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, x: -10 },
-    visible: { opacity: 1, x: 0 }
-  };
+  const Stepper = ({ label, value, onChange, min = 0, max = 120, step = 5 }) => (
+    <div className="flex flex-col gap-2">
+      <label className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#92694A]">{label}</label>
+      <div className="flex items-center">
+        <button 
+          onClick={() => onChange(Math.max(min, value - step))}
+          className="w-11 h-11 flex items-center justify-center border border-[#E8E4DF] border-r-0 rounded-l-lg bg-[#F5F3F0] hover:bg-[#E8E4DF] transition-colors"
+        >
+          <Minus className="w-4 h-4 text-[#4A4A4A]" />
+        </button>
+        <div className="flex-1 h-11 border border-[#E8E4DF] flex items-center justify-center bg-white text-[14px] font-medium text-[#1A1A1A]">
+          {value} min
+        </div>
+        <button 
+          onClick={() => onChange(Math.min(max, value + step))}
+          className="w-11 h-11 flex items-center justify-center border border-[#E8E4DF] border-l-0 rounded-r-lg bg-[#F5F3F0] hover:bg-[#E8E4DF] transition-colors"
+        >
+          <Plus className="w-4 h-4 text-[#4A4A4A]" />
+        </button>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="relative min-h-screen font-sans text-slate-900">
-      <Toaster position="top-right" />
+    <div className="min-h-screen bg-[#FAFAF8] page-enter">
+      <Toaster position="bottom-right" />
       <HostHeader />
-      <MeshBackground />
 
-      <main className="max-w-5xl mx-auto px-4 py-12">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-          className="relative"
-        >
-          {/* Header Section */}
-          <div className="text-center mb-10">
-            <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-violet-600/10 text-violet-600 mb-4"
-            >
-              <CalendarDays className="w-8 h-8" />
-            </motion.div>
-            <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-              Add Your Availability
-            </h1>
-            <p className="mt-3 text-lg text-slate-600 max-w-2xl mx-auto">
-              Define when you're reachable. We'll handle the timezones and buffers for you.
-            </p>
-          </div>
+      <main className="max-w-[640px] mx-auto px-6 py-12">
+        <header className="mb-10 text-center">
+          <h1 className="text-[28px] font-semibold text-[#1A1A1A]">Add Availability</h1>
+          <p className="text-[14px] text-[#8A8A8A] mt-2">Define your working hours and preferences.</p>
+        </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Main Form Area */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Weekly Schedule Card */}
-              <motion.section 
-                variants={itemVariants}
-                className="bg-white/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-slate-200/50 rounded-3xl p-6 sm:p-8"
-              >
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-violet-100 rounded-lg text-violet-600">
-                      <Clock className="w-5 h-5" />
-                    </div>
-                    <h2 className="text-xl font-bold">Weekly Schedule</h2>
-                  </div>
-                </div>
-
-                <div className="space-y-6">
-                  <AnimatePresence mode="popLayout">
-                    {weekly.map((slot, i) => (
-                      <motion.div
-                        key={i}
-                        layout
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="group relative p-6 rounded-2xl bg-slate-50/50 border border-slate-200 hover:border-violet-200 hover:bg-white transition-all duration-300"
-                      >
-                        <button
-                          onClick={() => removeDay(i)}
-                          className="absolute -top-3 -right-3 p-2 bg-white border border-slate-200 rounded-full text-slate-400 hover:text-rose-500 hover:border-rose-200 shadow-sm transition-colors opacity-0 group-hover:opacity-100"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-
-                        <div className="space-y-6">
-                          {/* Day Pills Grid */}
-                          <div className="flex flex-wrap gap-2">
-                            {daysOfWeek.map((day) => (
-                              <button
-                                key={day.full}
-                                type="button"
-                                onClick={() => updateDay(i, "day", day.full)}
-                                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
-                                  slot.day === day.full
-                                    ? "bg-violet-600 text-white shadow-lg shadow-violet-200 ring-2 ring-violet-600 ring-offset-2"
-                                    : "bg-white text-slate-600 border border-slate-200 hover:border-violet-300 hover:bg-violet-50"
-                                }`}
-                              >
-                                {day.short}
-                              </button>
-                            ))}
-                          </div>
-
-                          {/* Time Inputs */}
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="relative">
-                              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1 ml-1">Start Time</label>
-                              <div className="relative">
-                                <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                  type="time"
-                                  value={slot.start}
-                                  onChange={(e) => updateDay(i, "start", e.target.value)}
-                                  className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all font-medium"
-                                />
-                              </div>
-                            </div>
-                            <div className="relative">
-                              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1 ml-1">End Time</label>
-                              <div className="relative">
-                                <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                  type="time"
-                                  value={slot.end}
-                                  onChange={(e) => updateDay(i, "end", e.target.value)}
-                                  className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all font-medium"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={addDay}
-                    className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-500 font-semibold hover:border-violet-300 hover:text-violet-600 hover:bg-violet-50/50 transition-all flex items-center justify-center gap-2"
-                  >
-                    <Plus className="w-5 h-5" />
-                    Add Another Slot
-                  </motion.button>
-                </div>
-              </motion.section>
-
-              {/* Blocked Dates Card */}
-              <motion.section 
-                variants={itemVariants}
-                className="bg-white/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-slate-200/50 rounded-3xl p-6 sm:p-8"
-              >
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-rose-100 rounded-lg text-rose-600">
-                    <Calendar className="w-5 h-5" />
-                  </div>
-                  <h2 className="text-xl font-bold">Blocked Dates</h2>
-                </div>
-
-                <div className="space-y-3">
-                  <AnimatePresence mode="popLayout">
-                    {blockedDates.map((date, i) => (
-                      <motion.div
-                        key={i}
-                        layout
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 20 }}
-                        className="flex items-center gap-3"
-                      >
-                        <div className="relative flex-1">
-                          <input
-                            type="date"
-                            value={date}
-                            onChange={(e) => updateBlock(i, e.target.value)}
-                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all font-medium"
-                          />
-                        </div>
-                        <button
-                          onClick={() => removeBlock(i)}
-                          className="p-3 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition-colors"
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </button>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-
+        <div className="bg-white border border-[#E8E4DF] rounded-[16px] p-8 shadow-sm space-y-10">
+          {/* Weekly Schedule */}
+          <section>
+            <span className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#92694A] block mb-6">
+              Weekly Schedule
+            </span>
+            <div className="space-y-6">
+              {weekly.map((slot, i) => (
+                <div key={i} className="p-6 bg-[#F5F3F0]/50 border border-[#E8E4DF] rounded-[12px] relative group">
                   <button
-                    onClick={addBlocked}
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-rose-600 hover:text-rose-700 transition-colors"
+                    onClick={() => removeDay(i)}
+                    className="absolute -top-2 -right-2 w-8 h-8 bg-white border border-[#E8E4DF] rounded-full flex items-center justify-center text-[#B91C1C] hover:bg-[#FEF2F2] transition-colors shadow-sm"
                   >
-                    <Plus className="w-4 h-4" /> Add Blocked Date
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+
+                  <div className="space-y-6">
+                    {/* Day Selector */}
+                    <div className="flex flex-wrap gap-2">
+                      {daysOfWeek.map((day) => (
+                        <button
+                          key={day.full}
+                          onClick={() => updateDay(i, "day", day.full)}
+                          className={`h-9 px-4 rounded-full text-[13px] font-medium transition-all ${
+                            slot.day === day.full
+                              ? "bg-[#C8622A] text-white"
+                              : "bg-[#F5F3F0] text-[#4A4A4A] hover:bg-[#E8E4DF]"
+                          }`}
+                        >
+                          {day.short}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Time Inputs */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[11px] font-semibold text-[#8A8A8A] uppercase tracking-wider">Start Time</label>
+                        <input
+                          type="time"
+                          value={slot.start}
+                          onChange={(e) => updateDay(i, "start", e.target.value)}
+                          className="h-11 px-4 border border-[#E8E4DF] rounded-lg text-[14px] focus:outline-none focus:border-[#C8622A]"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[11px] font-semibold text-[#8A8A8A] uppercase tracking-wider">End Time</label>
+                        <input
+                          type="time"
+                          value={slot.end}
+                          onChange={(e) => updateDay(i, "end", e.target.value)}
+                          className="h-11 px-4 border border-[#E8E4DF] rounded-lg text-[14px] focus:outline-none focus:border-[#C8622A]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <button
+                onClick={addDay}
+                className="flex items-center gap-2 text-[#C8622A] text-[14px] font-medium hover:text-[#A84E20] transition-colors"
+              >
+                <Plus className="w-4 h-4" /> Add Day
+              </button>
+            </div>
+          </section>
+
+          {/* Preferences */}
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Stepper label="Buffer Before" value={bufferBefore} onChange={setBufferBefore} />
+            <Stepper label="Buffer After" value={bufferAfter} onChange={setBufferAfter} />
+            <Stepper label="Duration" value={durations} onChange={setDurations} min={15} max={180} />
+            <Stepper label="Daily Limit" value={maxPerDay} onChange={setMaxPerDay} min={1} max={50} step={1} />
+          </section>
+
+          {/* Timezone */}
+          <section className="pt-6 border-t border-[#E8E4DF]">
+            <label className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#92694A] block mb-2">Timezone</label>
+            <div className="relative">
+              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8A8A]" />
+              <input
+                type="text"
+                value={timezone}
+                onChange={(e) => setTimezone(e.target.value)}
+                className="w-full h-11 pl-10 pr-4 bg-[#F5F3F0] border border-transparent rounded-lg text-[14px] focus:bg-white focus:border-[#C8622A] outline-none transition-all"
+              />
+            </div>
+          </section>
+
+          {/* Blocked Dates */}
+          <section className="pt-6 border-t border-[#E8E4DF]">
+            <span className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#92694A] block mb-4">
+              Blocked Dates
+            </span>
+            <div className="space-y-3">
+              {blockedDates.map((date, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <input
+                    type="date"
+                    value={date}
+                    onChange={(e) => updateBlock(i, e.target.value)}
+                    className="flex-1 h-11 px-4 border border-[#E8E4DF] rounded-lg text-[14px] focus:outline-none focus:border-[#C8622A]"
+                  />
+                  <button
+                    onClick={() => removeBlock(i)}
+                    className="w-11 h-11 flex items-center justify-center bg-[#FEF2F2] text-[#B91C1C] rounded-lg hover:bg-[#FEE2E2] transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
-              </motion.section>
-            </div>
-
-            {/* Sidebar Settings */}
-            <div className="space-y-6">
-              <motion.section 
-                variants={itemVariants}
-                className="bg-white/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-slate-200/50 rounded-3xl p-6 sm:p-8"
+              ))}
+              <button
+                onClick={addBlocked}
+                className="flex items-center gap-2 text-[#C8622A] text-[13px] font-medium mt-2"
               >
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
-                    <Settings2 className="w-5 h-5" />
-                  </div>
-                  <h2 className="text-xl font-bold">Preferences</h2>
-                </div>
-
-                <div className="space-y-8">
-                  {/* Slider: Buffer Before */}
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <label className="text-sm font-bold text-slate-700">Buffer Before</label>
-                      <span className="text-sm font-mono font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded">
-                        {bufferBefore}m
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="60"
-                      step="5"
-                      value={bufferBefore}
-                      onChange={(e) => setBufferBefore(Number(e.target.value))}
-                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
-                    />
-                  </div>
-
-                  {/* Slider: Buffer After */}
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <label className="text-sm font-bold text-slate-700">Buffer After</label>
-                      <span className="text-sm font-mono font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded">
-                        {bufferAfter}m
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min="0"
-                      max="60"
-                      step="5"
-                      value={bufferAfter}
-                      onChange={(e) => setBufferAfter(Number(e.target.value))}
-                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
-                    />
-                  </div>
-
-                  {/* Slider: Duration */}
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <label className="text-sm font-bold text-slate-700">Meeting Duration</label>
-                      <span className="text-sm font-mono font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded">
-                        {durations}m
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min="15"
-                      max="120"
-                      step="15"
-                      value={durations}
-                      onChange={(e) => setDurations(Number(e.target.value))}
-                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
-                    />
-                  </div>
-
-                  {/* Slider: Max Bookings */}
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <label className="text-sm font-bold text-slate-700">Daily Limit</label>
-                      <span className="text-sm font-mono font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded">
-                        {maxPerDay}
-                      </span>
-                    </div>
-                    <input
-                      type="range"
-                      min="1"
-                      max="20"
-                      step="1"
-                      value={maxPerDay}
-                      onChange={(e) => setMaxPerDay(Number(e.target.value))}
-                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
-                    />
-                  </div>
-
-                  <div className="pt-4 border-t border-slate-100">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Timezone</label>
-                    <div className="relative">
-                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                      <input
-                        type="text"
-                        value={timezone}
-                        onChange={(e) => setTimezone(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </motion.section>
-
-              {/* Submit Button */}
-              <motion.button
-                variants={itemVariants}
-                whileHover={{ scale: 1.02, translateY: -2 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={save}
-                disabled={isSaving}
-                className={`w-full py-5 rounded-3xl font-bold text-lg shadow-xl transition-all duration-300 flex items-center justify-center gap-3 ${
-                  isSuccess 
-                    ? "bg-emerald-500 text-white shadow-emerald-200" 
-                    : "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-violet-200 hover:shadow-2xl hover:shadow-violet-300"
-                }`}
-              >
-                {isSaving ? (
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  >
-                    <Settings2 className="w-6 h-6" />
-                  </motion.div>
-                ) : isSuccess ? (
-                  <>
-                    <CheckCircle2 className="w-6 h-6" />
-                    Saved!
-                  </>
-                ) : (
-                  <>
-                    Save Availability
-                  </>
-                )}
-              </motion.button>
-
-              <p className="text-center text-xs text-slate-400 px-4">
-                Changes will take effect immediately for all future bookings.
-              </p>
+                <Plus className="w-4 h-4" /> Add Blocked Date
+              </button>
             </div>
-          </div>
-        </motion.div>
+          </section>
+
+          {/* Save Button */}
+          <button
+            onClick={save}
+            disabled={isSaving}
+            className="w-full h-[48px] bg-[#1A1A1A] hover:bg-black text-white font-medium text-[16px] rounded-[10px] transition-all flex items-center justify-center disabled:opacity-50"
+          >
+            {isSaving ? "Saving..." : "Save Availability"}
+          </button>
+        </div>
       </main>
-      
-      {/* Visual background details */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-600 via-indigo-600 to-fuchsia-600 z-50" />
     </div>
   );
 };

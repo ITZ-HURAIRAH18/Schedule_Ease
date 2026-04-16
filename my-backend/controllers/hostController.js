@@ -117,10 +117,6 @@ export const getHostBookings = async (req, res) => {
     // ✅ Find all bookings for this host and populate both user & availability info
     const bookings = await Booking.find({ hostId })
       .populate({
-        path: "guest", // populate user who created the booking
-        select: "name email",
-      })
-      .populate({
         path: "createdByUserId", // populate user who created the booking
         select: "fullName email",
       })
@@ -129,7 +125,7 @@ export const getHostBookings = async (req, res) => {
         select: "timezone weekly bufferBefore bufferAfter maxPerDay",
       })
       .sort({ start: 1 })
-      .select("createdByUserId start end status meetingLink availabilityId");
+      .select("guest createdByUserId start end status meetingLink availabilityId");
 
     res.status(200).json({ success: true, bookings });
   } catch (error) {
@@ -282,12 +278,12 @@ export const deleteAvailabilityById = async (req, res) => {
 // ⚙️ Update Host Settings
 export const updateHostSettings = async (req, res) => {
   try {
-    const hostId = req.user._id;
-    const { username, timezone } = req.body;
+    const hostId = req.user._id || req.user.id;
+    const { username, timezone, bookingLink, notificationPreferences } = req.body;
 
     const updatedUser = await User.findByIdAndUpdate(
       hostId,
-      { username, timezone },
+      { username, timezone, bookingLink, notificationPreferences },
       { new: true }
     );
 

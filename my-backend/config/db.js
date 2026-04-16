@@ -1,4 +1,14 @@
 import mongoose from "mongoose";
+import dns from "dns";
+
+// ✅ Force use of Google and Cloudflare DNS for SRV resolution
+// This fixes "querySrv ECONNREFUSED" errors common with some ISPs
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+  console.log("📡 DNS servers set to 8.8.8.8, 1.1.1.1 for MongoDB SRV resolution");
+} catch (err) {
+  console.warn("⚠️ Failed to set custom DNS servers:", err.message);
+}
 
 /**
  * MongoDB Connection Manager - Production Optimized

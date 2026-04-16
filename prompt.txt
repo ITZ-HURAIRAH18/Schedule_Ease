@@ -1,2 +1,256 @@
-Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)Understand this error
-3hook.bundle.js:1 [locatorjs]: loading: No valid renderers found.
+You are a Senior Product Designer at a premium SaaS company like Stripe, Notion, or Linear. You are redesigning a scheduling app called "NexGen Schedule". You must follow every rule below with zero exceptions. If you break any rule, the output is rejected.
+
+══════════════════════════════════════
+CRITICAL RULES — READ BEFORE ANYTHING
+══════════════════════════════════════
+
+RULE 1 — NO DARK BACKGROUNDS ANYWHERE.
+The page background must be #FAFAF8 (warm off-white). Never use navy, dark blue, dark gray, or any dark color as a background. Cards are pure white #FFFFFF. This is non-negotiable.
+
+RULE 2 — NO GLOW, NO BLUR, NO NEON.
+Zero blur effects. Zero glow effects. Zero neon colors. No box-shadow with spread. No text-shadow. No filter: blur(). No backdrop-filter. These make it look AI-generated and cheap.
+
+RULE 3 — HOVER MUST BE CRISP, NOT "DHUNDALA".
+On hover, cards must do exactly: translateY(-3px) and box-shadow changes from light to slightly deeper. No opacity changes. No blur on hover. No color washes. Sharp, crisp, precise lift — like Stripe's dashboard cards.
+
+RULE 4 — NO ELECTRIC COLORS.
+No #3B82F6 (electric blue). No bright purple (#8B5CF6). No neon green. The accent color is warm Terracotta (#C8622A) with Stone Brown (#92694A) as secondary. These are sophisticated, premium, non-AI-looking colors.
+
+RULE 5 — WHITE IS THE HERO.
+Every page: white cards on warm off-white (#FAFAF8) page background. Think Apple.com or Stripe.com — clean, airy, premium white space.
+
+RULE 6 — TYPOGRAPHY IS EVERYTHING.
+Font: Inter (Google Fonts). Page titles: 28px, weight 600, color #1A1A1A. Section labels: 12px, weight 500, uppercase, letter-spacing 0.08em, color #92694A (terracotta-brown). Body: 14px, weight 400, color #4A4A4A. Muted text: #8A8A8A.
+
+RULE 7 — ANIMATIONS MUST BE SUBTLE AND FUNCTIONAL.
+Only allowed animations:
+- Card hover: translateY(-3px) + shadow deepens. Duration: 200ms ease.
+- Button hover: background darkens by 10%. Duration: 150ms ease.  
+- Page enter: opacity 0→1 + translateY(12px→0). Duration: 350ms ease.
+- Number counters: 0 to value over 600ms.
+- NO spinning loaders. NO pulsing glows. NO color transitions on hover.
+
+══════════════════════════════════════
+DESIGN TOKENS — USE EXACTLY THESE
+══════════════════════════════════════
+
+Colors:
+  --page-bg: #FAFAF8        (warm off-white — page background)
+  --surface: #FFFFFF         (pure white — all cards)
+  --surface-2: #F5F3F0       (slightly warm gray — secondary surfaces)
+  --border: #E8E4DF          (warm light border)
+  --border-strong: #D4CEC8   (stronger border, hover states)
+  --accent: #C8622A          (terracotta — primary CTA color)
+  --accent-dark: #A84E20     (darker terracotta — button hover)
+  --accent-light: #FDF0EA    (very light terracotta — badge bg)
+  --brown: #92694A           (warm brown — secondary accent, labels)
+  --brown-light: #F7F0EA     (light brown — tag backgrounds)
+  --text-primary: #1A1A1A    (near black)
+  --text-secondary: #4A4A4A  (dark gray)
+  --text-muted: #8A8A8A      (muted gray)
+  --success: #2D7D52         (forest green — confirmed badges)
+  --success-bg: #EDF7F1      (light green — confirmed badge bg)
+  --warning: #B45309         (amber brown — pending badges)
+  --warning-bg: #FEF3E2      (light amber — pending badge bg)
+  --danger: #B91C1C          (deep red — cancel/delete)
+  --danger-bg: #FEF2F2       (light red — danger badge bg)
+
+Spacing scale: 4, 8, 12, 16, 24, 32, 48, 64px
+Border radius: 6px (inputs/badges), 10px (buttons), 12px (cards), 16px (large cards)
+Card shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04)
+Card hover shadow: 0 4px 16px rgba(0,0,0,0.10), 0 8px 24px rgba(0,0,0,0.06)
+Navbar shadow: 0 1px 0 #E8E4DF (just a bottom border line — no floating shadow)
+
+══════════════════════════════════════
+NAVBAR — APPLIES TO ALL PAGES
+══════════════════════════════════════
+
+- Background: #FFFFFF
+- Height: 56px
+- Bottom border: 1px solid #E8E4DF (no shadow, just a line)
+- Position: sticky top 0, z-index 100
+- Left: Logo "N" monogram in a 32px square with rounded corners, background #C8622A, color white. Next to it "NexGen" in 16px weight 600 #1A1A1A.
+- Center nav links: 14px weight 500, color #4A4A4A. Active link: color #C8622A with a 2px bottom border in #C8622A.
+- Right: User name text + avatar circle (32px, initials, bg #F5F3F0, color #92694A) + dropdown arrow. No glow on avatar.
+- Hover on nav links: color #1A1A1A — no background, no underline animation. Just color change.
+
+══════════════════════════════════════
+ALL PAGES — REDESIGN SPECIFICATIONS
+══════════════════════════════════════
+
+PAGE: Landing / Home (/)
+Layout: centered, max-width 900px, margin auto.
+- No dark hero background. Page bg is #FAFAF8.
+- App name "NexGen Schedule" in 48px weight 700 #1A1A1A.
+- Subline: 18px weight 400 #4A4A4A.
+- Three role cards side by side (User / Host / Admin):
+  - White card, border 1px solid #E8E4DF, border-radius 16px, padding 32px.
+  - Icon: a simple 40px square with border-radius 10px. User=terracotta bg, Host=brown bg, Admin=dark slate bg. Icon inside is white SVG.
+  - Role name: 18px weight 600 #1A1A1A.
+  - Description: 13px #8A8A8A.
+  - Buttons: Login button = outlined (border: 1.5px solid #C8622A, color #C8622A). Sign Up = filled (#C8622A bg, white text).
+  - Card hover: translateY(-4px), shadow deepens. NO color change on background.
+
+PAGE: Login (/login/user and /login/host)
+- White card, 420px wide, centered on #FAFAF8 page.
+- Card: border-radius 16px, border 1px solid #E8E4DF, padding 40px.
+- Logo at top: 48px square icon, terracotta bg, white calendar icon.
+- Title: "Welcome back" — 22px weight 600 #1A1A1A.
+- Subtitle: 14px #8A8A8A.
+- Inputs: height 44px, border 1.5px solid #E8E4DF, border-radius 8px, placeholder color #B0B0B0. Focus: border-color #C8622A, box-shadow 0 0 0 3px rgba(200,98,42,0.10). NO glow.
+- Sign in button: full width, height 44px, bg #C8622A, color white, border-radius 10px, font-size 14px weight 500. Hover: bg #A84E20. NO glow.
+- Google button: full width, height 44px, bg white, border 1.5px solid #E8E4DF, color #1A1A1A, with small Google "G" logo on left.
+
+PAGE: User Dashboard (/user/dashboard)
+Booking cards:
+- White card, border 1px solid #E8E4DF, border-radius 16px, padding 24px.
+- Left side: host avatar (48px circle, initials, bg #F5F3F0, brown text) + host name 15px weight 600 + "Expert Host" 12px #8A8A8A.
+- Top right corner: status badge. Confirmed = bg #EDF7F1, color #2D7D52, border-radius 6px, 11px font weight 500. Pending = bg #FEF3E2, color #B45309.
+- Date row: small calendar icon (#C8622A) + date text 13px #4A4A4A inside a pill (bg #F5F3F0, border-radius 6px, padding 4px 10px).
+- Time: large text 22px weight 600 #1A1A1A. Arrow → in #8A8A8A between start and end times.
+- Bottom button: outlined pill, full width, height 40px, border 1.5px solid #E8E4DF, color #4A4A4A, text "Opens at X:XX". NO gradient. Plain and clean.
+- Grid: 2 columns on desktop, 1 on mobile. Gap 20px.
+- Empty state: centered illustration area + "No bookings yet" 16px #8A8A8A + "Browse hosts" button in terracotta.
+
+PAGE: Available Hosts (/user/availability)
+- Section header: "Available Hosts" 24px weight 600 + count badge (number in a terracotta pill).
+- Host cards: white, border 1px solid #E8E4DF, border-radius 16px, padding 24px.
+  - Avatar 56px with warm initials.
+  - Info chips in a row: timezone, duration, buffer — each chip is bg #F5F3F0, color #4A4A4A, border-radius 6px, 12px font, padding 3px 8px.
+  - Weekly slots: simple text list, day name in #92694A weight 500, time in #4A4A4A.
+  - "Book meeting" button: full width, bg #C8622A, white text, height 44px, border-radius 10px.
+
+PAGE: Host Dashboard (/host/dashboard)
+Stat cards row (5 cards):
+- White card, border 1px solid #E8E4DF, border-radius 12px, padding 20px 24px.
+- Icon: 36px square, border-radius 8px. Each a different warm color: terracotta, brown, sage, slate, warm red.
+- Label: 12px weight 500 uppercase #8A8A8A.
+- Number: 28px weight 600 #1A1A1A. Animated count-up on load.
+- NO colored gradient backgrounds on stat cards. All white.
+Recent bookings: clean list rows. Each row: avatar + name/email on left, date+time in center, status badge, Join button (outlined, small) on right. Row hover: bg #FAFAF8.
+
+PAGE: Host All Bookings (/host/bookings)
+Table redesign:
+- Table header: bg #F5F3F0, text 11px weight 600 uppercase #8A8A8A, letter-spacing 0.06em.
+- Row border: 1px solid #E8E4DF between rows. No alternating row colors.
+- Row hover: bg #FAFAF8.
+- Status: custom styled dropdown, looks like a badge (not a browser select box).
+- Search bar + filter tabs above the table. Filter tabs: "All" "Confirmed" "Pending" "Cancelled" as text tabs with active underline in #C8622A.
+- "View" button: text-only link style, color #C8622A, 13px.
+
+PAGE: Add Availability (/host/add-availability)
+- Form sits in a white card (max-width 640px, centered).
+- Day selector: 7 pill buttons (Mon–Sun), row layout. Default: bg #F5F3F0, color #4A4A4A. Selected: bg #C8622A, color white. NO gradient on selected.
+- Time inputs: standard styled height 44px inputs.
+- Buffer/Duration: number inputs with +/- stepper buttons on sides.
+- "Add Day" button: text + plus icon, color #C8622A, no background.
+- Save button: full width, bg #1A1A1A (dark, not terracotta — for contrast), white text, height 48px, border-radius 10px.
+
+PAGE: Manage Availability (/host/manage-availability)
+- Dark background here is FORBIDDEN. Page bg stays #FAFAF8.
+- Cards: white, border 1px solid #E8E4DF, border-radius 16px.
+- Timezone label: 14px weight 600 #1A1A1A.
+- Weekly slots list: day in brown (#92694A), time in #4A4A4A.
+- Three icon buttons (eye, edit, trash): 32px circle, bg #F5F3F0, icon color #4A4A4A. Hover: bg #E8E4DF. NO glow.
+
+PAGE: Host Settings (/host/settings)
+THIS PAGE IS BROKEN — REBUILD IT FULLY.
+Layout: max-width 560px centered white card.
+- Username input: fully functional, 44px height.
+- Timezone input: searchable select input (not plain text input).
+- Meeting link input: text input where host pastes their Zoom/Meet link.
+- Notification preferences: toggle switches (styled: track bg #E8E4DF → #C8622A when on. Thumb: white circle. NO glow on toggle).
+- "Save Settings" button: full width, bg #C8622A, white, 44px, border-radius 10px.
+- On successful save: green toast notification slides in from bottom-right. "Settings saved" text + checkmark. Auto-dismisses after 2.5s.
+
+PAGE: Admin Dashboard (/admin/dashboard)
+- Stat cards: same white card style as host dashboard. NO gradient colored cards.
+- Recent sign-ups: clean data table or card list. Role badges: Admin=bg #1A1A1A color white. Host=bg #F5F3F0 color #92694A. User=bg #FDF0EA color #C8622A.
+
+PAGE: Admin Users (/admin/users)
+- Same clean white table with warm headers.
+- Suspend button: bg #FEF3E2, color #B45309, border-radius 6px, 12px font. Hover: bg #FDDCAA.
+- Delete button: bg #FEF2F2, color #B91C1C, border-radius 6px. Hover: bg #FCCACA.
+- Confirmation modal: white card centered, overlay bg rgba(0,0,0,0.35). NOT glassmorphism. Just a clean white card.
+
+PAGE: Admin Stats (/admin/stats)
+- Stat cards: white.
+- Top Hosts leaderboard: clean ranked list. Rank number (#1 in #C8622A, others in #8A8A8A). Host name + booking count as a simple bar (bg #F5F3F0, fill #C8622A, border-radius 4px, height 6px, animates width on load).
+
+══════════════════════════════════════
+FINAL CHECKLIST BEFORE OUTPUTTING CODE
+══════════════════════════════════════
+
+Before writing any component, confirm:
+[ ] Page background is #FAFAF8 — NOT dark, NOT blue
+[ ] All cards are #FFFFFF with 1px solid #E8E4DF border
+[ ] Zero blur effects anywhere in the CSS
+[ ] Zero glow effects (no box-shadow with spread > 4px in colored shadows)
+[ ] Hover state is ONLY translateY + shadow — nothing else
+[ ] Accent color used is #C8622A (terracotta) — not blue, not electric violet
+[ ] All fonts are Inter loaded from Google Fonts
+[ ] All existing React logic, hooks, and API calls are preserved exactly
+[ ] Settings page is fully rebuilt and functional
+[ ] Responsive: works on 375px mobile and 1280px desktop
+
+Output one page at a time. Start with the Landing page. Show full component code. Say "Ready for next page" when done with each one.
+
+
+STRICT RULES — Violating any of these means the output is REJECTED:
+
+1. NEVER use dark backgrounds. Page = #FAFAF8. Cards = #FFFFFF. Non-negotiable.
+2. NEVER use blur (backdrop-filter, filter: blur). Looks cheap and AI-generated.
+3. NEVER use glow effects. No box-shadow with colored spread. No text-shadow.
+4. NEVER use electric blue (#3B82F6), bright purple (#8B5CF6), or neon colors.
+5. HOVER = translateY(-3px) + shadow only. No color wash, no opacity change, no blur.
+6. ALL accent colors must be warm: terracotta #C8622A, brown #92694A.
+7. Badges must have very light bg + darker same-family text. No bright colored badges.
+8. Typography: Inter font. No decorative or display fonts on body text.
+9. Animations: subtle only. Max duration 400ms. No bouncing, no pulsing, no spinning.
+10. Think Stripe.com / Linear.app / Notion.so — white, clean, warm, precise.
+
+NEXGEN SCHEDULE — COLOR SYSTEM
+
+Page background:  #FAFAF8  (warm off-white)
+Card surface:     #FFFFFF  (pure white)
+Surface 2:        #F5F3F0  (chips, tags, secondary bg)
+Border default:   #E8E4DF  (all card/input borders)
+Border hover:     #D4CEC8  (hovered borders)
+
+Primary accent:   #C8622A  (terracotta — buttons, active links, icons)
+Accent hover:     #A84E20  (darker terracotta — button hover bg)
+Accent light:     #FDF0EA  (very light — badge bg, subtle fills)
+
+Secondary:        #92694A  (warm brown — labels, section titles, secondary)
+Secondary light:  #F7F0EA  (light brown — tag backgrounds)
+
+Text primary:     #1A1A1A  (headlines, important text)
+Text secondary:   #4A4A4A  (body text, descriptions)
+Text muted:       #8A8A8A  (placeholders, hints, metadata)
+
+Success:          #2D7D52  text on #EDF7F1 bg  (Confirmed)
+Warning:          #B45309  text on #FEF3E2 bg  (Pending)
+Danger:           #B91C1C  text on #FEF2F2 bg  (Cancelled/Delete)
+Admin badge:      white    text on #1A1A1A bg
+Host badge:       #92694A  text on #F5F3F0 bg
+User badge:       #C8622A  text on #FDF0EA bg
+
+ASK IN THIS ORDER (one at a time):
+
+Step 1: "Redesign the Landing page (/)" 
+Step 2: "Redesign User Login (/login/user) and Host Login (/login/host)"
+Step 3: "Redesign User Dashboard and My Bookings (/user/dashboard)"
+Step 4: "Redesign Available Hosts page (/user/availability)"
+Step 5: "Redesign Host Dashboard (/host/dashboard)"
+Step 6: "Redesign Host All Bookings table (/host/bookings)"
+Step 7: "Redesign Add Availability form (/host/add-availability)"
+Step 8: "Redesign Manage Availability (/host/manage-availability)"
+Step 9: "Fully rebuild Host Settings page (/host/settings) — make the save button work and add a success toast"
+Step 10: "Redesign Admin Dashboard (/admin/dashboard)"
+Step 11: "Redesign Admin Users table (/admin/users)"
+Step 12: "Redesign Admin Stats (/admin/stats)"
+Step 13: "Create a shared Navbar component used by all pages"
+Step 14: "Add global CSS variables and page transition animation to App.jsx"
+
+After pasting the master prompt, start with:
+"Begin with Step 1. Output the full Landing page component. Preserve all existing React logic."

@@ -161,7 +161,7 @@ app.use("/api/meetings", meetingRoutes);
 
 // ✅ Root route
 app.get("/", (req, res) => {
-  res.json({ 
+  res.json({
     message: "Schedule Ease API is running",
     status: "OK",
     version: "1.0.0",
@@ -171,7 +171,7 @@ app.get("/", (req, res) => {
 
 // ✅ Database status endpoint
 app.get("/api/db-status", (req, res) => {
-  res.json({ 
+  res.json({
     connected: dbConnected,
     error: dbError || null
   });
@@ -228,7 +228,7 @@ if (!isServerless) {
   // Create secondary HTTP server for browser compatibility (when using HTTPS)
   if (useHTTPS) {
     httpServer = http.createServer(app);
-    console.log("🌐 HTTP server also available on port 5001 for browser compatibility");
+    console.log("🌐 HTTP fallback server available on port 5002 for browser compatibility");
   }
 
   io = new Server(server, {
@@ -238,161 +238,38 @@ if (!isServerless) {
         'http://localhost:3000',
         'http://127.0.0.1:5173',
         'http://127.0.0.1:3000',
-        'https://schedule-ease-a4ur.vercel.app',
-        'https://schedule-ease-zeta.vercel.app',
-        'https://localhost:5173'
-      ],
-      methods: ["GET", "POST"],
+        'https://localhost:5173',
+        process.env.FRONTEND_URL?.replace(/\/$/, ''),
+      ].filter(Boolean),
+      methods: ['GET', 'POST'],
       credentials: true,
-      allowedHeaders: ['Content-Type', 'Authorization']
     },
-    transports: ['websocket', 'polling'],
-    allowEIO3: true,
-    pingTimeout: 60000,
-    pingInterval: 25000,
-    connectTimeout: 45000,
   });
 
-  // ✅ Register the io instance with our singleton manager
   setIO(io);
-} else {
-  // Production (Vercel serverless) - Socket.IO cannot work here
-  // Log warning and provide alternative
-  console.log("⚠️ Running on Vercel serverless - Socket.IO WebSockets are not supported");
-  console.log("💡 Consider using: Pusher, Ably, or Supabase Realtime for production WebSockets");
-  console.log("💡 Alternative: Use HTTP polling/polling for real-time updates");
-  
-  // Don't initialize Socket.IO in serverless environment
-  // The setIO will not be called, and safeEmit will log warnings
-}
+  console.log("✅ Socket.io instance initialized");
 
-// ✅ Track meeting rooms (only used in development)
-const meetingRooms = {};
+  // Listen on ports
+  const PORT = process.env.PORT || 5001;
+  const HTTP_PORT = 5002;
 
-// ===============================
-// 🌍 GLOBAL SOCKET (dashboard, host updates, chat)
-// ===============================
-if (!isServerless && io) {
-  io.on("connection", (socket) => {
-    console.log("🟢 Dashboard/Global Client Connected:", socket.id);
-
-    // Add error handler for this socket
-    socket.on("error", (error) => {
-      console.error(`❌ Socket error for ${socket.id}:`, error);
-    });
-
-    // Chat / broadcast messages
-    socket.on("send_message", (msg) => {
-      try {
-        console.log("💬 Global Message:", msg);
-        io.emit("receive_message", msg);
-      } catch (error) {
-        console.error("❌ Error broadcasting message:", error);
-      }
-    });
-
-    // Host joins private room for dashboard live updates
-    socket.on("join_host_room", (hostId) => {
-      try {
-        socket.join(hostId);
-        console.log(`🏠 Host ${hostId} joined private dashboard room`);
-      } catch (error) {
-        console.error("❌ Error joining host room:", error);
-      }
-    });
-
-    // ✅ Dashboard disconnect
-    socket.on("disconnect", () => {
-      console.log("🔴 Dashboard/Global Client Disconnected:", socket.id);
-    });
+  server.listen(PORT, "0.0.0.0", () => {
+    console.log(`✅ Development server running on localhost:${PORT}`);
   });
 
-  // ===============================
-  // 🎥 MEETING SOCKET NAMESPACE
-  // ===============================
-  const meetingNamespace = io.of("/meeting");
-
-  meetingNamespace.on("connection", (socket) => {
-    console.log("🎥 Meeting Client Connected:", socket.id);
-
-    // Add error handler for this socket
-    socket.on("error", (error) => {
-      console.error(`❌ Meeting socket error for ${socket.id}:`, error);
-    });
-
-    // Join specific meeting room
-    socket.on("join_meeting_room", (roomId) => {
-      try {
-        if (!meetingRooms[roomId]) meetingRooms[roomId] = [];
-        meetingRooms[roomId].push(socket.id);
-        socket.join(roomId);
-        console.log(`👥 ${socket.id} joined meeting room ${roomId}`);
-
-        const users = meetingRooms[roomId];
-
-        // Assign roles for WebRTC
-        if (users.length === 1) {
-          socket.emit("meeting_role", { initiator: false });
-        } else if (users.length === 2) {
-          socket.emit("meeting_role", { initiator: true });
-          const [firstUser] = users;
-          meetingNamespace.to(firstUser).emit("peer_ready");
-        } else {
-          socket.emit("room_full");
-        }
-      } catch (error) {
-        console.error("❌ Error joining meeting room:", error);
-      }
-    });
-
-    // WebRTC signaling between peers
-    socket.on("signal", ({ roomId, signal, sender }) => {
-      try {
-        socket.to(roomId).emit("signal", { signal, sender });
-      } catch (error) {
-        console.error("❌ Error sending signal:", error);
-      }
-    });
-
-    // ✅ MEETING disconnect (separate from global)
-    socket.on("disconnect", () => {
-      try {
-        console.log("❌ Meeting Client Disconnected:", socket.id);
-
-        for (const roomId in meetingRooms) {
-          meetingRooms[roomId] = meetingRooms[roomId].filter(
-            (id) => id !== socket.id
-          );
-
-          if (meetingRooms[roomId].length === 0) {
-            delete meetingRooms[roomId];
-            console.log(`🧹 Meeting room ${roomId} deleted (empty)`);
-          }
-        }
-      } catch (error) {
-        console.error("❌ Error handling meeting disconnect:", error);
-      }
-    });
-  });
-
-  // ✅ Start server for local development
-  const PORT = process.env.PORT || 5000;
-  const HOST = process.env.HOST || '0.0.0.0';
-  server.listen(PORT, HOST, () =>
-    console.log(`✅ Development server running on ${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}`)
-  );
-
-  // Start HTTP fallback server on different port if HTTPS is enabled
+  // Listen on HTTP fallback port if separate HTTPS server
   if (httpServer) {
-    const HTTP_PORT = parseInt(PORT) + 1; // Use PORT+1 (e.g., 5002 if PORT is 5001)
-    httpServer.listen(HTTP_PORT, HOST, () =>
-      console.log(`✅ HTTP fallback server running on http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${HTTP_PORT}`)
-    );
+    httpServer.listen(HTTP_PORT, "0.0.0.0", () => {
+      console.log(`✅ HTTP fallback server running on http://localhost:${HTTP_PORT}`);
+    });
   }
+} else {
+  // Serverless production setup (Express only, no socket.io)
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`✅ Production server running on port ${PORT}`);
+  });
 }
 
-// ===============================
-// EXPORT FOR VERCEL & EXTERNAL USE
-// ===============================
+// Export for Vercel
 export default app;
-export { io, server };

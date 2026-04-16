@@ -1,6 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 
 // Pages
 import Landing from './pages/Landing';
@@ -31,76 +31,79 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import MeetingRoom from './components/MeetingRoom';
 import { Toaster } from 'react-hot-toast';
 
-const BackgroundOrbs = () => (
-  <div className="fixed inset-0 overflow-hidden -z-10 pointer-events-none">
-    <motion.div
-      animate={{
-        x: [0, 100, 0],
-        y: [0, 50, 0],
-      }}
-      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-      className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-violet-500/10 rounded-full blur-[120px]"
-    />
-    <motion.div
-      animate={{
-        x: [0, -80, 0],
-        y: [0, 120, 0],
-      }}
-      transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-      className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px]"
-    />
-    <motion.div
-      animate={{
-        x: [0, 50, 0],
-        y: [0, -100, 0],
-      }}
-      transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-      className="absolute top-[30%] right-[20%] w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px]"
-    />
-  </div>
+const PageWrapper = ({ children }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 12 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -12 }}
+    transition={{ duration: 0.35, ease: "easeOut" }}
+    className="w-full"
+  >
+    {children}
+  </motion.div>
 );
+
+const AppRoutes = () => {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        {/* Public Routes */}
+        <Route path="/" element={<PageWrapper><Landing /></PageWrapper>} />
+        <Route path="/login/:roleParam" element={<PageWrapper><LoginRole /></PageWrapper>} />
+        <Route path="/signup/:roleParam" element={<PageWrapper><SignupRole /></PageWrapper>} />
+        <Route path="/meeting/:roomId" element={<PageWrapper><MeetingRoom /></PageWrapper>} />
+
+        {/* User Protected Routes */}
+        <Route path="/user" element={<ProtectedRoute allowedRoles={['user']}><Navigate to="/user/dashboard" /></ProtectedRoute>} />
+        <Route path="/user/dashboard" element={<ProtectedRoute allowedRoles={['user']}><PageWrapper><UserDashboard /></PageWrapper></ProtectedRoute>} />
+        <Route path="/user/bookings" element={<ProtectedRoute allowedRoles={['user']}><PageWrapper><Bookings /></PageWrapper></ProtectedRoute>} />
+        <Route path="/user/availability" element={<ProtectedRoute allowedRoles={['user']}><PageWrapper><Availability /></PageWrapper></ProtectedRoute>} />
+        <Route path="/user/book/:hostId" element={<ProtectedRoute allowedRoles={['user']}><PageWrapper><BookingForm /></PageWrapper></ProtectedRoute>} />
+
+        {/* Host Protected Routes */}
+        <Route path="/host" element={<ProtectedRoute allowedRoles={['host']}><Navigate to="/host/dashboard" /></ProtectedRoute>} />
+        <Route path="/host/dashboard" element={<ProtectedRoute allowedRoles={['host']}><PageWrapper><HostDashboard /></PageWrapper></ProtectedRoute>} />
+        <Route path="/host/manage-availability" element={<ProtectedRoute allowedRoles={['host']}><PageWrapper><ManageAvailability /></PageWrapper></ProtectedRoute>} />
+        <Route path="/host/add-availability" element={<ProtectedRoute allowedRoles={['host']}><PageWrapper><AddAvailability /></PageWrapper></ProtectedRoute>} />
+        <Route path="/host/edit-availability/:id" element={<ProtectedRoute allowedRoles={['host']}><PageWrapper><EditAvailability /></PageWrapper></ProtectedRoute>} />
+        <Route path="/host/bookings" element={<ProtectedRoute allowedRoles={['host']}><PageWrapper><HostBookings /></PageWrapper></ProtectedRoute>} />
+        <Route path="/host/settings" element={<ProtectedRoute allowedRoles={['host']}><PageWrapper><HostSettings /></PageWrapper></ProtectedRoute>} />
+
+        {/* Admin Protected Routes */}
+        <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><Navigate to="/admin/dashboard" /></ProtectedRoute>} />
+        <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><PageWrapper><AdminDashboard /></PageWrapper></ProtectedRoute>} />
+        <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['admin']}><PageWrapper><AdminUsers /></PageWrapper></ProtectedRoute>} />
+        <Route path="/admin/stats" element={<ProtectedRoute allowedRoles={['admin']}><PageWrapper><AdminStats /></PageWrapper></ProtectedRoute>} />
+
+        {/* Catch-all */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AnimatePresence>
+  );
+};
 
 const App = () => {
   return (
     <Router>
-      <div className="min-h-screen relative font-inter text-slate-900 overflow-x-hidden">
-        <BackgroundOrbs />
-        <Toaster position="bottom-right" />
-        
-        <AnimatePresence mode="wait">
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<Landing />} />
-            <Route path="/login/:roleParam" element={<LoginRole />} />
-            <Route path="/signup/:roleParam" element={<SignupRole />} />
-            <Route path="/meeting/:roomId" element={<MeetingRoom />} />
-
-            {/* User Protected Routes */}
-            <Route path="/user" element={<ProtectedRoute allowedRoles={['user']}><Navigate to="/user/dashboard" /></ProtectedRoute>} />
-            <Route path="/user/dashboard" element={<ProtectedRoute allowedRoles={['user']}><UserDashboard /></ProtectedRoute>} />
-            <Route path="/user/bookings" element={<ProtectedRoute allowedRoles={['user']}><Bookings /></ProtectedRoute>} />
-            <Route path="/user/availability" element={<ProtectedRoute allowedRoles={['user']}><Availability /></ProtectedRoute>} />
-            <Route path="/user/book/:hostId" element={<ProtectedRoute allowedRoles={['user']}><BookingForm /></ProtectedRoute>} />
-
-            {/* Host Protected Routes */}
-            <Route path="/host" element={<ProtectedRoute allowedRoles={['host']}><Navigate to="/host/dashboard" /></ProtectedRoute>} />
-            <Route path="/host/dashboard" element={<ProtectedRoute allowedRoles={['host']}><HostDashboard /></ProtectedRoute>} />
-            <Route path="/host/manage-availability" element={<ProtectedRoute allowedRoles={['host']}><ManageAvailability /></ProtectedRoute>} />
-            <Route path="/host/add-availability" element={<ProtectedRoute allowedRoles={['host']}><AddAvailability /></ProtectedRoute>} />
-            <Route path="/host/edit-availability/:id" element={<ProtectedRoute allowedRoles={['host']}><EditAvailability /></ProtectedRoute>} />
-            <Route path="/host/bookings" element={<ProtectedRoute allowedRoles={['host']}><HostBookings /></ProtectedRoute>} />
-            <Route path="/host/settings" element={<ProtectedRoute allowedRoles={['host']}><HostSettings /></ProtectedRoute>} />
-
-            {/* Admin Protected Routes */}
-            <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><Navigate to="/admin/dashboard" /></ProtectedRoute>} />
-            <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['admin']}><AdminUsers /></ProtectedRoute>} />
-            <Route path="/admin/stats" element={<ProtectedRoute allowedRoles={['admin']}><AdminStats /></ProtectedRoute>} />
-
-            {/* Catch-all */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </AnimatePresence>
+      <div className="min-h-screen bg-[#FAFAF8] text-[#1A1A1A] font-inter">
+        <Toaster 
+          position="bottom-right"
+          toastOptions={{
+            duration: 2500,
+            style: {
+              background: '#FFFFFF',
+              color: '#1A1A1A',
+              border: '1px solid #E8E4DF',
+              borderRadius: '10px',
+              fontSize: '14px',
+              padding: '12px 16px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.04)',
+            },
+          }}
+        />
+        <AppRoutes />
       </div>
     </Router>
   );

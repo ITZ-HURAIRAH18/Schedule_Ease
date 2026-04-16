@@ -5,40 +5,16 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell 
 } from "recharts";
 import { 
-  LayoutDashboard, 
   Users, 
   CalendarCheck, 
   Trophy, 
-  TrendingUp, 
-  Medal,
   Activity,
-  ArrowUpRight
+  ArrowUpRight,
+  RefreshCcw,
+  Target
 } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
 import AdminHeader from "../../components/AdminHeader";
-import MeshBackground from "../../components/MeshBackground";
-import Tilt from "../../components/Tilt";
-
-// Animation Variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: { type: "spring", stiffness: 100 }
-  }
-};
 
 const AnimatedCounter = ({ value }) => {
   const count = useMotionValue(0);
@@ -46,8 +22,8 @@ const AnimatedCounter = ({ value }) => {
 
   useEffect(() => {
     const animation = animate(count, value, { 
-      duration: 2, 
-      ease: "circOut" 
+      duration: 0.6, 
+      ease: "easeOut" 
     });
     return animation.stop;
   }, [value, count]);
@@ -55,133 +31,85 @@ const AnimatedCounter = ({ value }) => {
   return <motion.span>{rounded}</motion.span>;
 };
 
-const MetricCard = ({ label, value, icon: Icon, color, delay }) => {
-  const colorMap = {
-    indigo: {
-      bg: "bg-indigo-500/10",
-      text: "text-indigo-600",
-      pill: "bg-indigo-100 text-indigo-700"
-    },
-    sky: {
-      bg: "bg-sky-500/10",
-      text: "text-sky-600",
-      pill: "bg-sky-100 text-sky-700"
-    },
-    violet: {
-      bg: "bg-violet-500/10",
-      text: "text-violet-600",
-      pill: "bg-violet-100 text-violet-700"
-    }
-  };
-
-  const theme = colorMap[color] || colorMap.indigo;
-
+const MetricCard = ({ label, value, icon: Icon, iconBg, delay }) => {
   return (
-    <Tilt maxTilt={5}>
-      <motion.div
-        variants={itemVariants}
-        className="relative group h-full"
-      >
-        <div className="absolute -inset-0.5 bg-gradient-to-r from-white/20 to-white/0 rounded-[2.5rem] blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200" />
-        <div className="relative h-full bg-white/60 backdrop-blur-xl rounded-[2rem] p-8 border border-white/40 shadow-2xl flex flex-col justify-between">
-          <div className="flex justify-between items-start mb-4">
-            <div className={`p-4 rounded-2xl ${theme.bg} ${theme.text} shadow-inner`}>
-              <Icon className="w-8 h-8" />
-            </div>
-            <motion.div 
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className={`flex items-center gap-1 text-[10px] font-bold px-2 py-1 rounded-full ${theme.pill} uppercase tracking-tighter`}
-            >
-              <TrendingUp className="w-3 h-3" />
-              +12.5%
-            </motion.div>
-          </div>
-          <div>
-            <h3 className="text-gray-500 font-bold text-sm uppercase tracking-widest mb-1">{label}</h3>
-            <div className="text-5xl font-black text-gray-900 flex items-baseline gap-1">
-              <AnimatedCounter value={value} />
-              <span className="text-lg font-bold text-gray-400 opacity-50">+</span>
-            </div>
-          </div>
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.35 }}
+      className="group bg-white rounded-xl p-[20px_24px] border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)] transition-all duration-200"
+    >
+      <div className={`w-9 h-9 rounded-lg ${iconBg} flex items-center justify-center mb-4`}>
+        <Icon className="w-5 h-5 text-white" />
+      </div>
+      <div>
+        <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#8A8A8A] mb-1">{label}</p>
+        <div className="flex items-baseline gap-2">
+          <h3 className="text-[28px] font-semibold text-[#1A1A1A]">
+            <AnimatedCounter value={value} />
+          </h3>
+          <span className="flex items-center text-[11px] font-medium text-[#2D7D52] bg-[#EDF7F1] px-2 py-0.5 rounded-md">
+            <ArrowUpRight size={10} className="mr-0.5" /> 12.5%
+          </span>
         </div>
-      </motion.div>
-    </Tilt>
+      </div>
+    </motion.div>
   );
 };
 
 const Leaderboard = ({ topHosts }) => {
-  const getRankBadge = (idx) => {
-    switch (idx) {
-      case 0: return { color: "from-yellow-400 to-amber-600", text: "Gold", icon: "🥇" };
-      case 1: return { color: "from-slate-300 to-slate-500", text: "Silver", icon: "🥈" };
-      case 2: return { color: "from-orange-400 to-amber-700", text: "Bronze", icon: "🥉" };
-      default: return { color: "from-blue-100 to-blue-200", text: `${idx + 1}th`, icon: null };
-    }
-  };
-
   const maxBookings = useMemo(() => 
     topHosts?.length ? Math.max(...topHosts.map(h => h.totalBookings)) : 1,
     [topHosts]
   );
 
   return (
-    <motion.div 
-      variants={itemVariants}
-      className="bg-white/70 backdrop-blur-2xl rounded-[2.5rem] p-8 border border-white/50 shadow-2xl h-full flex flex-col"
-    >
+    <div className="bg-white rounded-2xl p-8 border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06)] h-full">
       <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-200">
-            <Trophy className="w-6 h-6 text-white" />
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#FDF0EA] flex items-center justify-center">
+            <Trophy className="w-5 h-5 text-[#C8622A]" />
           </div>
-          <h3 className="text-2xl font-black text-gray-900 tracking-tight">Host Leaderboard</h3>
-        </div>
-        <div className="px-4 py-1.5 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold border border-indigo-100 uppercase">
-          Live Rankings
+          <div>
+            <h3 className="text-[18px] font-semibold text-[#1A1A1A]">Top Hosts</h3>
+            <p className="text-[12px] text-[#8A8A8A]">Based on total bookings</p>
+          </div>
         </div>
       </div>
 
-      <div className="space-y-6 flex-grow">
+      <div className="space-y-6">
         {topHosts?.length ? (
-          topHosts.map((host, idx) => {
-            const rank = getRankBadge(idx);
-            return (
-              <motion.div 
-                key={host._id}
-                whileHover={{ x: 10 }}
-                className="group relative"
-              >
-                <div className="flex items-center gap-4 mb-2">
-                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${rank.color} flex items-center justify-center text-white font-black text-sm shadow-lg`}>
-                    {rank.icon || (idx + 1)}
+          topHosts.map((host, idx) => (
+            <div key={host._id} className="group">
+              <div className="flex items-center gap-4 mb-2">
+                <div className={`text-[14px] font-bold w-6 ${idx === 0 ? 'text-[#C8622A]' : 'text-[#8A8A8A]'}`}>
+                  #{idx + 1}
+                </div>
+                <div className="flex-grow">
+                  <div className="flex justify-between items-end mb-1.5">
+                    <span className="text-[14px] font-medium text-[#1A1A1A]">{host.fullName}</span>
+                    <span className="text-[12px] font-semibold text-[#92694A]">{host.totalBookings} Bookings</span>
                   </div>
-                  <div className="flex-grow">
-                    <div className="flex justify-between items-end mb-1">
-                      <span className="font-bold text-gray-800 text-lg group-hover:text-indigo-600 transition-colors">{host.fullName}</span>
-                      <span className="text-sm font-black text-indigo-500">{host.totalBookings} Bookings</span>
-                    </div>
-                    <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${(host.totalBookings / maxBookings) * 100}%` }}
-                        transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 + (idx * 0.1) }}
-                        className={`h-full bg-gradient-to-r ${idx < 3 ? rank.color : 'from-indigo-500 to-blue-500'}`}
-                      />
-                    </div>
+                  <div className="h-1.5 w-full bg-[#F5F3F0] rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${(host.totalBookings / maxBookings) * 100}%` }}
+                      transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 + (idx * 0.05) }}
+                      className="h-full bg-[#C8622A] rounded-full"
+                    />
                   </div>
                 </div>
-              </motion.div>
-            );
-          })
+              </div>
+            </div>
+          ))
         ) : (
-          <div className="h-full flex flex-col items-center justify-center text-gray-400 py-12">
-            <Activity className="w-12 h-12 mb-4 opacity-20" />
-            <p className="font-bold italic">No rankings available yet</p>
+          <div className="py-12 text-center">
+            <Activity className="w-10 h-10 mx-auto mb-3 text-[#E8E4DF]" />
+            <p className="text-[#8A8A8A] text-[14px]">No rankings available yet</p>
           </div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -192,60 +120,53 @@ const StatsChart = ({ data }) => {
   );
 
   return (
-    <motion.div 
-      variants={itemVariants}
-      className="bg-white/70 backdrop-blur-2xl rounded-[2.5rem] p-8 border border-white/50 shadow-2xl flex flex-col"
-    >
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-sky-500 flex items-center justify-center shadow-lg shadow-sky-200">
-            <Activity className="w-6 h-6 text-white" />
-          </div>
-          <h3 className="text-2xl font-black text-gray-900 tracking-tight">Booking Distribution</h3>
+    <div className="bg-white rounded-2xl p-8 border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06)] h-full">
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-10 h-10 rounded-xl bg-[#F7F0EA] flex items-center justify-center">
+          <Target className="w-5 h-5 text-[#92694A]" />
+        </div>
+        <div>
+          <h3 className="text-[18px] font-semibold text-[#1A1A1A]">Booking Distribution</h3>
+          <p className="text-[12px] text-[#8A8A8A]">Booking volume per top host</p>
         </div>
       </div>
       
-      <div className="h-[300px] w-full">
+      <div className="h-[320px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-            <defs>
-              <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.8}/>
-                <stop offset="95%" stopColor="#818CF8" stopOpacity={0.3}/>
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E5E7EB" />
+          <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F5F3F0" />
             <XAxis 
               dataKey="name" 
               axisLine={false} 
               tickLine={false} 
-              tick={{ fill: '#9CA3AF', fontSize: 12, fontWeight: 700 }}
+              tick={{ fill: '#8A8A8A', fontSize: 11, fontWeight: 500 }}
               dy={10}
             />
             <YAxis 
               axisLine={false} 
               tickLine={false} 
-              tick={{ fill: '#9CA3AF', fontSize: 12, fontWeight: 700 }} 
+              tick={{ fill: '#8A8A8A', fontSize: 11, fontWeight: 500 }} 
             />
             <Tooltip 
-              cursor={{ fill: '#F3F4F6', radius: 10 }}
+              cursor={{ fill: '#F5F3F0', radius: 4 }}
               contentStyle={{ 
-                borderRadius: '16px', 
-                border: 'none', 
-                boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)',
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                backdropFilter: 'blur(8px)'
+                borderRadius: '12px', 
+                border: '1px solid #E8E4DF', 
+                boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                backgroundColor: '#FFFFFF',
+                padding: '12px'
               }}
+              labelStyle={{ fontWeight: 600, color: '#1A1A1A', marginBottom: '4px' }}
             />
-            <Bar dataKey="bookings" radius={[10, 10, 0, 0]} barSize={40}>
+            <Bar dataKey="bookings" radius={[4, 4, 0, 0]} barSize={32}>
               {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill="url(#barGradient)" />
+                <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "#C8622A" : "#92694A"} />
               ))}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -277,37 +198,27 @@ const AdminStats = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] overflow-x-hidden">
-      <MeshBackground />
+    <div className="min-h-screen bg-[#FAFAF8] font-['Inter'] selection:bg-[#FDF0EA] selection:text-[#C8622A]">
       <AdminHeader />
 
-      <main className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 relative z-10">
+      <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12"
-          >
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
             <div>
-              <div className="flex items-center gap-2 text-indigo-600 font-bold mb-2">
-                <LayoutDashboard className="w-5 h-5" />
-                <span className="uppercase tracking-[0.3em] text-[10px]">Administrative Intelligence</span>
-              </div>
-              <h1 className="text-5xl font-black text-gray-900 tracking-tight">
-                Platform <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500">Analytics</span>
+              <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#92694A] mb-1">Administrative Intelligence</p>
+              <h1 className="text-[28px] font-semibold text-[#1A1A1A] tracking-tight">
+                Platform Analytics
               </h1>
             </div>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+            <button
               onClick={fetchStats}
-              className="flex items-center gap-2 bg-white px-6 py-3 rounded-2xl border border-gray-100 shadow-xl shadow-gray-200/50 font-bold text-gray-700 hover:text-indigo-600 transition-all"
+              className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-lg border border-[#E8E4DF] text-[13px] font-medium text-[#4A4A4A] hover:bg-[#FAFAF8] hover:border-[#D4CEC8] transition-all shadow-sm"
             >
-              <Activity className="w-4 h-4" />
+              <RefreshCcw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
               Refresh Metrics
-            </motion.button>
-          </motion.div>
+            </button>
+          </div>
 
           <AnimatePresence mode="wait">
             {loading ? (
@@ -318,43 +229,46 @@ const AdminStats = () => {
                 exit={{ opacity: 0 }}
                 className="h-[60vh] flex flex-col items-center justify-center"
               >
-                <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4" />
-                <p className="text-indigo-600 font-black animate-pulse">Computing real-time analytics...</p>
+                <div className="w-10 h-10 border-2 border-[#C8622A] border-t-transparent rounded-full animate-spin mb-4" />
+                <p className="text-[#8A8A8A] font-medium text-[14px]">Computing analytics...</p>
               </motion.div>
             ) : (
               <motion.div
                 key="content"
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35 }}
                 className="space-y-8"
               >
                 {!stats ? (
-                  <div className="text-center py-32 bg-white/40 backdrop-blur-md rounded-[3rem] border border-white/50">
-                    <Users className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                    <p className="text-gray-500 font-bold text-xl">No statistical data discovered.</p>
+                  <div className="text-center py-32 bg-white rounded-2xl border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+                    <Users className="w-12 h-12 mx-auto text-[#E8E4DF] mb-4" />
+                    <p className="text-[#8A8A8A] font-medium">No statistical data discovered.</p>
                   </div>
                 ) : (
                   <>
                     {/* Top Row: Metrics */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                       <MetricCard
                         label="Total Bookings"
                         value={stats.totalBookings || 0}
                         icon={CalendarCheck}
-                        color="indigo"
+                        iconBg="bg-[#C8622A]"
+                        delay={0.1}
                       />
                       <MetricCard
                         label="Active Hosts"
                         value={totalHosts}
                         icon={Users}
-                        color="sky"
+                        iconBg="bg-[#92694A]"
+                        delay={0.15}
                       />
                       <MetricCard
                         label="Host Partners"
                         value={stats.topHosts?.length || 0}
-                        icon={Medal}
-                        color="violet"
+                        icon={Trophy}
+                        iconBg="bg-[#1A1A1A]"
+                        delay={0.2}
                       />
                     </div>
 
@@ -369,29 +283,22 @@ const AdminStats = () => {
                     </div>
 
                     {/* Bottom CTA / Banner */}
-                    <motion.div
-                      variants={itemVariants}
-                      className="relative overflow-hidden rounded-[2.5rem] bg-indigo-600 p-8 md:p-12 text-white shadow-2xl shadow-indigo-200"
-                    >
+                    <div className="relative overflow-hidden rounded-2xl bg-[#1A1A1A] p-8 md:p-10 text-white shadow-xl">
                       <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
                         <div>
-                          <h2 className="text-3xl font-black mb-4">Export Full Data Report</h2>
-                          <p className="text-indigo-100 font-medium max-w-md">
+                          <h2 className="text-[22px] font-semibold mb-2">Export Full Data Report</h2>
+                          <p className="text-[#8A8A8A] text-[14px] max-w-md">
                             Generate comprehensive performance reports for all hosts and bookings in CSV or PDF format.
                           </p>
                         </div>
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="bg-white text-indigo-600 px-10 py-5 rounded-2xl font-black text-lg shadow-2xl flex items-center gap-3"
-                        >
+                        <button className="bg-[#C8622A] text-white px-8 py-3 rounded-lg font-medium text-[14px] hover:bg-[#A84E20] transition-all flex items-center gap-2 shadow-lg">
                           Generate Report
-                          <ArrowUpRight className="w-6 h-6" />
-                        </motion.button>
+                          <ArrowUpRight className="w-4 h-4" />
+                        </button>
                       </div>
-                      <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[100px] rounded-full -translate-y-1/2 translate-x-1/2" />
-                      <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 blur-[80px] rounded-full translate-y-1/2 -translate-x-1/2" />
-                    </motion.div>
+                      {/* Subtle pattern instead of glow */}
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-white/[0.03] rounded-full -translate-y-1/2 translate-x-1/2" />
+                    </div>
                   </>
                 )}
               </motion.div>

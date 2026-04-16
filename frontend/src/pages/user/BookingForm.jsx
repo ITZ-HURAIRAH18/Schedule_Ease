@@ -13,14 +13,14 @@ import {
   Star,
   ShieldCheck,
   Zap,
-  Info
+  Info,
+  Globe,
+  Timer
 } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
 import UserHeader from "../../components/UserHeader";
-import MeshBackground from "../../components/MeshBackground";
-import Tilt from "../../components/Tilt";
 import toast, { Toaster } from "react-hot-toast";
-import { formatTime, getUserTimezone } from "../../utils/timeUtils";
+import { formatTime, getUserTimezone, localToUTC, calculateEndTime } from "../../utils/timeUtils";
 
 const BookingForm = () => {
   const { hostId } = useParams();
@@ -65,20 +65,7 @@ const BookingForm = () => {
   // ✅ Calculate end time correctly
   useEffect(() => {
     if (form.start && Number(form.duration) > 0) {
-      const startDateInput = form.start; // "2026-04-16T06:21"
-      const [datePart, timePart] = startDateInput.split("T");
-      const [year, month, day] = datePart.split("-").map(Number);
-      const [hours, minutes] = timePart.split(":").map(Number);
-      
-      const startDate = new Date(year, month - 1, day, hours, minutes);
-      const endDate = new Date(startDate.getTime() + Number(form.duration) * 60000);
-      
-      const endString = endDate.getFullYear() +
-        "-" + String(endDate.getMonth() + 1).padStart(2, "0") +
-        "-" + String(endDate.getDate()).padStart(2, "0") +
-        "T" + String(endDate.getHours()).padStart(2, "0") +
-        ":" + String(endDate.getMinutes()).padStart(2, "0");
-      
+      const endString = calculateEndTime(form.start, form.duration);
       setForm((p) => ({
         ...p,
         end: endString,
@@ -102,22 +89,11 @@ const BookingForm = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const convertToUTC = (localDatetimeString) => {
-        if (!localDatetimeString) return "";
-        const [datePart, timePart] = localDatetimeString.split("T");
-        const [year, month, day] = datePart.split("-").map(Number);
-        const [hours, minutes] = timePart.split(":").map(Number);
-        const localDate = new Date(year, month - 1, day, hours, minutes, 0);
-        const timezoneOffset = localDate.getTimezoneOffset() * 60000;
-        const utcDate = new Date(localDate.getTime() + timezoneOffset);
-        return utcDate.toISOString();
-      };
-      
       const payload = {
         hostId,
         availabilityId,
-        start: convertToUTC(form.start),
-        end: convertToUTC(form.end),
+        start: localToUTC(form.start),
+        end: localToUTC(form.end),
         duration: form.duration,
         timezone: getUserTimezone(),
         guest: { name: form.name, email: form.email, phone: form.phone },
@@ -137,29 +113,16 @@ const BookingForm = () => {
     }
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, staggerChildren: 0.1 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, x: -10 },
-    visible: { opacity: 1, x: 0 }
-  };
-
   if (!host) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center relative overflow-hidden">
-        <MeshBackground />
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="w-16 h-16 rounded-full border-4 border-violet-600 border-t-transparent animate-spin"
-        />
+      <div className="min-h-screen bg-[#FAFAF8] flex flex-col">
+        <UserHeader />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-[#E8E4DF] border-t-[#C8622A] rounded-full animate-spin" />
+            <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#92694A]">Loading booking details...</p>
+          </div>
+        </div>
       </div>
     );
   }
@@ -167,231 +130,225 @@ const BookingForm = () => {
   const hostName = host.hostId?.name || host.hostId?.fullName || "Host";
 
   return (
-    <div className="relative min-h-screen font-sans text-slate-900 overflow-x-hidden">
+    <div className="relative min-h-screen bg-[#FAFAF8] font-sans text-[#1A1A1A]">
       <Toaster position="top-right" />
       <UserHeader />
-      <MeshBackground />
 
-      <main className="max-w-4xl mx-auto px-4 py-12">
+      <main className="max-w-5xl mx-auto px-6 py-8">
         <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-          className="relative grid grid-cols-1 lg:grid-cols-5 gap-8"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8"
         >
-          {/* Left Column: Host Info */}
-          <div className="lg:col-span-2 space-y-6">
-            <Tilt maxTilt={5}>
-              <motion.div 
-                variants={itemVariants}
-                className="bg-white/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-slate-200/50 rounded-3xl p-8"
-              >
-                <div className="flex flex-col items-center text-center">
-                  <div className="relative mb-6">
-                    <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg shadow-violet-200">
-                      {hostName.charAt(0)}
-                    </div>
-                    <div className="absolute -bottom-2 -right-2 bg-emerald-500 text-white p-1.5 rounded-full shadow-lg ring-4 ring-white">
-                      <ShieldCheck className="w-4 h-4" />
-                    </div>
-                  </div>
-                  
-                  <h2 className="text-2xl font-bold text-slate-900">{hostName}</h2>
-                  <p className="text-slate-500 font-medium mb-4">Elite Professional</p>
-                  
-                  <div className="flex flex-wrap justify-center gap-2 mb-8">
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-xs font-bold border border-amber-100">
-                      <Star className="w-3 h-3 fill-current" /> 4.9 Rating
-                    </span>
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-violet-50 text-violet-600 rounded-full text-xs font-bold border border-violet-100">
-                      <Zap className="w-3 h-3" /> Fast Response
-                    </span>
-                  </div>
+          {/* Left Column: Host Info Card */}
+          <div className="lg:col-span-1">
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1, duration: 0.35 }}
+              className="bg-white border border-[#E8E4DF] rounded-[12px] p-6 sticky top-24"
+            >
+              <div className="flex justify-center mb-6">
+                <div className="w-20 h-20 rounded-[10px] bg-[#C8622A] flex items-center justify-center text-white text-[32px] font-bold border-2 border-[#FDF0EA]">
+                  {hostName.charAt(0).toUpperCase()}
+                </div>
+              </div>
+              
+              <h2 className="text-[18px] font-semibold text-[#1A1A1A] text-center mb-1">{hostName}</h2>
+              <p className="text-[13px] text-[#8A8A8A] text-center mb-6 pb-6 border-b border-[#E8E4DF]">Professional Host</p>
 
-                  <div className="w-full space-y-4 pt-6 border-t border-slate-100 text-left">
-                    <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
-                      <CalendarDays className="w-4 h-4" /> Available Days
-                    </h3>
-                    <div className="grid grid-cols-1 gap-2">
-                      {host.weekly?.map((slot, i) => (
-                        <div key={i} className="flex justify-between items-center text-sm">
-                          <span className="font-semibold text-slate-700">{slot.day}</span>
-                          <span className="text-slate-500 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
-                            {formatTime(slot.start)} - {formatTime(slot.end)}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <Globe className="w-5 h-5 text-[#C8622A]" />
+                  <div>
+                    <p className="text-[11px] font-medium uppercase tracking-[0.06em] text-[#92694A]">Timezone</p>
+                    <p className="text-[13px] font-semibold text-[#1A1A1A]">{host.timezone || "UTC"}</p>
                   </div>
                 </div>
-              </motion.div>
-            </Tilt>
+                <div className="flex items-center gap-3">
+                  <Clock className="w-5 h-5 text-[#C8622A]" />
+                  <div>
+                    <p className="text-[11px] font-medium uppercase tracking-[0.06em] text-[#92694A]">Duration</p>
+                    <p className="text-[13px] font-semibold text-[#1A1A1A]">{host.durations?.[0] || "-"} minutes</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Timer className="w-5 h-5 text-[#C8622A]" />
+                  <div>
+                    <p className="text-[11px] font-medium uppercase tracking-[0.06em] text-[#92694A]">Buffer</p>
+                    <p className="text-[13px] font-semibold text-[#1A1A1A]">{host.bufferBefore || "0"} min before</p>
+                  </div>
+                </div>
+              </div>
 
-            <motion.div 
-              variants={itemVariants}
-              className="bg-violet-900/10 backdrop-blur-md border border-violet-200/20 rounded-2xl p-6 text-sm text-violet-700"
-            >
-              <div className="flex gap-3">
-                <Info className="w-5 h-5 flex-shrink-0" />
-                <p>All meetings are held via our secure, high-definition video conferencing platform. Links will be provided upon confirmation.</p>
+              <div className="mt-8 pt-6 border-t border-[#E8E4DF]">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#92694A] mb-3">Weekly Schedule</p>
+                <div className="space-y-2">
+                  {host.weekly && host.weekly.length > 0 ? (
+                    host.weekly.map((slot, i) => (
+                      <div key={i} className="flex justify-between items-center text-[13px]">
+                        <span className="text-[#92694A] font-medium capitalize">{slot.day}</span>
+                        <span className="text-[#4A4A4A] font-semibold">{slot.start} — {slot.end}</span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-[13px] text-[#8A8A8A]">No schedule defined</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-[#E8E4DF]">
+                <div className="flex gap-2 p-3 rounded-[10px] bg-[#FDF0EA]">
+                  <Info className="w-4 h-4 text-[#C8622A] flex-shrink-0 mt-0.5" />
+                  <p className="text-[12px] text-[#92694A] leading-relaxed">All meetings are secure and encrypted. Links sent upon confirmation.</p>
+                </div>
               </div>
             </motion.div>
           </div>
 
-          {/* Right Column: Booking Form */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-2">
             <motion.div 
-              variants={itemVariants}
-              className="bg-white/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-slate-200/50 rounded-3xl p-8 sm:p-10"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15, duration: 0.35 }}
+              className="bg-white border border-[#E8E4DF] rounded-[12px] p-8"
             >
-              <div className="mb-8">
-                <h1 className="text-3xl font-extrabold text-slate-900 mb-2">Reserve Your Slot</h1>
-                <p className="text-slate-600">Fill in your details to secure a meeting with {hostName.split(' ')[0]}.</p>
-              </div>
+              <h1 className="text-[24px] font-semibold text-[#1A1A1A] mb-1">Book Your Meeting</h1>
+              <p className="text-[14px] text-[#8A8A8A] mb-8">Fill in your details to confirm</p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Floating Label Inputs */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="relative group">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-violet-600 transition-colors" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[13px] font-semibold text-[#1A1A1A] flex items-center gap-2">
+                      <User className="w-4 h-4 text-[#C8622A]" /> Full Name
+                    </label>
                     <input
                       type="text"
-                      id="name"
-                      placeholder=" "
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                       required
-                      className="peer w-full pl-12 pr-4 pt-6 pb-2 bg-white/50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-violet-500/10 focus:border-violet-500 outline-none transition-all font-medium"
+                      className="w-full h-11 px-4 bg-white border border-[#E8E4DF] rounded-[10px] text-[14px] focus:outline-none focus:border-[#C8622A] focus:ring-4 focus:ring-[#C8622A]/10 transition-all placeholder:text-[#B0B0B0]"
+                      placeholder="Your full name"
                     />
-                    <label 
-                      htmlFor="name" 
-                      className="absolute left-12 top-4 text-slate-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-violet-600 font-semibold"
-                    >
-                      Full Name
-                    </label>
                   </div>
 
-                  <div className="relative group">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-violet-600 transition-colors" />
+                  <div className="space-y-2">
+                    <label className="text-[13px] font-semibold text-[#1A1A1A] flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-[#C8622A]" /> Phone
+                    </label>
                     <input
-                      type="text"
-                      id="phone"
-                      placeholder=" "
+                      type="tel"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       required
-                      className="peer w-full pl-12 pr-4 pt-6 pb-2 bg-white/50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-violet-500/10 focus:border-violet-500 outline-none transition-all font-medium"
+                      className="w-full h-11 px-4 bg-white border border-[#E8E4DF] rounded-[10px] text-[14px] focus:outline-none focus:border-[#C8622A] focus:ring-4 focus:ring-[#C8622A]/10 transition-all placeholder:text-[#B0B0B0]"
+                      placeholder="+1 (555) 000-0000"
                     />
-                    <label 
-                      htmlFor="phone" 
-                      className="absolute left-12 top-4 text-slate-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-violet-600 font-semibold"
-                    >
-                      Phone Number
-                    </label>
                   </div>
                 </div>
 
-                <div className="relative group">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-violet-600 transition-colors" />
+                <div className="space-y-2">
+                  <label className="text-[13px] font-semibold text-[#1A1A1A] flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-[#C8622A]" /> Email Address
+                  </label>
                   <input
                     type="email"
-                    id="email"
-                    placeholder=" "
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     required
-                    className="peer w-full pl-12 pr-4 pt-6 pb-2 bg-white/50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-violet-500/10 focus:border-violet-500 outline-none transition-all font-medium"
+                    className="w-full h-11 px-4 bg-white border border-[#E8E4DF] rounded-[10px] text-[14px] focus:outline-none focus:border-[#C8622A] focus:ring-4 focus:ring-[#C8622A]/10 transition-all placeholder:text-[#B0B0B0]"
+                    placeholder="you@example.com"
                   />
-                  <label 
-                    htmlFor="email" 
-                    className="absolute left-12 top-4 text-slate-400 text-sm transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-4 peer-focus:top-1.5 peer-focus:text-xs peer-focus:text-violet-600 font-semibold"
-                  >
-                    Email Address
-                  </label>
                 </div>
 
-                {/* Duration Pills */}
                 <div className="space-y-3">
-                  <label className="text-sm font-bold text-slate-700 ml-1">Select Duration</label>
+                  <label className="text-[13px] font-semibold text-[#1A1A1A]">Meeting Duration</label>
                   <div className="flex flex-wrap gap-2">
                     {host.durations && (Array.isArray(host.durations) ? host.durations : [host.durations]).map((d) => (
                       <button
                         key={d}
                         type="button"
                         onClick={() => setForm({ ...form, duration: Number(d) })}
-                        className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all duration-200 ${
+                        className={`px-4 py-2 rounded-[8px] text-[13px] font-semibold border-2 transition-all duration-200 ${
                           Number(form.duration) === Number(d)
-                            ? "bg-violet-600 text-white shadow-lg shadow-violet-200 ring-2 ring-violet-600 ring-offset-2"
-                            : "bg-slate-50 text-slate-600 border border-slate-200 hover:border-violet-300 hover:bg-violet-50"
+                            ? "bg-[#C8622A] text-white border-[#C8622A]"
+                            : "bg-[#F5F3F0] text-[#4A4A4A] border-[#E8E4DF] hover:border-[#C8622A]"
                         }`}
                       >
-                        {d} Minutes
+                        {d}m
                       </button>
                     ))}
                   </div>
                 </div>
 
-                {/* Date/Time Pickers */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 ml-1 flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-violet-600" /> Start Time
+                    <label className="text-[13px] font-semibold text-[#1A1A1A] flex items-center gap-2">
+                      <CalendarDays className="w-4 h-4 text-[#C8622A]" /> Start Time
                     </label>
                     <input
                       type="datetime-local"
                       value={form.start}
                       onChange={(e) => setForm({ ...form, start: e.target.value })}
                       required
-                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-2xl focus:ring-4 focus:ring-violet-500/10 focus:border-violet-500 outline-none transition-all font-medium"
+                      className="w-full h-11 px-4 bg-white border border-[#E8E4DF] rounded-[10px] text-[14px] focus:outline-none focus:border-[#C8622A] focus:ring-4 focus:ring-[#C8622A]/10 transition-all"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 ml-1 flex items-center gap-2 opacity-50">
-                      <CheckCircle2 className="w-4 h-4" /> End Time (Auto)
+                    <label className="text-[13px] font-semibold text-[#8A8A8A] flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-[#2D7D52]" /> End Time
                     </label>
                     <input
                       type="datetime-local"
                       value={form.end}
                       readOnly
-                      className="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-2xl text-slate-400 cursor-not-allowed font-medium"
+                      className="w-full h-11 px-4 bg-[#F5F3F0] border border-[#E8E4DF] rounded-[10px] text-[14px] cursor-not-allowed text-[#8A8A8A]"
                     />
                   </div>
                 </div>
 
-                {error && (
-                  <motion.div 
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    className="p-4 bg-rose-50 border border-rose-100 rounded-2xl text-rose-600 text-sm font-medium flex gap-2"
-                  >
-                    <Info className="w-5 h-5 flex-shrink-0" />
-                    {error}
-                  </motion.div>
-                )}
+                <AnimatePresence>
+                  {error && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="p-4 bg-[#FEF2F2] border border-[#FEE2E2] rounded-[10px] text-[#B91C1C] text-[13px] font-medium flex gap-3"
+                    >
+                      <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                      {error}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
                 <motion.button
-                  whileHover={{ scale: 1.02, translateY: -2 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={!loading && !isSuccess ? { translateY: -2 } : {}}
+                  whileTap={!loading && !isSuccess ? { scale: 0.98 } : {}}
+                  type="submit"
                   disabled={loading}
-                  className={`w-full py-5 rounded-3xl font-bold text-lg shadow-xl transition-all duration-300 flex items-center justify-center gap-3 mt-4 ${
+                  className={`w-full h-12 rounded-[10px] font-semibold text-[14px] flex items-center justify-center gap-2 transition-all duration-200 mt-8 ${
                     isSuccess 
-                      ? "bg-emerald-500 text-white shadow-emerald-200" 
+                      ? "bg-[#2D7D52] text-white shadow-[0_4px_12px_rgba(45,125,82,0.2)]" 
                       : loading
-                        ? "bg-slate-400 text-white cursor-not-allowed"
-                        : "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-violet-200 hover:shadow-2xl hover:shadow-violet-300"
+                        ? "bg-[#E8E4DF] text-[#8A8A8A] cursor-not-allowed"
+                        : "bg-[#C8622A] text-white hover:bg-[#A84E20] shadow-[0_4px_12px_rgba(200,98,42,0.2)] hover:shadow-[0_8px_16px_rgba(200,98,42,0.3)]"
                   }`}
                 >
                   {loading ? (
-                    <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <>
+                      <div className="w-4 h-4 border-2 border-[#8A8A8A] border-t-transparent rounded-full animate-spin" />
+                      Processing...
+                    </>
                   ) : isSuccess ? (
                     <>
-                      <CheckCircle2 className="w-6 h-6" />
+                      <CheckCircle2 className="w-4 h-4" />
                       Booking Confirmed!
                     </>
                   ) : (
                     <>
-                      <Video className="w-6 h-6" />
-                      Confirm Meeting
+                      <Video className="w-4 h-4" />
+                      Confirm Booking
                     </>
                   )}
                 </motion.button>

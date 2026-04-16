@@ -1,18 +1,14 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import AdminHeader from "../../components/AdminHeader";
-import MeshBackground from "../../components/MeshBackground";
 import { io } from "socket.io-client";
 import { getSocketUrl } from "../../utils/apiConfig";
-import { motion, useMotionValue, useSpring, useTransform, animate, AnimatePresence } from "framer-motion";
+import { motion, useMotionValue, useTransform, animate, AnimatePresence } from "framer-motion";
 import {
   Users,
   Calendar,
   TrendingUp,
-  User,
   ArrowRight,
-  ChevronRight,
-  MoreHorizontal,
   Clock,
   ArrowUpRight
 } from "lucide-react";
@@ -52,105 +48,90 @@ const AdminDashboard = () => {
     {
       label: "Total Users",
       value: data?.totalUsers ?? 0,
-      icon: <Users className="w-6 h-6 text-white" />,
-      gradient: "from-violet-600 to-indigo-600",
-      shadow: "shadow-violet-200",
+      icon: <Users className="w-5 h-5 text-white" />,
+      iconBg: "bg-[#C8622A]", // terracotta
     },
     {
       label: "Total Bookings",
       value: data?.totalBookings ?? 0,
-      icon: <Calendar className="w-6 h-6 text-white" />,
-      gradient: "from-indigo-600 to-blue-600",
-      shadow: "shadow-indigo-200",
+      icon: <Calendar className="w-5 h-5 text-white" />,
+      iconBg: "bg-[#92694A]", // brown
     },
     {
       label: "Recent Sign-ups",
       value: data?.recentUsers?.length ?? 0,
-      icon: <TrendingUp className="w-6 h-6 text-white" />,
-      gradient: "from-cyan-500 to-blue-500",
-      shadow: "shadow-cyan-200",
+      icon: <TrendingUp className="w-5 h-5 text-white" />,
+      iconBg: "bg-[#1A1A1A]", // slate/dark
     },
   ];
 
   return (
-    <div className="min-h-screen relative overflow-hidden selection:bg-indigo-100 selection:text-indigo-900">
-      <MeshBackground />
+    <div className="min-h-screen bg-[#FAFAF8] font-['Inter'] selection:bg-[#FDF0EA] selection:text-[#C8622A]">
       <AdminHeader />
       
-      <main className="pt-28 pb-12 px-4 sm:px-6 relative z-10">
+      <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
           className="max-w-7xl mx-auto"
         >
           {/* Header */}
-          <header className="mb-10">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-            >
-              <h1 className="text-4xl font-black text-gray-900 tracking-tight mb-2">
-                Platform <span className="text-indigo-600">Overview</span>
-              </h1>
-              <div className="flex items-center gap-2 text-gray-500 font-medium">
-                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span>Live activity monitoring active</span>
-              </div>
-            </motion.div>
+          <header className="mb-8">
+            <h1 className="text-[28px] font-semibold text-[#1A1A1A] tracking-tight mb-1">
+              Platform Overview
+            </h1>
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#2D7D52]" />
+              <span className="text-[13px] text-[#8A8A8A] font-medium">Live activity monitoring active</span>
+            </div>
           </header>
 
           {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
               {[1, 2, 3].map((i) => <StatSkeleton key={i} />)}
             </div>
           ) : !data ? (
-            <div className="text-center py-20 bg-white/40 backdrop-blur-md rounded-3xl border border-white/50">
-              <p className="text-gray-500 font-bold">No dashboard data available.</p>
+            <div className="text-center py-20 bg-white rounded-2xl border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+              <p className="text-[#8A8A8A] font-medium">No dashboard data available.</p>
             </div>
           ) : (
-            <div className="space-y-10">
+            <div className="space-y-8">
               {/* Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 {statCards.map((card, idx) => (
-                  <StatCard key={card.label} {...card} delay={0.2 + idx * 0.1} />
+                  <StatCard key={card.label} {...card} delay={0.1 + idx * 0.05} />
                 ))}
               </div>
 
               {/* Recent Users Table */}
               <motion.section 
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.6 }}
-                className="bg-white/60 backdrop-blur-2xl rounded-[2.5rem] border border-white/50 shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden"
+                transition={{ delay: 0.25, duration: 0.35 }}
+                className="bg-white rounded-2xl border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06)] overflow-hidden"
               >
-                <div className="p-8 border-b border-gray-100 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-                      <Users size={24} />
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-black text-gray-900">Recent Sign-ups</h2>
-                      <p className="text-sm text-gray-500 font-medium">Newest platform members</p>
-                    </div>
+                <div className="px-8 py-6 border-b border-[#E8E4DF] flex items-center justify-between">
+                  <div>
+                    <h2 className="text-lg font-semibold text-[#1A1A1A]">Recent Sign-ups</h2>
+                    <p className="text-[13px] text-[#8A8A8A]">Newest members of your platform</p>
                   </div>
-                  <button className="p-2 hover:bg-gray-50 rounded-xl transition-colors text-gray-400">
-                    <MoreHorizontal size={20} />
-                  </button>
+                  <a href="/admin/users" className="text-[13px] font-medium text-[#C8622A] hover:text-[#A84E20] transition-colors flex items-center gap-1.5">
+                    View all users <ArrowRight size={14} />
+                  </a>
                 </div>
 
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="text-gray-400 text-[11px] font-black uppercase tracking-widest border-b border-gray-50">
-                        <th className="px-8 py-4">User</th>
-                        <th className="px-8 py-4">Role</th>
-                        <th className="px-8 py-4">Joined Date</th>
-                        <th className="px-8 py-4 text-right">Actions</th>
+                      <tr className="bg-[#F5F3F0]">
+                        <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8A8A8A]">User</th>
+                        <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8A8A8A]">Role</th>
+                        <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8A8A8A]">Joined Date</th>
+                        <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8A8A8A] text-right">Activity</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-50">
+                    <tbody className="divide-y divide-[#E8E4DF]">
                       <AnimatePresence mode="popLayout">
                         {data.recentUsers?.map((user, idx) => (
                           <UserTableRow key={user._id} user={user} index={idx} />
@@ -162,15 +143,9 @@ const AdminDashboard = () => {
                 
                 {(!data.recentUsers || data.recentUsers.length === 0) && (
                   <div className="p-20 text-center">
-                    <p className="text-gray-400 font-bold">No recent users found.</p>
+                    <p className="text-[#8A8A8A]">No recent users found.</p>
                   </div>
                 )}
-                
-                <div className="p-6 bg-gray-50/50 flex justify-center">
-                  <button className="flex items-center gap-2 text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
-                    View all users <ArrowRight size={16} />
-                  </button>
-                </div>
               </motion.section>
             </div>
           )}
@@ -187,88 +162,48 @@ const AnimatedCounter = ({ value }) => {
   const rounded = useTransform(count, (latest) => Math.round(latest));
 
   useEffect(() => {
-    const controls = animate(count, value, { duration: 1.5, ease: [0.23, 1, 0.32, 1] });
+    const controls = animate(count, value, { duration: 0.6, ease: "easeOut" });
     return controls.stop;
   }, [value, count]);
 
   return <motion.span>{rounded}</motion.span>;
 };
 
-const StatCard = ({ label, value, icon, gradient, shadow, delay }) => {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const rotateX = useTransform(y, [-100, 100], [8, -8]);
-  const rotateY = useTransform(x, [-100, 100], [-8, 8]);
-
-  const springConfig = { damping: 20, stiffness: 300 };
-  const springX = useSpring(rotateX, springConfig);
-  const springY = useSpring(rotateY, springConfig);
-
-  function handleMouseMove(event) {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set(event.clientX - centerX);
-    y.set(event.clientY - centerY);
-  }
-
-  function handleMouseLeave() {
-    x.set(0);
-    y.set(0);
-  }
-
+const StatCard = ({ label, value, icon, iconBg, delay }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.5 }}
-      style={{
-        perspective: 1000,
-      }}
+      transition={{ delay, duration: 0.35 }}
+      className="group bg-white rounded-xl p-[20px_24px] border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)] transition-all duration-200"
     >
-      <motion.div
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          rotateX: springX,
-          rotateY: springY,
-        }}
-        className={`relative group h-full bg-white/80 backdrop-blur-xl rounded-[2rem] p-6 border border-white/50 shadow-xl ${shadow} transition-all duration-300 hover:shadow-2xl hover:bg-white`}
-      >
-        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-500`}>
-          {icon}
+      <div className={`w-9 h-9 rounded-lg ${iconBg} flex items-center justify-center mb-4`}>
+        {icon}
+      </div>
+      <div>
+        <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#8A8A8A] mb-1">{label}</p>
+        <div className="flex items-baseline gap-2">
+          <h3 className="text-[28px] font-semibold text-[#1A1A1A]">
+            <AnimatedCounter value={value} />
+          </h3>
+          {value > 0 && (
+            <span className="flex items-center text-[11px] font-medium text-[#2D7D52] bg-[#EDF7F1] px-2 py-0.5 rounded-md">
+              <ArrowUpRight size={10} className="mr-0.5" /> 12%
+            </span>
+          )}
         </div>
-        <div>
-          <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-1">{label}</p>
-          <div className="flex items-baseline gap-2">
-            <h3 className="text-4xl font-black text-gray-900 tracking-tight">
-              <AnimatedCounter value={value} />
-            </h3>
-            {value > 0 && (
-              <span className="flex items-center text-[10px] font-black text-green-500 bg-green-50 px-2 py-0.5 rounded-full">
-                <ArrowUpRight size={10} className="mr-0.5" /> 12%
-              </span>
-            )}
-          </div>
-        </div>
-        
-        <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="p-2 rounded-xl bg-gray-50 text-gray-400">
-            <ArrowRight size={16} />
-          </div>
-        </div>
-      </motion.div>
+      </div>
     </motion.div>
   );
 };
 
 const UserTableRow = ({ user, index }) => {
-  const getRoleColor = (role) => {
+  const getRoleStyle = (role) => {
     switch (role?.toLowerCase()) {
-      case "admin": return "bg-purple-100 text-purple-600 border-purple-200";
-      case "host": return "bg-blue-100 text-blue-600 border-blue-200";
-      default: return "bg-gray-100 text-gray-600 border-gray-200";
+      case "admin": return "bg-[#1A1A1A] text-white";
+      case "host": return "bg-[#F5F3F0] text-[#92694A]";
+      case "user": return "bg-[#FDF0EA] text-[#C8622A]";
+      default: return "bg-[#F5F3F0] text-[#4A4A4A]";
     }
   };
 
@@ -278,50 +213,45 @@ const UserTableRow = ({ user, index }) => {
 
   return (
     <motion.tr 
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: 0.6 + index * 0.05 }}
-      className="group hover:bg-indigo-50/30 transition-all duration-300 cursor-default"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.3 + index * 0.03 }}
+      className="group hover:bg-[#FAFAF8] transition-colors"
     >
-      <td className="px-8 py-5">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-white flex items-center justify-center font-black text-sm shadow-md group-hover:scale-105 transition-transform duration-300">
-              {(user.fullName || "U").charAt(0).toUpperCase()}
-            </div>
-            <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-green-500 border-2 border-white" />
+      <td className="px-8 py-4">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-full bg-[#F5F3F0] text-[#92694A] flex items-center justify-center font-semibold text-sm">
+            {(user.fullName || "U").charAt(0).toUpperCase()}
           </div>
           <div>
-            <p className="font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">{user.fullName || "Unknown"}</p>
-            <p className="text-xs text-gray-400 font-medium">{user.email}</p>
+            <p className="text-[14px] font-medium text-[#1A1A1A]">{user.fullName || "Unknown"}</p>
+            <p className="text-[12px] text-[#8A8A8A]">{user.email}</p>
           </div>
         </div>
       </td>
-      <td className="px-8 py-5">
-        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${getRoleColor(user.role)}`}>
+      <td className="px-8 py-4">
+        <span className={`px-2.5 py-1 rounded-[6px] text-[11px] font-medium uppercase tracking-wider ${getRoleStyle(user.role)}`}>
           {user.role || "user"}
         </span>
       </td>
-      <td className="px-8 py-5">
-        <div className="flex items-center gap-2 text-gray-500 font-medium">
-          <Clock size={14} className="text-gray-300" />
-          <span className="text-sm">{formattedDate}</span>
+      <td className="px-8 py-4 text-[13px] text-[#4A4A4A]">
+        <div className="flex items-center gap-2">
+          <Clock size={14} className="text-[#D4CEC8]" />
+          {formattedDate}
         </div>
       </td>
-      <td className="px-8 py-5 text-right">
-        <button className="p-2 rounded-xl text-gray-300 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-200">
-          <ChevronRight size={18} />
-        </button>
+      <td className="px-8 py-4 text-right">
+        <div className="text-[12px] font-medium text-[#2D7D52]">Active</div>
       </td>
     </motion.tr>
   );
 };
 
 const StatSkeleton = () => (
-  <div className="bg-white/60 backdrop-blur-md rounded-[2rem] p-6 border border-white/50 h-44 animate-pulse">
-    <div className="w-14 h-14 rounded-2xl bg-gray-200 mb-4" />
-    <div className="h-4 w-24 bg-gray-200 rounded-full mb-2" />
-    <div className="h-8 w-16 bg-gray-200 rounded-full" />
+  <div className="bg-white rounded-xl p-[20px_24px] border border-[#E8E4DF] h-[140px] animate-pulse">
+    <div className="w-9 h-9 rounded-lg bg-[#F5F3F0] mb-4" />
+    <div className="h-4 w-24 bg-[#F5F3F0] rounded-md mb-2" />
+    <div className="h-8 w-16 bg-[#F5F3F0] rounded-md" />
   </div>
 );
 

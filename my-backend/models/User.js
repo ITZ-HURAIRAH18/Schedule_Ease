@@ -12,6 +12,12 @@ fullName: { type: String, required: true },
     },
     profilePicture: { type: String },
     isGoogleAccount: { type: Boolean, default: false },
+    username: { type: String, unique: true, sparse: true },
+    timezone: { type: String, default: "UTC" },
+    notificationPreferences: {
+      email: { type: Boolean, default: true },
+      sms: { type: Boolean, default: false },
+    },
 
     // Scheduling / availability
     availability: {

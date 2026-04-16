@@ -6,11 +6,12 @@
 /**
  * Format a date/time to user's local timezone
  * Input: ISO string or Date object (in UTC)
- * Output: "Jan 15, 2026" or "2:30 PM"
+ * Output: "Jan 15, 2026"
  */
 export const formatDate = (dateInput) => {
   if (!dateInput) return "";
   const date = new Date(dateInput);
+  if (isNaN(date.getTime())) return "Invalid Date";
   return new Intl.DateTimeFormat(undefined, {
     month: "short",
     day: "numeric",
@@ -18,9 +19,29 @@ export const formatDate = (dateInput) => {
   }).format(date);
 };
 
+/**
+ * Format time to user's local timezone
+ * Input: ISO string, Date object, or HH:mm string
+ * Output: "2:30 PM"
+ */
 export const formatTime = (dateInput) => {
   if (!dateInput) return "";
+  
+  // Handle HH:mm strings (like availability slots)
+  if (typeof dateInput === 'string' && dateInput.length === 5 && dateInput.includes(':')) {
+    const [hours, minutes] = dateInput.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes, 0, 0);
+    return date.toLocaleTimeString(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  }
+
   const date = new Date(dateInput);
+  if (isNaN(date.getTime())) return "";
+  
   return new Intl.DateTimeFormat(undefined, {
     hour: "numeric",
     minute: "2-digit",
@@ -33,55 +54,63 @@ export const formatTime = (dateInput) => {
  */
 export const formatDateTime = (dateInput) => {
   if (!dateInput) return "";
+  const date = new Date(dateInput);
+  if (isNaN(date.getTime())) return "";
   return `${formatDate(dateInput)} at ${formatTime(dateInput)}`;
 };
 
 /**
- * Convert local datetime-local input to ISO string (UTC)
- * When user picks time in their browser, it's local time
- * We need to send UTC to backend
+ * Convert local "YYYY-MM-DDTHH:mm" to ISO string (UTC)
+ * This is used when submitting form data from a datetime-local input
  */
 export const localToUTC = (localDatetimeString) => {
   if (!localDatetimeString) return "";
-  // localDatetimeString is like "2026-04-16T14:21" (local time from input)
-  const localDate = new Date(localDatetimeString);
-  // This creates a Date assuming the string is already in UTC
-  // But we need to treat it as local time
-  const utcDate = new Date(
-    localDate.getUTCFullYear(),
-    localDate.getUTCMonth(),
-    localDate.getUTCDate(),
-    localDate.getUTCHours(),
-    localDate.getUTCMinutes()
-  );
-  return utcDate.toISOString();
+  
+  // Format from <input type="datetime-local"> is YYYY-MM-DDTHH:mm
+  const [datePart, timePart] = localDatetimeString.split("T");
+  if (!datePart || !timePart) return "";
+  
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hours, minutes] = timePart.split(":").map(Number);
+  
+  // Create Date object in local timezone
+  // Note: month is 0-indexed in JS Date constructor
+  const localDate = new Date(year, month - 1, day, hours, minutes, 0);
+  
+  if (isNaN(localDate.getTime())) return "";
+  
+  // .toISOString() returns the UTC representation
+  return localDate.toISOString();
 };
 
 /**
- * Get user's timezone
+ * Get user's current browser timezone
  */
 export const getUserTimezone = () => {
-  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  try {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+  } catch (e) {
+    return "UTC";
+  }
 };
 
 /**
  * Calculate end time from start time + duration (in minutes)
- * Properly handles timezone by working in UTC
+ * Input: local "YYYY-MM-DDTHH:mm"
+ * Output: local "YYYY-MM-DDTHH:mm"
  */
-export const calculateEndTime = (startISOString, durationMinutes) => {
-  if (!startISOString || !durationMinutes) return "";
-  const startDate = new Date(startISOString);
-  const endDate = new Date(startDate.getTime() + durationMinutes * 60000);
-  return endDate.toISOString();
-};
-
-/**
- * Convert datetime-local HTML input to proper ISO format
- * The input value is in "YYYY-MM-DDTHH:mm" format (local time)
- * This function treats it as UTC for backend storage
- */
-export const datetimeLocalToISO = (datetimeLocalValue) => {
-  if (!datetimeLocalValue) return "";
-  // Simply add Z to treat as UTC
-  return `${datetimeLocalValue}:00Z`;
+export const calculateEndTime = (localStartString, durationMinutes) => {
+  if (!localStartString || isNaN(durationMinutes)) return "";
+  
+  const [datePart, timePart] = localStartString.split("T");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hours, minutes] = timePart.split(":").map(Number);
+  
+  const startDate = new Date(year, month - 1, day, hours, minutes);
+  const endDate = new Date(startDate.getTime() + Number(durationMinutes) * 60000);
+  
+  // Return in "YYYY-MM-DDTHH:mm" format for datetime-local input
+  const pad = (num) => String(num).padStart(2, '0');
+  
+  return `${endDate.getFullYear()}-${pad(endDate.getMonth() + 1)}-${pad(endDate.getDate())}T${pad(endDate.getHours())}:${pad(endDate.getMinutes())}`;
 };
