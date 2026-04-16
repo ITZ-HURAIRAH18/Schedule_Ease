@@ -40,7 +40,13 @@ export const getMeetingByRoomId = async (req, res) => {
     );
 
     if (!booking) {
-      return res.status(404).json({ message: "Meeting not found" });
+      const anyBooking = await Booking.findOne({ meetingRoom: roomId });
+      if (anyBooking) {
+        return res.status(403).json({ 
+          message: `This meeting is currently ${anyBooking.status.toUpperCase()}. If it was rescheduled, please check your dashboard for the new link.`
+        });
+      }
+      return res.status(404).json({ message: "Meeting room not found. Please verify the link from your dashboard." });
     }
 
     const hostId = booking.hostId ? booking.hostId.toString() : null;

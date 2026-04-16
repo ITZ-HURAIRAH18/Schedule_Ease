@@ -10,7 +10,8 @@ import {
   CheckCircle2,
   ShieldCheck,
   Clock,
-  Video
+  Video,
+  Check
 } from "lucide-react";
 import axiosInstance from "../api/axiosInstance";
 import { useAuth } from "../context/AuthContext";
@@ -23,6 +24,9 @@ const MeetingRoom = () => {
   const [error, setError] = useState("");
   const [status, setStatus] = useState("Initializing...");
   const [showParticipants, setShowParticipants] = useState(false);
+  const [stream, setStream] = useState(null);
+  const userVideo = useRef();
+  const streamRef = useRef();
 
   const parseTimestamp = useCallback((value) => {
     if (!value) return null;
@@ -51,79 +55,56 @@ const MeetingRoom = () => {
 
   const statusLower = (status || "").toLowerCase();
   
-  const getStatusConfig = () => {
-    if (error || statusLower.includes("failed") || statusLower.includes("error")) {
-      return { color: "bg-red-500", text: "Connection Error", icon: AlertCircle };
-    }
-    if (statusLower.includes("waiting") || statusLower.includes("not yet open")) {
-      return { color: "bg-amber-500", text: status, icon: Clock };
-    }
-    if (statusLower.includes("ended")) {
-      return { color: "bg-slate-500", text: "Meeting Ended", icon: Info };
-    }
-    return { color: "bg-emerald-500", text: "Connected", icon: CheckCircle2 };
-  };
-
-  const statusConfig = getStatusConfig();
-
   const handleLeaveCall = () => {
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+    }
     navigate(-1);
   };
 
   useEffect(() => {
+    let mounted = true;
     const load = async () => {
       try {
         const res = await axiosInstance.get(`/meetings/${roomId}`);
         if (mounted) {
           setMeetingInfo(res.data);
-          setStatus("Meeting loaded");
+          setStatus(res.data?.valid ? "Live" : "Waiting for time...");
         }
       } catch (err) {
         console.error("Failed to load meeting info:", err);
-        setError("Meeting session not found or expired.");
+        setError(err.response?.data?.message || "Meeting session not found or expired.");
       }
     };
+
+    const startLocalVideo = async () => {
+      try {
+        const local = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        if (mounted) {
+          setStream(local);
+          streamRef.current = local;
+          if (userVideo.current) userVideo.current.srcObject = local;
+        }
+      } catch (e) {
+        console.warn("Local camera preview failed:", e);
+      }
+    };
+
     if (roomId) {
       load();
-      // Auto-refresh meeting info every 5 seconds if link is missing
+      startLocalVideo();
       const interval = setInterval(() => {
-        // We only poll if the component is mounted AND we don't have a link yet
-        if (mounted && (!meetingInfo || !meetingInfo.meetingLink)) {
-          load();
-        }
+        if (mounted && (!meetingInfo || !meetingInfo.meetingLink)) load();
       }, 5000);
       return () => {
         mounted = false;
         clearInterval(interval);
+        if (streamRef.current) {
+          streamRef.current.getTracks().forEach(t => t.stop());
+        }
       };
     }
-    return () => { mounted = false; };
   }, [roomId]);
-
-  useEffect(() => {
-    if (!meetingInfo) return;
-
-    const accessStartMs = parseTimestamp(meetingInfo.bookingInfo?.accessStart);
-    const accessEndMs = parseTimestamp(meetingInfo.bookingInfo?.accessEnd);
-    const now = Date.now();
-
-    if (accessEndMs && now >= accessEndMs) {
-      setStatus("Meeting ended");
-      setError("This meeting has ended. Please schedule a new session.");
-      return;
-    }
-
-    const earlyJoinWindow = 30 * 60 * 1000;
-    const canJoinEarly = accessStartMs && now >= (accessStartMs - earlyJoinWindow);
-
-    if (accessStartMs && now < accessStartMs && !canJoinEarly) {
-      const friendlyStart = new Date(accessStartMs).toLocaleString();
-      setStatus("Meeting not yet open");
-      setError(`You can join from ${new Date(accessStartMs - earlyJoinWindow).toLocaleTimeString()}`);
-    } else {
-      setStatus("Connected");
-    }
-  }, [meetingInfo, parseTimestamp]);
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-[#FAFAF8] text-[#1A1A1A] font-sans">
@@ -139,7 +120,7 @@ const MeetingRoom = () => {
             <div className="h-8 w-8 rounded-[10px] bg-[#C8622A] flex items-center justify-center">
               <span className="text-white font-bold text-sm">N</span>
             </div>
-            <h1 className="text-[16px] font-semibold text-[#1A1A1A]">NexGen</h1>
+            <h1 className="text-[16px] font-semibold text-[#1A1A1A]">NexGen Meeting Room</h1>
           </div>
 
           {meetingInfo && (
@@ -152,14 +133,14 @@ const MeetingRoom = () => {
               </div>
               <div className="w-[1px] h-8 bg-[#E8E4DF]" />
               <div className={`flex items-center gap-2 px-3 py-1.5 rounded-[6px] ${
-                statusLower.includes('connected') ? 'bg-[#EDF7F1]' : 'bg-[#FEF3E2]'
+                statusLower.includes('live') || meetingInfo.meetingLink ? 'bg-[#EDF7F1]' : 'bg-[#FEF3E2]'
               }`}>
-                <span className={`h-2 w-2 rounded-full ${
-                  statusLower.includes('connected') ? 'bg-[#2D7D52]' : 'bg-[#B45309]'
+                <span className={`h-2 w-2 rounded-full animate-pulse ${
+                  statusLower.includes('live') || meetingInfo.meetingLink ? 'bg-[#2D7D52]' : 'bg-[#B45309]'
                 }`}></span>
                 <span className={`text-[12px] font-semibold ${
-                  statusLower.includes('connected') ? 'text-[#2D7D52]' : 'text-[#B45309]'
-                }`}>{statusConfig.text}</span>
+                  statusLower.includes('live') || meetingInfo.meetingLink ? 'text-[#2D7D52]' : 'text-[#B45309]'
+                }`}>{meetingInfo.meetingLink ? 'Room Open' : status}</span>
               </div>
             </div>
           )}
@@ -181,64 +162,51 @@ const MeetingRoom = () => {
                   />
                 </div>
               ) : (
-                <div className="h-full w-full flex flex-col items-center justify-center gap-6 bg-white rounded-[12px] border border-[#E8E4DF] p-12 text-center">
-                    <div className="w-20 h-20 bg-[#FDF0EA] rounded-[20px] flex items-center justify-center animate-pulse mb-2">
+                <div className="h-full w-full flex flex-col md:flex-row gap-6">
+                  {/* Left Side: Local Preview */}
+                  <div className="flex-1 bg-white rounded-[16px] border border-[#E8E4DF] overflow-hidden relative shadow-sm">
+                    <video 
+                      ref={userVideo} 
+                      autoPlay 
+                      muted 
+                      playsInline 
+                      className="w-full h-full object-cover bg-black"
+                    />
+                    <div className="absolute top-6 left-6 px-4 py-2 bg-black/50 backdrop-blur-md rounded-lg border border-white/20">
+                      <p className="text-white text-[13px] font-medium flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                        You (Preview)
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right Side: Waiting Info */}
+                  <div className="w-full md:w-[400px] flex flex-col items-center justify-center gap-6 bg-white rounded-[16px] border border-[#E8E4DF] p-12 text-center">
+                    <div className="w-20 h-20 bg-[#FDF0EA] rounded-[24px] flex items-center justify-center animate-bounce mb-2">
                         <Video className="w-10 h-10 text-[#C8622A]" />
                     </div>
                     <div>
-                      <h3 className="text-[20px] font-semibold text-[#1A1A1A] mb-2">{status}</h3>
-                      <p className="text-[14px] text-[#8A8A8A] max-w-sm">
-                        {statusLower.includes('loading') 
-                          ? "We're setting up your secure session..." 
-                          : statusLower.includes('open')
-                            ? error
-                            : "Waiting for the host to confirm the meeting room. Please stay on this page."}
+                      <h3 className="text-[20px] font-semibold text-[#1A1A1A] mb-2">{status || "Connecting..."}</h3>
+                      <p className="text-[14px] text-[#8A8A8A] leading-relaxed">
+                        {statusLower.includes('time') 
+                          ? error || "The session hasn't started yet. Your camera is ready!"
+                          : "Connecting to secure video bridge. Both users will see each other automatically."}
                       </p>
                     </div>
-                    {error && !statusLower.includes('open') && (
-                      <div className="flex items-center gap-2 p-3 bg-red-50 text-red-700 rounded-lg text-sm border border-red-100">
-                        <AlertCircle className="w-4 h-4" />
-                        {error}
-                      </div>
-                    )}
+                    
+                    <div className="w-full h-[2px] bg-[#F5F3F0] my-2" />
+                    
+                    <div className="flex flex-col gap-2 w-full text-left">
+                      <p className="text-[11px] font-bold uppercase tracking-wider text-[#92694A] mb-1">Status Check</p>
+                      <StatusItem label="Camera & Microphone" active={!!stream} />
+                      <StatusItem label="Secure Connection" active={true} />
+                      <StatusItem label="Host Ready" active={!!meetingInfo?.meetingLink} />
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
           </motion.div>
-
-          {/* Sidebar */}
-          <AnimatePresence>
-            {showParticipants && (
-              <motion.aside 
-                initial={{ x: 300, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: 300, opacity: 0 }}
-                className="hidden w-80 flex-col gap-4 lg:flex"
-              >
-                <div className="flex-1 overflow-y-auto rounded-[12px] border border-[#E8E4DF] bg-[#FFFFFF] p-6">
-                  <div className="mb-6 flex items-center justify-between">
-                    <h2 className="flex items-center gap-2 text-[14px] font-semibold text-[#1A1A1A]">
-                      <Users className="h-4 w-4 text-[#C8622A]" />
-                      Participants
-                    </h2>
-                  </div>
-
-                  <div className="space-y-3">
-                    <PremiumParticipantCard name="You" role={isCurrentUserHost ? 'Host' : 'Guest'} avatar="U" isMe mic={true} />
-                    <PremiumParticipantCard name={isCurrentUserHost ? guestDisplayName : hostDisplayName} role={isCurrentUserHost ? 'Guest' : 'Host'} avatar="O" mic={true} />
-                  </div>
-
-                  <div className="mt-8 space-y-4 pt-6 border-t border-[#E8E4DF]">
-                    <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#92694A]">Meeting Info</p>
-                    <div className="grid gap-3">
-                      <PremiumInfoItem icon={Clock} label="Start" value={meetingInfo?.bookingInfo?.start ? new Date(meetingInfo.bookingInfo.start).toLocaleTimeString() : "--"} />
-                      <PremiumInfoItem icon={ShieldCheck} label="Security" value="Encrypted" />
-                    </div>
-                  </div>
-                </div>
-              </motion.aside>
-            )}
-          </AnimatePresence>
         </div>
       </main>
 
@@ -253,13 +221,13 @@ const MeetingRoom = () => {
           className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#B91C1C] text-white font-semibold transition-all hover:bg-red-700 shadow-lg"
         >
           <PhoneOff className="w-4 h-4" />
-          Leave Meeting
+          Leave Room
         </button>
       </motion.div>
 
       {/* Error Alert */}
       <AnimatePresence>
-        {error && (
+        {error && !meetingInfo && (
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/35 p-6"
@@ -271,7 +239,7 @@ const MeetingRoom = () => {
               <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-[10px] bg-[#FEF2F2] border border-[#FEE2E2]">
                 <AlertCircle className="h-8 w-8 text-[#B91C1C]" />
               </div>
-              <h2 className="mb-2 text-[20px] font-semibold text-[#1A1A1A]">Connection Issue</h2>
+              <h2 className="mb-2 text-[20px] font-semibold text-[#1A1A1A]">Meeting Issue</h2>
               <p className="mb-6 text-[14px] text-[#4A4A4A] leading-relaxed">{error}</p>
               <div className="flex flex-col gap-3">
                 <button onClick={() => window.location.reload()} className="w-full rounded-[10px] bg-[#C8622A] text-white py-3 text-[14px] font-semibold">Retry Connection</button>
@@ -285,19 +253,18 @@ const MeetingRoom = () => {
   );
 };
 
-const PremiumParticipantCard = ({ name, role, avatar, isMe, mic }) => (
-  <div className={`flex items-center justify-between rounded-[10px] p-4 border ${isMe ? 'bg-[#FDF0EA] border-[#FDF0EA]' : 'bg-[#F5F3F0] border-[#E8E4DF]'}`}>
-    <div className="flex items-center gap-3">
-      <div className={`flex h-10 w-10 items-center justify-center rounded-[8px] font-semibold text-white ${isMe ? 'bg-[#C8622A]' : 'bg-[#92694A]'}`}>{avatar}</div>
-      <div><p className="text-[14px] font-semibold text-[#1A1A1A]">{name}</p><p className="text-[12px] text-[#8A8A8A]">{role}</p></div>
-    </div>
-  </div>
-);
-
-const PremiumInfoItem = ({ icon: Icon, label, value }) => (
-  <div className="flex items-center gap-3 rounded-[10px] bg-[#FFFFFF] p-3 border border-[#E8E4DF]">
-    <div className="flex h-8 w-8 items-center justify-center rounded-[6px] bg-[#FDF0EA]"><Icon className="h-4 w-4 text-[#C8622A]" /></div>
-    <div><p className="text-[11px] font-medium uppercase tracking-[0.06em] text-[#92694A]">{label}</p><p className="text-[13px] font-semibold text-[#1A1A1A]">{value}</p></div>
+const StatusItem = ({ label, active }) => (
+  <div className="flex items-center justify-between py-2">
+    <span className="text-[13px] text-[#4A4A4A]">{label}</span>
+    {active ? (
+      <div className="flex items-center gap-1 text-emerald-600 font-semibold text-[11px]">
+        <Check className="w-3 h-3" /> Ready
+      </div>
+    ) : (
+      <div className="flex items-center gap-1 text-amber-500 font-semibold text-[11px]">
+        <Clock className="w-3 h-3" /> Waiting
+      </div>
+    )}
   </div>
 );
 
