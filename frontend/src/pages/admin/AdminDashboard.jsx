@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import AdminHeader from "../../components/AdminHeader";
-import { io } from "socket.io-client";
+import io from "socket.io-client";
 import { getSocketUrl } from "../../utils/apiConfig";
 import { motion, useMotionValue, useTransform, animate, AnimatePresence } from "framer-motion";
 import {

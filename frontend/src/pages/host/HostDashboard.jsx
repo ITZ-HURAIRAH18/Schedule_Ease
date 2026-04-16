@@ -1,8 +1,8 @@
 // src/pages/host/HostDashboard.jsx
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import HostHeader from "../../components/HostHeader";
-import { io } from "socket.io-client";
+import io from "socket.io-client";
 import { getSocketUrl } from "../../utils/apiConfig";
 import { motion, AnimatePresence, useMotionValue, useTransform, animate } from "framer-motion";
 import {
@@ -31,7 +31,20 @@ const HostDashboard = () => {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const streamRef = useRef(null);
+  const userVideo = useRef(null);
   const pageSize = 5;
+
+  const teardownConnections = useCallback(() => {
+    const activeStream = streamRef.current;
+    if (activeStream) {
+      activeStream.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    if (userVideo.current) {
+      userVideo.current.srcObject = null;
+    }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
