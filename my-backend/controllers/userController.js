@@ -52,7 +52,7 @@ export const createBooking = async (req, res) => {
   try {
     console.log("📩 Incoming booking request body:", req.body);
 
-    const { hostId, start, end, duration, guest, availabilityId } = req.body; // ✅ include availabilityId
+    const { hostId, start, end, duration, guest, availabilityId, timezone } = req.body; // ✅ include timezone
 
     // ✅ Ensure user is authenticated
     if (!req.user || !req.user._id) {
@@ -94,14 +94,15 @@ export const createBooking = async (req, res) => {
       return res.status(400).json({ message: "Duration not allowed for this availability" });
     }
 
-    // ✅ Create booking with availabilityId + buffer snapshot
+    // ✅ Create booking with availabilityId + buffer snapshot + timezone
     const booking = await Booking.create({
       hostId,
-      availabilityId, // save availability reference
+      availabilityId,
       guest,
       start,
       end,
       duration: Number(duration),
+      timezone: timezone || "UTC", // ✅ Store user's timezone
       bufferBefore: availability.bufferBefore || 0,
       bufferAfter: availability.bufferAfter || 0,
       status: "pending",

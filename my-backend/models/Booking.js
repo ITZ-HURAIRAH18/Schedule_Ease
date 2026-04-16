@@ -5,8 +5,8 @@ const bookingSchema = new mongoose.Schema(
     hostId: { type: mongoose.Schema.Types.ObjectId, ref: "User", index: true },
     availabilityId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Availability", // ✅ link to the Availability collection
-      required: true, // optional, but recommended
+      ref: "Availability",
+      required: true,
     },
     guest: {
       name: String,
@@ -16,6 +16,7 @@ const bookingSchema = new mongoose.Schema(
     start: Date,
     end: Date,
     duration: Number,
+    timezone: { type: String, default: "UTC" }, // ✅ Store user's timezone
     bufferBefore: { type: Number, default: 0 },
     bufferAfter: { type: Number, default: 0 },
     // Access window including buffers (computed on confirmation)
@@ -34,7 +35,7 @@ const bookingSchema = new mongoose.Schema(
       ref: "User",
       default: null,
     },
-     meetingRoom: String, // ✅ renamed from meetingLink
+    meetingRoom: String,
     notes: {
       hostNote: String,
       guestNote: String,

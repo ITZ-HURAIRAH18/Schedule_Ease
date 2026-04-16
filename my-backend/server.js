@@ -379,14 +379,14 @@ if (!isServerless && io) {
   const PORT = process.env.PORT || 5000;
   const HOST = process.env.HOST || '0.0.0.0';
   server.listen(PORT, HOST, () =>
-    console.log(`✅ Development server running on ${HOST}:${PORT}`)
+    console.log(`✅ Development server running on ${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}`)
   );
 
-  // Start HTTP server on port 5001 if HTTPS is enabled
+  // Start HTTP fallback server on different port if HTTPS is enabled
   if (httpServer) {
-    const HTTP_PORT = 5001;
+    const HTTP_PORT = parseInt(PORT) + 1; // Use PORT+1 (e.g., 5002 if PORT is 5001)
     httpServer.listen(HTTP_PORT, HOST, () =>
-      console.log(`✅ HTTP fallback server running on ${HOST}:${HTTP_PORT}`)
+      console.log(`✅ HTTP fallback server running on http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${HTTP_PORT}`)
     );
   }
 }

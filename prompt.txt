@@ -1,22 +1,2 @@
-aiting for file changes before starting...
-[nodemon] restarting due to changes...
-[nodemon] starting `node server.js`
-[dotenv@17.2.3] injecting env (10) from .env -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
-[dotenv@17.2.3] injecting env (0) from .env -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
-🔄 Initializing database connection...
-🔍 Attempting to connect to MongoDB...
-📍 Connection URI (masked): mongodb+srv://muhammadabuhurairah22_db_user:****@cluster0.sktz1b5.mongodb.net/FirstData?retryWrites=true&w=majority
-🔍 Establishing new MongoDB connection...
-📍 URI: mongodb+srv://muhammadabuhurairah22_db_user:****@cluster0.sktz1b5.mongodb.net/FirstData?retryWrites=true&w=majority
-❌ MongoDB connection failed: bufferMaxEntries: "bufferMaxEntries" is not a valid option to set
-📋 Error code: undefined
-📋 Error name: SetOptionError
-🔐 HTTPS enabled (localhost-key.pem, localhost.pem)
-🌐 HTTP server also available on port 5001 for browser compatibility
-✅ Socket.io instance initialized
-⚠️ Database initialization failed: bufferMaxEntries: "bufferMaxEntries" is not a valid option to set
-❌ MongoDB URI: SET but failed to connect
-❌ Database initialization failed: bufferMaxEntries: "bufferMaxEntries" is not a valid option to set
-✅ Development server running on 0.0.0.0:5000
-✅ HTTP fallback server running on 0.0.0.0:5001
- i cae rhis error 
+Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)Understand this error
+3hook.bundle.js:1 [locatorjs]: loading: No valid renderers found.

@@ -1,86 +1,236 @@
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { User, Users, Shield, ArrowRight, CheckCircle2, Zap, Star } from 'lucide-react';
+
+const TypewriterSubheading = ({ text }) => {
+  const [displayText, setDisplayText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayText((prev) => prev + text[currentIndex]);
+        setCurrentIndex((prev) => prev + 1);
+      }, 50);
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, text]);
+
+  return (
+    <p className="text-lg md:text-xl text-blue-100/80 max-w-2xl mx-auto mb-10 min-h-[3rem]">
+      {displayText}
+      <motion.span
+        animate={{ opacity: [0, 1, 0] }}
+        transition={{ repeat: Infinity, duration: 0.8 }}
+        className="inline-block w-0.5 h-5 ml-1 bg-blue-400 align-middle"
+      />
+    </p>
+  );
+};
+
+const RoleCard = ({ title, description, icon: Icon, loginPath, signupPath, color, delay }) => {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50, rotateX: 0, rotateY: 0 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+      }}
+      className="relative group h-full"
+    >
+      <div 
+        className="h-full bg-white/5 backdrop-blur-xl rounded-3xl p-8 border border-white/10 hover:border-white/20 transition-colors flex flex-col justify-between"
+        style={{ transform: "translateZ(50px)" }}
+      >
+        <div style={{ transform: "translateZ(75px)" }}>
+          <div className={`w-16 h-16 mb-6 bg-gradient-to-br ${color} rounded-2xl flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500`}>
+            <Icon className="w-8 h-8 text-white" />
+          </div>
+          <h3 className="text-2xl font-bold mb-3 text-white">{title}</h3>
+          <p className="text-blue-100/60 mb-8 leading-relaxed">
+            {description}
+          </p>
+        </div>
+
+        <div className="space-y-3" style={{ transform: "translateZ(60px)" }}>
+          <Link 
+            to={loginPath} 
+            className="flex items-center justify-center w-full bg-white text-indigo-950 py-3.5 rounded-xl font-bold hover:bg-blue-50 active:scale-95 transition-all group/btn"
+          >
+            Log In
+            <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+          </Link>
+          <Link 
+            to={signupPath} 
+            className="flex items-center justify-center w-full bg-white/10 border border-white/10 py-3.5 rounded-xl font-bold hover:bg-white/20 active:scale-95 transition-all"
+          >
+            Sign Up
+          </Link>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+const FloatingShape = ({ className, delay, duration }) => (
+  <motion.div
+    initial={{ y: 0, x: 0 }}
+    animate={{ 
+      y: [0, -20, 0],
+      x: [0, 10, 0],
+      rotate: [0, 10, 0]
+    }}
+    transition={{ 
+      duration, 
+      repeat: Infinity, 
+      delay,
+      ease: "easeInOut" 
+    }}
+    className={`absolute rounded-full blur-3xl opacity-20 ${className}`}
+  />
+);
 
 const Landing = () => {
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white">
-      {/* Subtle animated background */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+    <div className="min-h-screen relative overflow-hidden bg-[#050816] text-white flex flex-col items-center justify-center py-20 px-6">
+      {/* Dynamic Background */}
+      <div className="absolute inset-0 pointer-events-none">
+        <FloatingShape className="w-[500px] h-[500px] bg-purple-600 top-[-10%] left-[-10%]" delay={0} duration={15} />
+        <FloatingShape className="w-[400px] h-[400px] bg-blue-600 bottom-[-5%] right-[-5%]" delay={2} duration={18} />
+        <FloatingShape className="w-[300px] h-[300px] bg-indigo-600 top-[20%] right-[10%]" delay={5} duration={12} />
+        
+        {/* Particle Stars */}
+        <div className="absolute inset-0 opacity-30">
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0.2 }}
+              animate={{ opacity: [0.2, 0.8, 0.2] }}
+              transition={{ 
+                duration: Math.random() * 3 + 2, 
+                repeat: Infinity, 
+                delay: Math.random() * 5 
+              }}
+              className="absolute w-1 h-1 bg-white rounded-full"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+              }}
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="relative z-10 text-center px-6">
-        {/* Logo / Icon */}
-        <div className="mb-6 inline-flex items-center justify-center w-20 h-20 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/20">
-          <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
+      <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center">
+        {/* Hero Section */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="text-center mb-16"
+        >
+          <div className="mb-8 inline-flex items-center px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm text-sm font-medium text-blue-200">
+            <Star className="w-4 h-4 mr-2 text-yellow-400 fill-yellow-400" />
+            The next generation of scheduling
+          </div>
+          
+          <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-500 via-indigo-500 to-blue-500">
+              NexGen
+            </span>
+            <br />
+            <span className="text-white">Schedule</span>
+          </h1>
+          
+          <TypewriterSubheading text="Effortlessly manage your time, appointments, and meetings in one unified platform built for speed and clarity." />
+        </motion.div>
+
+        {/* Role Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full [perspective:1000px]">
+          <RoleCard 
+            title="User"
+            description="Book and manage your appointments seamlessly with a personal dashboard and automated reminders."
+            icon={User}
+            loginPath="/login/user"
+            signupPath="/signup/user"
+            color="from-cyan-400 to-blue-600"
+            delay={0.2}
+          />
+          <RoleCard 
+            title="Host"
+            description="Create availability, manage your calendar, and let others book your time with professional ease."
+            icon={Users}
+            loginPath="/login/host"
+            signupPath="/signup/host"
+            color="from-purple-500 to-indigo-600"
+            delay={0.4}
+          />
+          <RoleCard 
+            title="Admin"
+            description="Oversee the entire platform, manage user accounts, and monitor system-wide scheduling statistics."
+            icon={Shield}
+            loginPath="/login/admin"
+            signupPath="/signup/admin" // Note: Signup for admin might not be standard but keeping it as per generic requirement
+            color="from-amber-400 to-orange-600"
+            delay={0.6}
+          />
         </div>
 
-        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-indigo-500 animate-gradient-text">
-          NexGen Schedule
-        </h1>
-        <p className="text-lg md:text-xl text-blue-100/80 max-w-xl mx-auto mb-10">
-          Effortlessly manage your time, appointments, and meetings in one unified platform built for speed and clarity.
-        </p>
-
-        {/* Role cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl mx-auto">
-          {/* User */}
-          <div className="group bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-white/30 transition-all duration-300 hover:-translate-y-1">
-            <div className="w-12 h-12 mb-4 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-lg flex items-center justify-center shadow-lg">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold mb-2">User</h3>
-            <p className="text-sm text-blue-100/60 mb-5">Book and manage your appointments seamlessly.</p>
-            <div className="flex gap-3">
-              <Link to="/login/user" className="flex-1 bg-white text-blue-900 py-2.5 rounded-lg font-semibold hover:bg-blue-50 active:scale-95 transition">
-                Log In
-              </Link>
-              <Link to="/signup/user" className="flex-1 bg-white/10 border border-white/20 py-2.5 rounded-lg font-semibold hover:bg-white/20 active:scale-95 transition">
-                Sign Up
-              </Link>
-            </div>
+        {/* Trust Indicators */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 1 }}
+          className="mt-24 flex flex-wrap justify-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all duration-500"
+        >
+          <div className="flex items-center gap-2">
+            <Zap className="w-5 h-5" />
+            <span className="font-bold tracking-widest text-sm uppercase">Ultra Fast</span>
           </div>
-
-          {/* Host */}
-          <div className="group bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-white/30 transition-all duration-300 hover:-translate-y-1">
-            <div className="w-12 h-12 mb-4 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Host</h3>
-            <p className="text-sm text-blue-100/60 mb-5">Create availability and let others book your time.</p>
-            <div className="flex gap-3">
-              <Link to="/login/host" className="flex-1 bg-white text-blue-900 py-2.5 rounded-lg font-semibold hover:bg-blue-50 active:scale-95 transition">
-                Log In
-              </Link>
-              <Link to="/signup/host" className="flex-1 bg-white/10 border border-white/20 py-2.5 rounded-lg font-semibold hover:bg-white/20 active:scale-95 transition">
-                Sign Up
-              </Link>
-            </div>
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-5 h-5" />
+            <span className="font-bold tracking-widest text-sm uppercase">Secure Core</span>
           </div>
-
-          {/* Admin */}
-          <div className="group bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 hover:border-white/30 transition-all duration-300 hover:-translate-y-1">
-            <div className="w-12 h-12 mb-4 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center shadow-lg">
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold mb-2">Admin</h3>
-            <p className="text-sm text-blue-100/60 mb-5">Oversee the platform and manage all accounts.</p>
-            <Link to="/login/admin" className="w-full block bg-white text-blue-900 py-2.5 rounded-lg font-semibold hover:bg-blue-50 active:scale-95 transition">
-              Admin Portal
-            </Link>
+          <div className="flex items-center gap-2">
+            <Users className="w-5 h-5" />
+            <span className="font-bold tracking-widest text-sm uppercase">Global Scale</span>
           </div>
-        </div>
+        </motion.div>
 
-        <p className="mt-10 text-xs text-blue-100/40">
-          By continuing, you agree to our Terms of Service and Privacy Policy.
+        <p className="mt-16 text-xs text-blue-100/30">
+          © 2024 NexGen Schedule. Powered by Modern Web Technology.
         </p>
       </div>
     </div>

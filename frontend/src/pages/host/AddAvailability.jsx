@@ -1,40 +1,65 @@
 // src/pages/host/AddAvailability.jsx
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Calendar, 
+  Clock, 
+  Plus, 
+  Trash2, 
+  Globe, 
+  CheckCircle2, 
+  CalendarDays,
+  Settings2,
+  AlertCircle
+} from "lucide-react";
+import toast, { Toaster } from "react-hot-toast";
 import axiosInstance from "../../api/axiosInstance";
 import HostHeader from "../../components/HostHeader";
-import {
-  PlusCircleIcon,
-  TrashIcon,
-  ClockIcon,
-  CalendarDaysIcon,
-  GlobeAltIcon,
-} from "@heroicons/react/24/outline";
+import MeshBackground from "../../components/MeshBackground";
 
-const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const daysOfWeek = [
+  { full: "Monday", short: "Mon" },
+  { full: "Tuesday", short: "Tue" },
+  { full: "Wednesday", short: "Wed" },
+  { full: "Thursday", short: "Thu" },
+  { full: "Friday", short: "Fri" },
+  { full: "Saturday", short: "Sat" },
+  { full: "Sunday", short: "Sun" },
+];
 
 const AddAvailability = () => {
-  const [weekly, setWeekly] = useState([{ day: "", start: "", end: "" }]);
-  const [bufferBefore, setBufferBefore] = useState(10);
-  const [bufferAfter, setBufferAfter] = useState(10);
+  const [weekly, setWeekly] = useState([{ day: "", start: "09:00", end: "17:00" }]);
+  const [bufferBefore, setBufferBefore] = useState(15);
+  const [bufferAfter, setBufferAfter] = useState(15);
   const [durations, setDurations] = useState(30);
-  const [maxPerDay, setMaxPerDay] = useState(5);
+  const [maxPerDay, setMaxPerDay] = useState(8);
   const [timezone, setTimezone] = useState(Intl.DateTimeFormat().resolvedOptions().timeZone);
   const [blockedDates, setBlockedDates] = useState([]);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  /* ---------- handlers ---------- */
-  const addDay      = () => setWeekly([...weekly, { day: "", start: "", end: "" }]);
-  const updateDay   = (i, f, v) => setWeekly((w) => w.map((s, idx) => (idx === i ? { ...s, [f]: v } : s)));
-  const removeDay   = (i) => setWeekly((w) => w.filter((_, idx) => idx !== i));
+  // Load existing data if any (optional enhancement, but keeping logic for now)
+  // The original didn't have a useEffect to fetch, so we stay consistent.
 
-  const addBlocked  = () => setBlockedDates([...blockedDates, ""]);
+  const addDay = () => setWeekly([...weekly, { day: "", start: "09:00", end: "17:00" }]);
+  const updateDay = (i, f, v) => setWeekly((w) => w.map((s, idx) => (idx === i ? { ...s, [f]: v } : s)));
+  const removeDay = (i) => setWeekly((w) => w.filter((_, idx) => idx !== i));
+
+  const addBlocked = () => setBlockedDates([...blockedDates, ""]);
   const updateBlock = (i, v) => setBlockedDates((d) => d.map((dt, idx) => (idx === i ? v : dt)));
   const removeBlock = (i) => setBlockedDates((d) => d.filter((_, idx) => idx !== i));
 
   const save = async () => {
+    if (isSaving) return;
+    setIsSaving(true);
     try {
       const storedUser = JSON.parse(localStorage.getItem("user"));
       const hostId = storedUser?.id;
-      if (!hostId) return alert("User not found — please log in again.");
+      if (!hostId) {
+        toast.error("User not found — please log in again.");
+        setIsSaving(false);
+        return;
+      }
 
       const payload = {
         hostId,
@@ -48,175 +73,363 @@ const AddAvailability = () => {
       };
 
       await axiosInstance.post("/host/availability/add", payload);
-      alert("✅ Availability saved!");
+      setIsSuccess(true);
+      toast.success("Availability saved successfully!");
+      
+      setTimeout(() => {
+        setIsSuccess(false);
+        setIsSaving(false);
+      }, 3000);
     } catch (err) {
-      alert(err?.response?.data?.message || "Save failed");
+      toast.error(err?.response?.data?.message || "Save failed");
+      setIsSaving(false);
     }
   };
 
-  /* ---------- render ---------- */
-  return (
-    <>
-      <HostHeader />
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 to-blue-600 p-4 sm:p-6">
-        <div className="max-w-4xl mx-auto bg-white/90 backdrop-blur rounded-2xl shadow-xl p-6 sm:p-8">
-          <header className="mb-6 text-center">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white mb-3">
-              <CalendarDaysIcon className="w-7 h-7" />
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Add Your Availability</h1>
-            <p className="text-sm text-gray-600 mt-1">Set your schedule and let guests book you easily</p>
-          </header>
+  const containerVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        staggerChildren: 0.1
+      }
+    }
+  };
 
-          {/* Weekly slots */}
-          <section className="mb-8">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <ClockIcon className="w-5 h-5 text-blue-600" /> Weekly Schedule
-            </h2>
-            <div className="space-y-4">
-              {weekly.map((slot, i) => (
-                <div key={i} className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end bg-gray-50/70 p-4 rounded-xl border border-gray-200">
-                  <div className="sm:col-span-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Day</label>
-                    <select
-                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      value={slot.day}
-                      onChange={(e) => updateDay(i, "day", e.target.value)}
-                    >
-                      <option value="">Select day</option>
-                      {daysOfWeek.map((d) => (
-                        <option key={d} value={d}>{d}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="sm:col-span-3">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Start</label>
-                    <input type="time" value={slot.start} onChange={(e) => updateDay(i, "start", e.target.value)} className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                  </div>
-                  <div className="sm:col-span-3">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">End</label>
-                    <input type="time" value={slot.end} onChange={(e) => updateDay(i, "end", e.target.value)} className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                  </div>
-                  <div className="sm:col-span-2 flex justify-end">
-                    <button
-                      type="button"
-                      onClick={() => removeDay(i)}
-                      className="px-3 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition"
-                    >
-                      <TrashIcon className="w-5 h-5" />
-                    </button>
+  const itemVariants = {
+    hidden: { opacity: 0, x: -10 },
+    visible: { opacity: 1, x: 0 }
+  };
+
+  return (
+    <div className="relative min-h-screen font-sans text-slate-900">
+      <Toaster position="top-right" />
+      <HostHeader />
+      <MeshBackground />
+
+      <main className="max-w-5xl mx-auto px-4 py-12">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+          className="relative"
+        >
+          {/* Header Section */}
+          <div className="text-center mb-10">
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-violet-600/10 text-violet-600 mb-4"
+            >
+              <CalendarDays className="w-8 h-8" />
+            </motion.div>
+            <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+              Add Your Availability
+            </h1>
+            <p className="mt-3 text-lg text-slate-600 max-w-2xl mx-auto">
+              Define when you're reachable. We'll handle the timezones and buffers for you.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Form Area */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Weekly Schedule Card */}
+              <motion.section 
+                variants={itemVariants}
+                className="bg-white/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-slate-200/50 rounded-3xl p-6 sm:p-8"
+              >
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-violet-100 rounded-lg text-violet-600">
+                      <Clock className="w-5 h-5" />
+                    </div>
+                    <h2 className="text-xl font-bold">Weekly Schedule</h2>
                   </div>
                 </div>
-              ))}
-            </div>
-            <button
-              onClick={addDay}
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 text-blue-700 font-medium hover:bg-blue-100 transition"
-            >
-              <PlusCircleIcon className="w-5 h-5" /> Add Day
-            </button>
-          </section>
 
-          {/* Settings */}
-          <section className="mb-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Buffer Before (min)</label>
-              <input
-                type="number"
-                min="0"
-                value={bufferBefore}
-                onChange={(e) => setBufferBefore(Number(e.target.value))}
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Buffer After (min)</label>
-              <input
-                type="number"
-                min="0"
-                value={bufferAfter}
-                onChange={(e) => setBufferAfter(Number(e.target.value))}
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Duration / Meeting (min)</label>
-              <input
-                type="number"
-                min="15"
-                step="15"
-                value={durations}
-                onChange={(e) => setDurations(Number(e.target.value))}
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Max Bookings / Day</label>
-              <input
-                type="number"
-                min="1"
-                value={maxPerDay}
-                onChange={(e) => setMaxPerDay(Number(e.target.value))}
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-                <GlobeAltIcon className="w-5 h-5 text-blue-600" /> Timezone
-              </label>
-              <input
-                type="text"
-                value={timezone}
-                onChange={(e) => setTimezone(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </section>
+                <div className="space-y-6">
+                  <AnimatePresence mode="popLayout">
+                    {weekly.map((slot, i) => (
+                      <motion.div
+                        key={i}
+                        layout
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="group relative p-6 rounded-2xl bg-slate-50/50 border border-slate-200 hover:border-violet-200 hover:bg-white transition-all duration-300"
+                      >
+                        <button
+                          onClick={() => removeDay(i)}
+                          className="absolute -top-3 -right-3 p-2 bg-white border border-slate-200 rounded-full text-slate-400 hover:text-rose-500 hover:border-rose-200 shadow-sm transition-colors opacity-0 group-hover:opacity-100"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
 
-          {/* Blocked Dates */}
-          <section className="mb-8">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-              <CalendarDaysIcon className="w-5 h-5 text-blue-600" /> Blocked Dates
-            </h2>
-            <div className="space-y-3">
-              {blockedDates.map((date, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <input
-                    type="date"
-                    value={date}
-                    onChange={(e) => updateBlock(i, e.target.value)}
-                    className="flex-1 px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeBlock(i)}
-                    className="px-3 py-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition"
+                        <div className="space-y-6">
+                          {/* Day Pills Grid */}
+                          <div className="flex flex-wrap gap-2">
+                            {daysOfWeek.map((day) => (
+                              <button
+                                key={day.full}
+                                type="button"
+                                onClick={() => updateDay(i, "day", day.full)}
+                                className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                                  slot.day === day.full
+                                    ? "bg-violet-600 text-white shadow-lg shadow-violet-200 ring-2 ring-violet-600 ring-offset-2"
+                                    : "bg-white text-slate-600 border border-slate-200 hover:border-violet-300 hover:bg-violet-50"
+                                }`}
+                              >
+                                {day.short}
+                              </button>
+                            ))}
+                          </div>
+
+                          {/* Time Inputs */}
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="relative">
+                              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1 ml-1">Start Time</label>
+                              <div className="relative">
+                                <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                <input
+                                  type="time"
+                                  value={slot.start}
+                                  onChange={(e) => updateDay(i, "start", e.target.value)}
+                                  className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all font-medium"
+                                />
+                              </div>
+                            </div>
+                            <div className="relative">
+                              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1 ml-1">End Time</label>
+                              <div className="relative">
+                                <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                <input
+                                  type="time"
+                                  value={slot.end}
+                                  onChange={(e) => updateDay(i, "end", e.target.value)}
+                                  className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all font-medium"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={addDay}
+                    className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-500 font-semibold hover:border-violet-300 hover:text-violet-600 hover:bg-violet-50/50 transition-all flex items-center justify-center gap-2"
                   >
-                    <TrashIcon className="w-5 h-5" />
+                    <Plus className="w-5 h-5" />
+                    Add Another Slot
+                  </motion.button>
+                </div>
+              </motion.section>
+
+              {/* Blocked Dates Card */}
+              <motion.section 
+                variants={itemVariants}
+                className="bg-white/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-slate-200/50 rounded-3xl p-6 sm:p-8"
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-rose-100 rounded-lg text-rose-600">
+                    <Calendar className="w-5 h-5" />
+                  </div>
+                  <h2 className="text-xl font-bold">Blocked Dates</h2>
+                </div>
+
+                <div className="space-y-3">
+                  <AnimatePresence mode="popLayout">
+                    {blockedDates.map((date, i) => (
+                      <motion.div
+                        key={i}
+                        layout
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                        className="flex items-center gap-3"
+                      >
+                        <div className="relative flex-1">
+                          <input
+                            type="date"
+                            value={date}
+                            onChange={(e) => updateBlock(i, e.target.value)}
+                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all font-medium"
+                          />
+                        </div>
+                        <button
+                          onClick={() => removeBlock(i)}
+                          className="p-3 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition-colors"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+
+                  <button
+                    onClick={addBlocked}
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-rose-600 hover:text-rose-700 transition-colors"
+                  >
+                    <Plus className="w-4 h-4" /> Add Blocked Date
                   </button>
                 </div>
-              ))}
+              </motion.section>
             </div>
-            <button
-              onClick={addBlocked}
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-50 text-blue-700 font-medium hover:bg-blue-100 transition"
-            >
-              <PlusCircleIcon className="w-5 h-5" /> Add Blocked Date
-            </button>
-          </section>
 
-          {/* Save */}
-          <div className="text-center">
-            <button
-              onClick={save}
-              className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow hover:shadow-lg transition"
-            >
-              Save Availability
-            </button>
+            {/* Sidebar Settings */}
+            <div className="space-y-6">
+              <motion.section 
+                variants={itemVariants}
+                className="bg-white/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-slate-200/50 rounded-3xl p-6 sm:p-8"
+              >
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
+                    <Settings2 className="w-5 h-5" />
+                  </div>
+                  <h2 className="text-xl font-bold">Preferences</h2>
+                </div>
+
+                <div className="space-y-8">
+                  {/* Slider: Buffer Before */}
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <label className="text-sm font-bold text-slate-700">Buffer Before</label>
+                      <span className="text-sm font-mono font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded">
+                        {bufferBefore}m
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="60"
+                      step="5"
+                      value={bufferBefore}
+                      onChange={(e) => setBufferBefore(Number(e.target.value))}
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
+                    />
+                  </div>
+
+                  {/* Slider: Buffer After */}
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <label className="text-sm font-bold text-slate-700">Buffer After</label>
+                      <span className="text-sm font-mono font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded">
+                        {bufferAfter}m
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="60"
+                      step="5"
+                      value={bufferAfter}
+                      onChange={(e) => setBufferAfter(Number(e.target.value))}
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
+                    />
+                  </div>
+
+                  {/* Slider: Duration */}
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <label className="text-sm font-bold text-slate-700">Meeting Duration</label>
+                      <span className="text-sm font-mono font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded">
+                        {durations}m
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="15"
+                      max="120"
+                      step="15"
+                      value={durations}
+                      onChange={(e) => setDurations(Number(e.target.value))}
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
+                    />
+                  </div>
+
+                  {/* Slider: Max Bookings */}
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <label className="text-sm font-bold text-slate-700">Daily Limit</label>
+                      <span className="text-sm font-mono font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded">
+                        {maxPerDay}
+                      </span>
+                    </div>
+                    <input
+                      type="range"
+                      min="1"
+                      max="20"
+                      step="1"
+                      value={maxPerDay}
+                      onChange={(e) => setMaxPerDay(Number(e.target.value))}
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
+                    />
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-100">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Timezone</label>
+                    <div className="relative">
+                      <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                      <input
+                        type="text"
+                        value={timezone}
+                        onChange={(e) => setTimezone(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </motion.section>
+
+              {/* Submit Button */}
+              <motion.button
+                variants={itemVariants}
+                whileHover={{ scale: 1.02, translateY: -2 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={save}
+                disabled={isSaving}
+                className={`w-full py-5 rounded-3xl font-bold text-lg shadow-xl transition-all duration-300 flex items-center justify-center gap-3 ${
+                  isSuccess 
+                    ? "bg-emerald-500 text-white shadow-emerald-200" 
+                    : "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-violet-200 hover:shadow-2xl hover:shadow-violet-300"
+                }`}
+              >
+                {isSaving ? (
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  >
+                    <Settings2 className="w-6 h-6" />
+                  </motion.div>
+                ) : isSuccess ? (
+                  <>
+                    <CheckCircle2 className="w-6 h-6" />
+                    Saved!
+                  </>
+                ) : (
+                  <>
+                    Save Availability
+                  </>
+                )}
+              </motion.button>
+
+              <p className="text-center text-xs text-slate-400 px-4">
+                Changes will take effect immediately for all future bookings.
+              </p>
+            </div>
           </div>
-        </div>
-      </div>
-    </>
+        </motion.div>
+      </main>
+      
+      {/* Visual background details */}
+      <div className="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-600 via-indigo-600 to-fuchsia-600 z-50" />
+    </div>
   );
 };
 
