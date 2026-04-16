@@ -407,87 +407,102 @@ const MeetingRoom = () => {
             layout
             className="relative flex flex-1 flex-col"
           >
-            <div className={`grid h-full w-full gap-6 transition-all duration-700 ease-in-out ${
-              remoteStreams.length > 0 ? "grid-cols-1 lg:grid-cols-2" : "grid-cols-1"
-            }`}>
-              {/* Local Video Container */}
-              <motion.div 
-                layout
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35 }}
-                className={`group relative overflow-hidden rounded-[12px] border border-[#E8E4DF] bg-[#FFFFFF] transition-all duration-200 hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)] ${
-                  remoteStreams.length === 0 ? "mx-auto aspect-video max-h-[75vh] w-full max-w-6xl" : "h-full"
-                }`}
-              >
-                <video ref={userVideo} autoPlay muted playsInline className="h-full w-full object-cover bg-[#F5F3F0]" />
-                
-                <AnimatePresence>
-                  {!stream && (
-                    <motion.div 
-                      exit={{ opacity: 0 }}
-                      className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-[#FAFAF8]"
-                    >
-                      <div className="flex h-20 w-20 items-center justify-center rounded-[12px] bg-[#F5F3F0] border border-[#E8E4DF]">
-                        <Video className="h-10 w-10 text-[#8A8A8A]" />
-                      </div>
-                      <p className="text-[14px] font-medium text-[#8A8A8A]">Initializing Media...</p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                
-                {/* Video Overlays */}
-                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1A1A1A]/60 via-[#1A1A1A]/30 to-transparent p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-[8px] bg-[#C8622A] text-white text-[11px] font-bold">
-                        YOU
-                      </div>
-                      <div>
-                        <p className="text-[14px] font-semibold text-white">You</p>
-                        <p className="text-[12px] font-medium text-[#8A8A8A]">Host</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      {!isMicOn && <div className="rounded-[8px] bg-[#FEF2F2] p-2 border border-[#E8E4DF]"><MicOff className="h-4 w-4 text-[#B91C1C]" /></div>}
-                      {!isCameraOn && <div className="rounded-[8px] bg-[#FEF2F2] p-2 border border-[#E8E4DF]"><VideoOff className="h-4 w-4 text-[#B91C1C]" /></div>}
-                    </div>
-                  </div>
+            <div className={`h-full w-full transition-all duration-700 ease-in-out`}>
+              {/* Daily.co Professional Meeting (Zoom-like) */}
+              {meetingInfo?.meetingLink ? (
+                <div className="h-full w-full rounded-[12px] overflow-hidden border border-[#E8E4DF] bg-white shadow-xl">
+                  <iframe
+                    src={meetingInfo.meetingLink}
+                    allow="camera; microphone; display-capture; autoplay; encrypted-media; fullscreen"
+                    className="h-full w-full border-none"
+                    title="Nexagen Video Meeting"
+                  />
                 </div>
-              </motion.div>
-
-              {/* Remote Video Container */}
-              <AnimatePresence>
-                {remoteStreams.map((remoteStream, i) => (
-                  <motion.div
-                    key={i}
+              ) : (
+                /* Legacy WebRTC Fallback */
+                <div className={`grid h-full w-full gap-6 transition-all duration-700 ease-in-out ${
+                  remoteStreams.length > 0 ? "grid-cols-1 lg:grid-cols-2" : "grid-cols-1"
+                }`}>
+                  {/* Local Video Container */}
+                  <motion.div 
                     layout
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
                     transition={{ duration: 0.35 }}
-                    className="group relative h-full overflow-hidden rounded-[12px] border border-[#E8E4DF] bg-[#FFFFFF] transition-all duration-200 hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)]"
+                    className={`group relative overflow-hidden rounded-[12px] border border-[#E8E4DF] bg-[#FFFFFF] transition-all duration-200 hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)] ${
+                      remoteStreams.length === 0 ? "mx-auto aspect-video max-h-[75vh] w-full max-w-6xl" : "h-full"
+                    }`}
                   >
-                    <video
-                      autoPlay playsInline className="h-full w-full object-cover bg-[#F5F3F0]"
-                      ref={(videoEl) => { if (videoEl) videoEl.srcObject = remoteStream; }}
-                    />
+                    <video ref={userVideo} autoPlay muted playsInline className="h-full w-full object-cover bg-[#F5F3F0]" />
+                    
+                    <AnimatePresence>
+                      {!stream && (
+                        <motion.div 
+                          exit={{ opacity: 0 }}
+                          className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-[#FAFAF8]"
+                        >
+                          <div className="flex h-20 w-20 items-center justify-center rounded-[12px] bg-[#F5F3F0] border border-[#E8E4DF]">
+                            <Video className="h-10 w-10 text-[#8A8A8A]" />
+                          </div>
+                          <p className="text-[14px] font-medium text-[#8A8A8A]">Initializing Media...</p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                    
+                    {/* Video Overlays */}
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1A1A1A]/60 via-[#1A1A1A]/30 to-transparent p-6">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-[8px] bg-[#2D7D52] text-white text-[11px] font-bold">
-                          {(isCurrentUserHost ? guestDisplayName : hostDisplayName).charAt(0).toUpperCase()}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-[8px] bg-[#C8622A] text-white text-[11px] font-bold">
+                            YOU
+                          </div>
+                          <div>
+                            <p className="text-[14px] font-semibold text-white">You</p>
+                            <p className="text-[12px] font-medium text-[#8A8A8A]">{isCurrentUserHost ? 'Host' : 'Guest'}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-[14px] font-semibold text-white">
-                            {isCurrentUserHost ? guestDisplayName : hostDisplayName}
-                          </p>
-                          <p className="text-[12px] font-medium text-[#8A8A8A]">Guest</p>
+                        <div className="flex gap-2">
+                          {!isMicOn && <div className="rounded-[8px] bg-[#FEF2F2] p-2 border border-[#E8E4DF]"><MicOff className="h-4 w-4 text-[#B91C1C]" /></div>}
+                          {!isCameraOn && <div className="rounded-[8px] bg-[#FEF2F2] p-2 border border-[#E8E4DF]"><VideoOff className="h-4 w-4 text-[#B91C1C]" /></div>}
                         </div>
                       </div>
                     </div>
                   </motion.div>
-                ))}
-              </AnimatePresence>
+
+                  {/* Remote Video Container */}
+                  <AnimatePresence>
+                    {remoteStreams.map((remoteStream, i) => (
+                      <motion.div
+                        key={i}
+                        layout
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.35 }}
+                        className="group relative h-full overflow-hidden rounded-[12px] border border-[#E8E4DF] bg-[#FFFFFF] transition-all duration-200 hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)]"
+                      >
+                        <video
+                          autoPlay playsInline className="h-full w-full object-cover bg-[#F5F3F0]"
+                          ref={(videoEl) => { if (videoEl) videoEl.srcObject = remoteStream; }}
+                        />
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#1A1A1A]/60 via-[#1A1A1A]/30 to-transparent p-6">
+                          <div className="flex items-center gap-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-[8px] bg-[#2D7D52] text-white text-[11px] font-bold">
+                              {(isCurrentUserHost ? guestDisplayName : hostDisplayName).charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                              <p className="text-[14px] font-semibold text-white">
+                                {isCurrentUserHost ? guestDisplayName : hostDisplayName}
+                              </p>
+                              <p className="text-[12px] font-medium text-[#8A8A8A]">{isCurrentUserHost ? 'Guest' : 'Host'}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                </div>
+              )}
             </div>
           </motion.div>
 
@@ -541,59 +556,78 @@ const MeetingRoom = () => {
         </div>
       </main>
 
-      {/* Premium Controls Bar */}
-      <motion.div 
-        initial={{ y: 150, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4 }}
-        className="fixed inset-x-0 bottom-10 z-50 flex justify-center px-6"
-      >
-        <div className="flex items-center gap-4 rounded-[10px] border border-[#E8E4DF] bg-[#FFFFFF] p-4 shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)]">
-          <div className="flex items-center gap-2">
-            <PremiumControlButton 
-              onClick={handleToggleMic} 
-              active={isMicOn} 
-              disabled={!stream}
-              icon={isMicOn ? Mic : MicOff} 
-            />
-            <PremiumControlButton 
-              onClick={handleToggleCamera} 
-              active={isCameraOn} 
-              disabled={!stream}
-              icon={isCameraOn ? Video : VideoOff} 
-            />
-          </div>
-          
-          <div className="h-10 w-[1px] bg-[#E8E4DF]" />
-
-          <div className="flex items-center gap-2">
-            {canShare && (
+      {/* Controls Bar */}
+      {!meetingInfo?.meetingLink && (
+        <motion.div 
+          initial={{ y: 150, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4 }}
+          className="fixed inset-x-0 bottom-10 z-50 flex justify-center px-6"
+        >
+          <div className="flex items-center gap-4 rounded-[10px] border border-[#E8E4DF] bg-[#FFFFFF] p-4 shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)]">
+            <div className="flex items-center gap-2">
               <PremiumControlButton 
-                onClick={async () => {
-                  try { await navigator.share({ title: "Join meeting", url: window.location.href }); } catch (e) {}
-                }} 
-                icon={Share2}
+                onClick={handleToggleMic} 
+                active={isMicOn} 
+                disabled={!stream}
+                icon={isMicOn ? Mic : MicOff} 
               />
-            )}
-            <PremiumControlButton 
-              onClick={() => setShowParticipants(!showParticipants)} 
-              icon={Users} 
-              active={showParticipants}
-            />
-            <PremiumControlButton icon={Settings} />
+              <PremiumControlButton 
+                onClick={handleToggleCamera} 
+                active={isCameraOn} 
+                disabled={!stream}
+                icon={isCameraOn ? Video : VideoOff} 
+              />
+            </div>
+            
+            <div className="h-10 w-[1px] bg-[#E8E4DF]" />
+
+            <div className="flex items-center gap-2">
+              {canShare && (
+                <PremiumControlButton 
+                  onClick={async () => {
+                    try { await navigator.share({ title: "Join meeting", url: window.location.href }); } catch (e) {}
+                  }} 
+                  icon={Share2}
+                />
+              )}
+              <PremiumControlButton 
+                onClick={() => setShowParticipants(!showParticipants)} 
+                icon={Users} 
+                active={showParticipants}
+              />
+              <PremiumControlButton icon={Settings} />
+            </div>
+
+            <div className="h-10 w-[1px] bg-[#E8E4DF]" />
+
+            <button
+              onClick={handleLeaveCall}
+              className="group relative flex h-12 w-12 items-center justify-center rounded-[10px] bg-[#FEF2F2] text-[#B91C1C] border border-[#E8E4DF] transition-all duration-200 hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10)] active:scale-95"
+              title="Leave call"
+            >
+              <PhoneOff className="h-5 w-5" />
+            </button>
           </div>
+        </motion.div>
+      )}
 
-          <div className="h-10 w-[1px] bg-[#E8E4DF]" />
-
+      {/* Exit Button for Daily (since Daily doesn't have a way to close our page) */}
+      {meetingInfo?.meetingLink && (
+        <motion.div 
+          className="fixed bottom-6 right-6 z-[60]"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
           <button
             onClick={handleLeaveCall}
-            className="group relative flex h-12 w-12 items-center justify-center rounded-[10px] bg-[#FEF2F2] text-[#B91C1C] border border-[#E8E4DF] transition-all duration-200 hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10)] active:scale-95"
-            title="Leave call"
+            className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#B91C1C] text-white font-semibold transition-all hover:bg-red-700 shadow-lg"
           >
-            <PhoneOff className="h-5 w-5" />
+            <PhoneOff className="w-4 h-4" />
+            Leave Session
           </button>
-        </div>
-      </motion.div>
+        </motion.div>
+      )}
 
       {/* Redesigned Error Alert */}
       <AnimatePresence>

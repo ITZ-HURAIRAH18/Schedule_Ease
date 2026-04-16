@@ -4,6 +4,7 @@ import Booking from "../models/Booking.js";
 import User from "../models/User.js";
 import { safeEmit, safeToEmit } from "../config/socket.js";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 
 
@@ -453,17 +454,45 @@ export const updateBookingStatus = async (req, res) => {
 
     booking.status = status;
 
-    // ✅ On confirm: set meeting room and compute access window with buffers
+    // ✅ On confirm: session management
     if (status === "confirmed") {
-      if (!booking.meetingRoom) {
-        booking.meetingRoom = uuidv4();
-      }
+      // 1. Compute access window
       const startTime = new Date(booking.start);
       const endTime = new Date(booking.end);
       const beforeMin = Number(booking.bufferBefore || 0);
       const afterMin = Number(booking.bufferAfter || 0);
       booking.accessStart = new Date(startTime.getTime() - beforeMin * 60000);
       booking.accessEnd = new Date(endTime.getTime() + afterMin * 60000);
+
+      // 2. Create Daily.co Room (Zoom-like experience)
+      if (!booking.meetingLink) {
+        try {
+          const response = await axios.post(
+            "https://api.daily.co/v1/rooms",
+            {
+              name: `nexagen-${bookingId}-${Date.now()}`,
+              properties: {
+                enable_screenshare: true,
+                enable_chat: true,
+                start_video_off: false,
+                start_audio_off: false,
+                exp: Math.floor(booking.accessEnd.getTime() / 1000), // Link expires when meeting ends
+              },
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${process.env.DAILY_API_KEY}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          booking.meetingLink = response.data.url;
+        } catch (dailyError) {
+          console.error("⚠️ Daily.co Room Creation Failed:", dailyError.response?.data || dailyError.message);
+          // Fallback to internal room if Daily fails
+          booking.meetingRoom = booking.meetingRoom || uuidv4();
+        }
+      }
     }
 
     await booking.save();

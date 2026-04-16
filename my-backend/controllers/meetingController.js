@@ -36,7 +36,7 @@ export const getMeetingByRoomId = async (req, res) => {
       meetingRoom: roomId,
       status: "confirmed",
     }).select(
-      "guest start end duration bufferBefore bufferAfter accessStart accessEnd hostId meetingRoom"
+      "guest start end duration bufferBefore bufferAfter accessStart accessEnd hostId meetingRoom meetingLink"
     );
 
     if (!booking) {
@@ -92,6 +92,7 @@ export const getMeetingByRoomId = async (req, res) => {
     return res.json({
       valid,
       roomId: booking.meetingRoom,
+      meetingLink: booking.meetingLink,
       bookingInfo: { 
         guest: guestInfo, 
         host: hostInfo,
@@ -103,6 +104,7 @@ export const getMeetingByRoomId = async (req, res) => {
         bufferAfter: booking.bufferAfter,
         accessStart,
         accessEnd,
+        meetingLink: booking.meetingLink,
       },
     });
   } catch (error) {
