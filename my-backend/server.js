@@ -36,23 +36,54 @@ process.on("uncaughtException", (error) => {
 const corsOptions = {
   origin: (origin, callback) => {
     const allowedOrigins = [
-      // Local development
+      // Local development (HTTP)
       'http://localhost:5173',
       'http://localhost:3000',
+      'http://localhost:5002',
       'http://127.0.0.1:5173',
       'http://127.0.0.1:3000',
+      'http://127.0.0.1:5002',
+      // Local development (HTTPS)
+      'https://localhost:5173',
+      'https://localhost:3000',
+      'https://localhost:5002',
+      'https://127.0.0.1:5173',
+      'https://127.0.0.1:3000',
+      'https://127.0.0.1:5002',
       // Production
       'https://schedule-ease-a4ur.vercel.app',
       'https://schedule-ease-zeta.vercel.app',
-      'https://localhost:5173', // HTTPS localhost
       process.env.FRONTEND_URL?.replace(/\/$/, ''), // Remove trailing slash from .env
     ].filter(Boolean);
 
+    // Check if origin is in explicit allowlist
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
-    } else {
-      callback(new Error('CORS not allowed'));
+      return;
     }
+
+    // For development: allow local network IPs (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
+    try {
+      const urlObj = new URL(origin);
+      const hostname = urlObj.hostname;
+      const port = parseInt(urlObj.port, 10) || (urlObj.protocol === 'https:' ? 443 : 80);
+      
+      // Allow local network IPs on common dev ports
+      const isLocalNetworkIP = /^(192\.168|10\.|172\.(1[6-9]|2[0-9]|3[01]))\./.test(hostname);
+      const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
+      const isAllowedPort = [80, 443, 5173, 5002, 3000, 5001].includes(port);
+      
+      if ((isLocalNetworkIP || isLocalhost) && isAllowedPort) {
+        console.log(`✅ CORS allowed for local: ${origin}`);
+        callback(null, true);
+        return;
+      }
+    } catch (err) {
+      console.error(`⚠️ CORS URL parse error for ${origin}:`, err.message);
+    }
+
+    console.error(`❌ CORS blocked for: ${origin}`);
+    callback(new Error('CORS not allowed'));
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,

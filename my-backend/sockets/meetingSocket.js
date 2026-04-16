@@ -58,4 +58,42 @@ export const initMeetingSocket = (io) => {
       console.log(`👤 Participant disconnected: ${socket.id}`);
     });
   });
+
+  // ✅ WebRTC Signaling on main namespace (for direct media connection)
+  io.on("connection", (socket) => {
+    // Join meeting room
+    socket.on("join_meeting", (data) => {
+      const { roomId, userId } = data;
+      socket.join(roomId);
+      console.log(`📱 User ${userId} joined meeting room ${roomId}`);
+      
+      // Notify others that a new user joined
+      socket.to(roomId).emit("user_joined", { userId });
+    });
+
+    // Relay WebRTC offer
+    socket.on("webrtc_offer", (data) => {
+      const { roomId, offer } = data;
+      console.log(`📤 Relaying offer in room ${roomId}`);
+      socket.to(roomId).emit("webrtc_offer", { offer });
+    });
+
+    // Relay WebRTC answer
+    socket.on("webrtc_answer", (data) => {
+      const { roomId, answer } = data;
+      console.log(`📤 Relaying answer in room ${roomId}`);
+      socket.to(roomId).emit("webrtc_answer", { answer });
+    });
+
+    // Relay ICE candidates
+    socket.on("ice_candidate", (data) => {
+      const { roomId, candidate } = data;
+      socket.to(roomId).emit("ice_candidate", { candidate });
+    });
+
+    socket.on("disconnect", () => {
+      console.log(`👋 Socket disconnected: ${socket.id}`);
+    });
+  });
 };
+
