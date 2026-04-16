@@ -315,15 +315,15 @@ const DetailModal = ({ booking, onClose, onUpdateStatus, statusMap, updatingId }
               <div className="grid grid-cols-2 gap-3">
                 <button
                   onClick={() => onUpdateStatus(_id, "confirmed")}
-                  disabled={updatingId === _id || status === "confirmed"}
+                  disabled={updatingId === _id || (status === "confirmed" && booking.meetingRoom)}
                   className={`h-11 rounded-xl text-[13px] font-semibold flex items-center justify-center gap-2 transition-all ${
-                    status === "confirmed"
+                    status === "confirmed" && booking.meetingRoom
                       ? "bg-[#EDF7F1] text-[#2D7D52] border border-transparent"
                       : "bg-white border border-[#E8E4DF] text-[#1A1A1A] hover:border-[#2D7D52] hover:text-[#2D7D52]"
                   }`}
                 >
-                  <CheckCircle className="w-4 h-4" />
-                  Confirm
+                  {status === "confirmed" && !booking.meetingRoom ? <RefreshCcw className="w-4 h-4 animate-spin-slow" /> : <CheckCircle className="w-4 h-4" />}
+                  {status === "confirmed" && !booking.meetingRoom ? "Sync Link" : "Confirm"}
                 </button>
                 <button
                   onClick={() => onUpdateStatus(_id, "cancelled")}

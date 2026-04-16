@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Search,
   Users,
+  RefreshCcw,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -275,7 +276,7 @@ const BookingRow = ({ booking, navigate }) => {
             {safeStatus}
           </span>
           
-          {meetingRoom && (
+          {meetingRoom ? (
             <button
               onClick={() => joinAllowed && navigate(`/meeting/${meetingRoom}`)}
               disabled={!joinAllowed}
@@ -288,7 +289,22 @@ const BookingRow = ({ booking, navigate }) => {
               <Video className="w-3.5 h-3.5" />
               Join
             </button>
-          )}
+          ) : safeStatus === 'confirmed' ? (
+            <button
+              onClick={async () => {
+                try {
+                  await axiosInstance.put(`/host/bookings/update-status/${booking._id}`, { status: 'confirmed' });
+                  window.location.reload();
+                } catch (e) {
+                  console.error("Link sync failed", e);
+                }
+              }}
+              className="px-3 py-1.5 rounded-lg border border-[#C8622A] text-[#C8622A] text-[12px] font-medium hover:bg-[#C8622A] hover:text-white transition-all flex items-center gap-1.5"
+            >
+              <RefreshCcw className="w-3.5 h-3.5" />
+              Generate Link
+            </button>
+          ) : null}
         </div>
       </div>
     </div>

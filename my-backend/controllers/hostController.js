@@ -464,7 +464,12 @@ export const updateBookingStatus = async (req, res) => {
       booking.accessStart = new Date(startTime.getTime() - beforeMin * 60000);
       booking.accessEnd = new Date(endTime.getTime() + afterMin * 60000);
 
-      // 2. Create Daily.co Room (Zoom-like experience)
+      // 2. Ensure internal meetingRoom ID exists (Internal tracking)
+      if (!booking.meetingRoom) {
+        booking.meetingRoom = uuidv4();
+      }
+
+      // 3. Create Daily.co Room (Zoom-like experience)
       if (!booking.meetingLink) {
         try {
           const response = await axios.post(
@@ -489,8 +494,7 @@ export const updateBookingStatus = async (req, res) => {
           booking.meetingLink = response.data.url;
         } catch (dailyError) {
           console.error("⚠️ Daily.co Room Creation Failed:", dailyError.response?.data || dailyError.message);
-          // Fallback to internal room if Daily fails
-          booking.meetingRoom = booking.meetingRoom || uuidv4();
+          // Fallback to internal room is already handled by step 2 setup
         }
       }
     }

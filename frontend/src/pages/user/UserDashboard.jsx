@@ -178,7 +178,7 @@ const BookingCard = ({ booking, formatDate, formatTime, navigate }) => {
           </button>
         ) : (
           <div className="w-full h-[40px] rounded-[10px] border-[1.5px] border-[#E8E4DF] bg-white text-[#8A8A8A] text-[13px] font-medium flex items-center justify-center">
-            Pending host approval
+            {status === 'confirmed' ? "Waiting for video link..." : "Pending host approval"}
           </div>
         )}
       </div>
