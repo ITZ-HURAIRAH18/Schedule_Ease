@@ -17,8 +17,8 @@ const Landing = () => {
           </svg>
         </div>
 
-        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-200">
-          ScheduleEase
+        <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-indigo-500 animate-gradient-text">
+          NexGen Schedule
         </h1>
         <p className="text-lg md:text-xl text-blue-100/80 max-w-xl mx-auto mb-10">
           Effortlessly manage your time, appointments, and meetings in one unified platform built for speed and clarity.
