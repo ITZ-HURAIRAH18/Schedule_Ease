@@ -18,6 +18,7 @@ import userRoutes from "./routes/userRoutes.js";
 import hostRoutes from "./routes/hostRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import meetingRoutes from "./routes/meetingRoutes.js";
+import { initMeetingSocket } from "./sockets/meetingSocket.js";
 
 const app = express();
 
@@ -247,6 +248,7 @@ if (!isServerless) {
   });
 
   setIO(io);
+  initMeetingSocket(io);
   console.log("✅ Socket.io instance initialized");
 
   // Listen on ports
