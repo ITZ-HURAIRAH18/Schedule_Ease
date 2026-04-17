@@ -20,14 +20,9 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-// Connect to the backend Socket.IO server
-const socket = io(getSocketUrl(), {
-  secure: window.location.protocol === 'https:',
-  rejectUnauthorized: false,
-});
-
 const HostDashboard = () => {
   const [data, setData] = useState(null);
+  const socketRef = useRef(null);
   const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -48,6 +43,13 @@ const HostDashboard = () => {
   }, []);
 
   useEffect(() => {
+    // Initialize socket connection
+    const socket = io(getSocketUrl(), {
+      secure: window.location.protocol === 'https:',
+      rejectUnauthorized: false,
+    });
+    socketRef.current = socket;
+
     const fetchData = async () => {
       try {
         const res = await axiosInstance.get("/host/dashboard");
@@ -77,7 +79,12 @@ const HostDashboard = () => {
     fetchData();
 
     socket.on("host_dashboard_updated", (updated) => setData(updated));
-    return () => socket.off("host_dashboard_updated");
+    
+    return () => {
+      socket.off("host_dashboard_updated");
+      socket.disconnect();
+      socketRef.current = null;
+    };
   }, []);
 
   const total = data?.recentBookings?.length || 0;

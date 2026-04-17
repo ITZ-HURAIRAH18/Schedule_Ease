@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axiosInstance from "../../api/axiosInstance";
 import AdminHeader from "../../components/AdminHeader";
 import io from "socket.io-client";
@@ -13,17 +13,19 @@ import {
   ArrowUpRight
 } from "lucide-react";
 
-// Connect to the backend Socket.IO server
-const socket = io(getSocketUrl(), {
-  secure: window.location.protocol === 'https:',
-  rejectUnauthorized: false,
-});
-
 const AdminDashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const socketRef = useRef(null);
 
   useEffect(() => {
+    // Initialize socket connection
+    const socket = io(getSocketUrl(), {
+      secure: window.location.protocol === 'https:',
+      rejectUnauthorized: false,
+    });
+    socketRef.current = socket;
+
     let isMounted = true;
     const fetchDashboard = async () => {
       try {
@@ -37,10 +39,14 @@ const AdminDashboard = () => {
       }
     };
     fetchDashboard();
+    
     socket.on("dashboard_updated", (updated) => setData(updated));
+    
     return () => {
       isMounted = false;
       socket.off("dashboard_updated");
+      socket.disconnect();
+      socketRef.current = null;
     };
   }, []);
 
