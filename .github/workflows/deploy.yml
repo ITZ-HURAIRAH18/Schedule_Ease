@@ -1,50 +1,25 @@
-name: Deploy to AWS EC2
+- name: Deploy to EC2
+  uses: appleboy/ssh-action@v1.0.3
+  with:
+    host: ${{ secrets.EC2_HOST }}
+    username: ${{ secrets.EC2_USER }}
+    key: ${{ secrets.EC2_SSH_KEY }}
+    port: 22
 
-on:
-  push:
-    branches: [main]
+    script: |
+      cd /home/ubuntu/nexagen
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+      git pull origin main
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      cd frontend
+      npm ci
+      npm run build
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+      sudo rm -rf /var/www/html/*
+      sudo cp -r dist/* /var/www/html/
 
-      - name: Install frontend dependencies
-        run: |
-          cd frontend
-          npm ci
+      cd ../my-backend
+      npm ci
+      pm2 restart all
 
-      - name: Build frontend
-        run: |
-          cd frontend
-          npm run build
-
-      - name: Install backend dependencies
-        run: |
-          cd my-backend
-          npm ci
-
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd /home/ubuntu/nexagen
-            git pull origin main
-            cd frontend
-            npm ci
-            npm run build
-            cd ../my-backend
-            npm ci
-            sudo systemctl restart nginx
-            pm2 restart all
+      sudo systemctl restart nginx
