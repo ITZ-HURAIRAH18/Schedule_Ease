@@ -4,8 +4,6 @@ import {
   getUserBookings,
   getAllHostsAvailability,
   createBooking,
- 
- 
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -18,9 +16,5 @@ router.get("/hosts/availability", verifyToken, isUser, getAllHostsAvailability);
 
 // Create new booking
 router.post("/bookings", verifyToken, isUser, createBooking);
-
-
-
-
 
 export default router;

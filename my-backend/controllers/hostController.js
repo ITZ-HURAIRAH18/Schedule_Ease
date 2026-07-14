@@ -5,13 +5,7 @@ import Availability from "../models/Availability.js";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { generateProfessionalMeetingLink } from "../utils/meetingLinkGenerator.js";
-
-// Helper to safely emit socket events
-const safeEmit = (event, data) => {
-  if (global.io) {
-    global.io.emit(event, data);
-  }
-};
+import { safeEmit } from "../config/socket.js";
 
 export const emitHostDashboardUpdate = async (hostId) => {
   try {

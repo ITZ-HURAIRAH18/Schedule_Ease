@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 
-// ✅ Load environment variables FIRST before any other imports
 dotenv.config();
 
 import express from "express";
+import helmet from "helmet";
 import cors from "cors";
 import http from "http";
 import https from "https";
@@ -12,7 +12,6 @@ import { Server } from "socket.io";
 import { connectDB, isDbConnected, waitForConnection } from "./config/db.js";
 import { setIO, isIOInitialized } from "./config/socket.js";
 
-// ✅ Import routes
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import hostRoutes from "./routes/hostRoutes.js";
@@ -22,76 +21,60 @@ import { initMeetingSocket } from "./sockets/meetingSocket.js";
 
 const app = express();
 
-// ✅ Global error handlers for unhandled promise rejections
 process.on("unhandledRejection", (reason, promise) => {
   console.error("❌ Unhandled Rejection at:", promise, "reason:", reason);
 });
 
 process.on("uncaughtException", (error) => {
   console.error("❌ Uncaught Exception:", error);
-  // Log but don't exit - allows server to continue
 });
 
-// ✅ Configure CORS for development and production
+const FRONTEND_URL = process.env.FRONTEND_URL?.replace(/\/$/, '') || '';
+
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5002',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5002',
+  'https://localhost:5173',
+  'https://127.0.0.1:5173',
+];
+
+if (FRONTEND_URL) {
+  allowedOrigins.push(FRONTEND_URL);
+}
+
 const corsOptions = {
   origin: (origin, callback) => {
-    const allowedOrigins = [
-      // Local development (HTTP)
-      'http://localhost:5173',
-      'http://localhost:3000',
-      'http://localhost:5002',
-      'http://127.0.0.1:5173',
-      'http://127.0.0.1:3000',
-      'http://127.0.0.1:5002',
-      // Local development (HTTPS)
-      'https://localhost:5173',
-      'https://localhost:3000',
-      'https://localhost:5002',
-      'https://127.0.0.1:5173',
-      'https://127.0.0.1:3000',
-      'https://127.0.0.1:5002',
-      // Production
-      'https://schedule-ease-a4ur.vercel.app',
-      'https://schedule-ease-zeta.vercel.app',
-      process.env.FRONTEND_URL?.replace(/\/$/, ''), // Remove trailing slash from .env
-    ].filter(Boolean);
-
-    // Check if origin is in explicit allowlist
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-      return;
+    if (!origin) {
+      return callback(null, true);
     }
-
-    // For development: allow local network IPs (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    if (FRONTEND_URL && origin.startsWith(FRONTEND_URL)) {
+      return callback(null, true);
+    }
     try {
-      const urlObj = new URL(origin);
-      const hostname = urlObj.hostname;
-      const port = parseInt(urlObj.port, 10) || (urlObj.protocol === 'https:' ? 443 : 80);
-      
-      // Allow local network IPs on common dev ports
-      const isLocalNetworkIP = /^(192\.168|10\.|172\.(1[6-9]|2[0-9]|3[01]))\./.test(hostname);
+      const hostname = new URL(origin).hostname;
       const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1';
-      const isAllowedPort = [80, 443, 5173, 5002, 3000, 5001].includes(port);
-      
-      if ((isLocalNetworkIP || isLocalhost) && isAllowedPort) {
-        console.log(`✅ CORS allowed for local: ${origin}`);
-        callback(null, true);
-        return;
+      const isPrivate = /^(192\.168|10\.|172\.(1[6-9]|2[0-9]|3[01]))\./.test(hostname);
+      if (isLocalhost || isPrivate) {
+        return callback(null, true);
       }
-    } catch (err) {
-      console.error(`⚠️ CORS URL parse error for ${origin}:`, err.message);
-    }
-
+    } catch (_) {}
     console.error(`❌ CORS blocked for: ${origin}`);
     callback(new Error('CORS not allowed'));
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // ✅ Initialize DB connection with proper error handling
 let dbConnected = false;
@@ -225,19 +208,15 @@ app.use((err, req, res, next) => {
 });
 
 // ===============================
-// SOCKET.IO Setup (All Environments)
+// SOCKET.IO Setup
 // ===============================
 let server;
 let io;
 let httpServer;
 
-// For Vercel serverless, we can't maintain persistent WebSocket connections
-// Socket.IO will be initialized but won't work in serverless environment
-// Alternative: Use a dedicated WebSocket service (Pusher, Ably, Supabase Realtime)
-const isServerless = process.env.VERCEL || process.env.NODE_ENV === "production";
+const isVercel = !!process.env.VERCEL;
 
-if (!isServerless) {
-  // Local development setup with socket.io
+if (!isVercel) {
   let useHTTPS = false;
   let sslOptions;
 
@@ -251,32 +230,23 @@ if (!isServerless) {
     useHTTPS = true;
     console.log("🔐 HTTPS enabled (localhost-key.pem, localhost.pem)");
   } catch (err) {
-    console.warn("⚠️ HTTPS certificates not found. Using HTTP for development");
+    console.warn("⚠️ HTTPS certificates not found. Using HTTP");
   }
 
-  // Create primary server (HTTPS if certs available, otherwise HTTP)
   if (useHTTPS) {
     server = https.createServer(sslOptions, app);
   } else {
     server = http.createServer(app);
   }
 
-  // Create secondary HTTP server for browser compatibility (when using HTTPS)
   if (useHTTPS) {
     httpServer = http.createServer(app);
-    console.log("🌐 HTTP fallback server available on port 5002 for browser compatibility");
+    console.log("🌐 HTTP fallback server on port 5002");
   }
 
   io = new Server(server, {
     cors: {
-      origin: [
-        'http://localhost:5173',
-        'http://localhost:3000',
-        'http://127.0.0.1:5173',
-        'http://127.0.0.1:3000',
-        'https://localhost:5173',
-        process.env.FRONTEND_URL?.replace(/\/$/, ''),
-      ].filter(Boolean),
+      origin: allowedOrigins,
       methods: ['GET', 'POST'],
       credentials: true,
     },
@@ -286,27 +256,23 @@ if (!isServerless) {
   initMeetingSocket(io);
   console.log("✅ Socket.io instance initialized");
 
-  // Listen on ports
   const PORT = process.env.PORT || 5001;
   const HTTP_PORT = 5002;
 
   server.listen(PORT, "0.0.0.0", () => {
-    console.log(`✅ Development server running on localhost:${PORT}`);
+    console.log(`✅ Server running on port ${PORT}`);
   });
 
-  // Listen on HTTP fallback port if separate HTTPS server
   if (httpServer) {
     httpServer.listen(HTTP_PORT, "0.0.0.0", () => {
-      console.log(`✅ HTTP fallback server running on http://localhost:${HTTP_PORT}`);
+      console.log(`✅ HTTP fallback on port ${HTTP_PORT}`);
     });
   }
 } else {
-  // Serverless production setup (Express only, no socket.io)
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`✅ Production server running on port ${PORT}`);
+    console.log(`✅ Vercel server running on port ${PORT}`);
   });
 }
 
-// Export for Vercel
 export default app;

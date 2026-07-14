@@ -1,168 +1,199 @@
-import mongoose from "mongoose";
-import dns from "dns";
+import mongoose from 'mongoose';
+import https from 'https';
+import dns from 'dns';
 
-// ✅ Optional: Custom DNS for SRV resolution
-// Only enable if you experience "querySrv ECONNREFUSED" errors
-/*
-try {
-  dns.setServers(['8.8.8.8', '1.1.1.1']);
-  console.log("📡 DNS servers set to 8.8.8.8, 1.1.1.1 for MongoDB SRV resolution");
-} catch (err) {
-  console.warn("⚠️ Failed to set custom DNS servers:", err.message);
+/**
+ * Resolve SRV records using DNS-over-HTTPS (Cloudflare).
+ * This bypasses ISP DNS blocking completely.
+ */
+function resolveSrvViaDoH(srvName) {
+  return new Promise((resolve, reject) => {
+    const url = `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(srvName)}&type=SRV`;
+    https.get(url, { headers: { 'Accept': 'application/dns-json' } }, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(data);
+          if (!json.Answer || json.Answer.length === 0) {
+            return reject(new Error(`No SRV records found for ${srvName}`));
+          }
+          // SRV data format: "priority weight port target"
+          const hosts = json.Answer
+            .filter(a => a.type === 33) // SRV record type
+            .map(a => {
+              const parts = a.data.split(' ');
+              return { priority: +parts[0], weight: +parts[1], port: +parts[2], target: parts[3].replace(/\.$/, '') };
+            });
+          resolve(hosts);
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }).on('error', reject);
+  });
 }
-*/
 
 /**
- * MongoDB Connection Manager - Production Optimized
- *
- * Key changes:
- * - Re-enabled bufferCommands with extended timeout (prevents hard failures during cold starts)
- * - Reduced heartbeat frequency to save resources in serverless
- * - Added readPreference and writeConcern for replica set awareness
- * - Better connection state tracking with age-based refresh
+ * Resolve a hostname to IP addresses using DNS-over-HTTPS.
  */
-
-// Connection cache persists across serverless invocations (in same container)
-let cachedConnection = null;
-let connectionPromise = null;
-let lastConnectionTime = 0;
-
-// Connection age threshold - force refresh after 8 hours (serverless best practice)
-const MAX_CONNECTION_AGE_MS = 8 * 60 * 60 * 1000;
+function resolveHostViaDoH(hostname) {
+  return new Promise((resolve, reject) => {
+    const url = `https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(hostname)}&type=A`;
+    https.get(url, { headers: { 'Accept': 'application/dns-json' } }, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          const json = JSON.parse(data);
+          const ips = (json.Answer || []).filter(a => a.type === 1).map(a => a.data);
+          resolve(ips);
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }).on('error', reject);
+  });
+}
 
 /**
- * Establishes MongoDB connection with serverless-optimized settings
- * @returns {Promise<mongoose.Connection>} Active mongoose connection
+ * Build a direct mongodb:// connection string by resolving SRV records via DoH.
  */
-const connectDB = async () => {
-  // Check MONGO_URI is set (after dotenv.config() in server.js)
-  const MONGO_URI = process.env.MONGO_URI;
-  if (!MONGO_URI) {
-    console.error("❌ [DB] MONGO_URI environment variable is not set");
-    throw new Error("MONGO_URI environment variable is missing");
-  }
+async function buildDirectUri(srvUri) {
+  const parsed = new URL(srvUri);
+  const srvHostname = parsed.hostname;
+  const srvName = `_mongodb._tcp.${srvHostname}`;
 
-  const MASKED_URI = MONGO_URI.replace(/:[^:]*@/, ":****@");
-  console.log("🔍 [DB] Attempting to connect to MongoDB...");
+  console.log(`   Resolving SRV: ${srvName} via DNS-over-HTTPS...`);
+  const hosts = await resolveSrvViaDoH(srvName);
+  console.log(`   Found ${hosts.length} MongoDB hosts`);
 
-  // Check if connection is still valid and not too old
-  const now = Date.now();
-  if (
-    cachedConnection &&
-    mongoose.connection.readyState === 1 &&
-    now - lastConnectionTime < MAX_CONNECTION_AGE_MS
-  ) {
-    console.log("✅ [DB] Using cached MongoDB connection");
-    return cachedConnection;
-  }
-
-  // If connection is too old, close it gracefully before reconnecting
-  if (cachedConnection && mongoose.connection.readyState === 1) {
-    console.log("♻️ [DB] Refreshing stale MongoDB connection (age limit reached)");
+  // Resolve each host to IP addresses (bypasses local DNS)
+  const resolvedHosts = [];
+  for (const host of hosts) {
     try {
-      await mongoose.disconnect();
-    } catch (e) {
-      // Ignore disconnect errors
+      const ips = await resolveHostViaDoH(host.target);
+      if (ips.length > 0) {
+        resolvedHosts.push(`${ips[0]}:${host.port}`);
+        console.log(`   ${host.target} → ${ips[0]}:${host.port}`);
+      } else {
+        // fallback to hostname
+        resolvedHosts.push(`${host.target}:${host.port}`);
+      }
+    } catch {
+      resolvedHosts.push(`${host.target}:${host.port}`);
     }
-    cachedConnection = null;
-    connectionPromise = null;
   }
 
-  // Return existing connection promise if connection is in progress
+  // Extract database name from path or search params
+  const dbName = parsed.pathname && parsed.pathname !== '/'
+    ? decodeURIComponent(parsed.pathname.slice(1).split('/')[0])
+    : parsed.searchParams.get('appName') || undefined;
+
+  // Build direct mongodb:// URI
+  const auth = parsed.username
+    ? `${parsed.username}:${parsed.password}@`
+    : '';
+
+  const directUri = `mongodb://${auth}${resolvedHosts.join(',')}/${dbName || ''}?ssl=true&authSource=admin&retryWrites=true&w=majority`;
+
+  return { directUri, dbName };
+}
+
+/**
+ * Extract the database name from a MongoDB URI path (e.g. /FirstData → "FirstData").
+ */
+function getDbNameFromUri(uri) {
+  try {
+    const parsed = new URL(uri);
+    const pathDb = parsed.pathname && parsed.pathname !== '/'
+      ? decodeURIComponent(parsed.pathname.slice(1).split('/')[0])
+      : null;
+    return pathDb || null;
+  } catch {
+    return null;
+  }
+}
+
+let connectionPromise = null;
+
+async function connectDB() {
+  const uri = process.env.MONGO_URI || process.env.MONGODB_URI;
+
+  if (!uri) {
+    throw new Error(
+      'MONGO_URI is not set in your .env file. ' +
+      'Please add your MongoDB connection string as MONGO_URI.'
+    );
+  }
+
+  // Check if connection is already active
+  if (mongoose.connection.readyState === 1) {
+    console.log("✅ [DB] Using cached MongoDB connection");
+    return mongoose.connection;
+  }
+
   if (connectionPromise) {
     console.log("⏳ [DB] MongoDB connection in progress, reusing promise");
     return connectionPromise;
   }
 
-  console.log("🔍 [DB] Establishing new MongoDB connection...");
-
-  // Create new connection promise
   connectionPromise = (async () => {
+    // Extract DB name from URI path (e.g. /FirstData)
+    const dbName = getDbNameFromUri(uri) || 'FirstData';
+
+    const connectOptions = {
+      dbName,
+      serverSelectionTimeoutMS: 15000,
+      connectTimeoutMS: 15000,
+      socketTimeoutMS: 30000,
+    };
+
+    // --- Attempt 1: Try direct connection with SRV URI ---
     try {
-      // Configure mongoose for serverless environment
-      mongoose.set("strictQuery", false);
+      console.log('⏳ Connecting to MongoDB (SRV)...');
+      // Set DNS to Google/Cloudflare in case system DNS is partially broken
+      dns.setServers(['8.8.8.8', '1.1.1.1', '8.8.4.4']);
 
-      // ✅ RE-ENABLED: Buffer commands but with reasonable timeout
-      // This prevents hard "buffering timed out" errors during cold starts
-      // while still failing fast if the DB is genuinely unreachable
-      mongoose.set("bufferCommands", true);
-
-      const connection = await mongoose.connect(MONGO_URI, {
-        // Serverless-optimized connection pool settings
-        maxPoolSize: 10,              // Limit connections per container
-        minPoolSize: 1,               // Maintain at least 1 connection
-        maxConnecting: 2,             // Limit simultaneous connection attempts
-
-        // Timeout settings - balanced for production
-        serverSelectionTimeoutMS: 15000,  // Reduced from 30s (fail faster)
-        socketTimeoutMS: 45000,           // Socket operation timeout
-        connectTimeoutMS: 20000,          // Reduced from 30s
-
-        // Replica set awareness for production
-        readPreference: "primaryPreferred",
-        writeConcern: { w: "majority" },
-
-        // Retry writes for reliability
-        retryWrites: true,
-        retryReads: true,
-
-        // Heartbeat - less aggressive for serverless (saves resources)
-        heartbeatFrequencyMS: 30000,      // Increased from 10s → 30s
-      });
-
-      // Cache the successful connection
-      cachedConnection = connection;
-      lastConnectionTime = now;
+      await mongoose.connect(uri, connectOptions);
+      console.log('✅ MongoDB connected successfully (SRV)');
+      console.log(`   Database: ${mongoose.connection.db.databaseName}`);
       connectionPromise = null;
-
-      // Set up connection event listeners
-      setupConnectionListeners(mongoose.connection);
-
-      console.log(`✅ [DB] MongoDB connected successfully: ${connection.connection.host}`);
-      return cachedConnection;
-    } catch (error) {
-      console.error(`❌ [DB] MongoDB connection failed: ${error.message}`);
-      console.error("📋 [DB] Error code:", error.code);
-      console.error("📋 [DB] Error name:", error.name);
-
-      // Reset promise on failure so next attempt can retry
-      connectionPromise = null;
-      console.error("💡 [DB] TIP: Verify your MONGO_URI and network firewall settings.");
-      throw error;
+      return mongoose.connection;
+    } catch (srvError) {
+      console.log(`⚠️  SRV connection failed: ${srvError.message}`);
+      await mongoose.disconnect().catch(() => {});
     }
+
+    // --- Attempt 2: Bypass DNS entirely using DNS-over-HTTPS ---
+    if (uri.startsWith('mongodb+srv://')) {
+      try {
+        console.log('⏳ Bypassing DNS — resolving via DNS-over-HTTPS...');
+        const { directUri } = await buildDirectUri(uri);
+
+        await mongoose.connect(directUri, {
+          ...connectOptions,
+          tls: true,
+          tlsAllowInvalidHostnames: true,
+        });
+        console.log('✅ MongoDB connected successfully (direct IP)');
+        console.log(`   Database: ${mongoose.connection.db.databaseName}`);
+        connectionPromise = null;
+        return mongoose.connection;
+      } catch (directError) {
+        console.error(`❌ Direct connection also failed: ${directError.message}`);
+        await mongoose.disconnect().catch(() => {});
+        connectionPromise = null;
+        throw directError;
+      }
+    }
+
+    connectionPromise = null;
+    throw new Error('Unable to connect to MongoDB');
   })();
-
+  
   return connectionPromise;
-};
-
-/**
- * Sets up event listeners for MongoDB connection monitoring
- * @param {mongoose.Connection} connection - Active mongoose connection
- */
-const setupConnectionListeners = (connection) => {
-  connection.on("error", (error) => {
-    console.error("❌ [DB] MongoDB connection error:", error.message);
-    // Clear cache on error to force reconnection
-    cachedConnection = null;
-    connectionPromise = null;
-  });
-
-  connection.on("disconnected", () => {
-    console.warn("⚠️ MongoDB disconnected");
-    // Clear cache to allow reconnection on next request
-    cachedConnection = null;
-    connectionPromise = null;
-  });
-
-  connection.on("reconnected", () => {
-    console.log("🔄 MongoDB reconnected");
-    lastConnectionTime = Date.now();
-  });
-
-  connection.on("open", () => {
-    console.log("✅ MongoDB connection opened");
-  });
-};
+}
 
 /**
  * Checks if database connection is currently active
@@ -181,7 +212,6 @@ const isDbConnected = () => {
 const waitForConnection = async (timeoutMs = 30000) => {
   if (isDbConnected()) return true;
 
-  // If there's an active connection attempt, wait for it
   if (connectionPromise) {
     try {
       await Promise.race([
@@ -194,7 +224,6 @@ const waitForConnection = async (timeoutMs = 30000) => {
     }
   }
 
-  // Fallback to polling if needed (should rarely happen with connectionPromise)
   const startTime = Date.now();
   while (Date.now() - startTime < timeoutMs) {
     if (isDbConnected()) return true;

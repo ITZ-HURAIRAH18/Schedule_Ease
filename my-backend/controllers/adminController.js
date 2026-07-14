@@ -32,10 +32,10 @@ export const unsuspendUser = async (req, res) => {
     const user = await User.findById(req.params.id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    user.suspended = false; // example field
+    user.suspended = false;
     await user.save();
 
-    res.json({ message: "User suspended successfully" });
+    res.json({ message: "User unsuspended successfully" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -94,8 +94,6 @@ export const getDashboard = async (req, res) => {
     const totalUsers = await User.countDocuments();
     const totalBookings = await Booking.countDocuments();
     const recentUsers = await User.find().sort({ createdAt: -1 }).limit(5).select("fullName email role createdAt");
-//  const totalBookings = await Booking.countDocuments();
-      //  io.emit("dashboard_updated", { totalUsers, totalBookings, recentUsers });
     res.json({
       totalUsers,
       totalBookings,
