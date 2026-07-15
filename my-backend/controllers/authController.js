@@ -196,8 +196,7 @@ export const login = async (req, res) => {
     }
 
     res.status(500).json({
-      message: "Internal server error during login",
-      error: process.env.NODE_ENV === 'development' ? err.message : undefined
+      message: "Internal server error during login"
     });
   }
 };

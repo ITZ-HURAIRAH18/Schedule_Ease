@@ -1,174 +1,57 @@
-hook.bundle.js:1 [locator-js] React instance (react-dom v19.1.1) is not supported
-
-3
-hook.bundle.js:1 [locatorjs]: loading: Unsupported React renderer, only bundle type 1 (development) is supported but 0 (production) is found
-hook.bundle.js:1 [locatorjs]: Unsupported React renderer, only bundle type 1 (development) is supported but 0 (production) is found
-inject.bundle.js:169 [ExtensionPerf] Failed to log metric: TypeError: crypto.randomUUID is not a function
-    at a (inject.bundle.js:169:339330)
-    at nB (inject.bundle.js:218:88770)
-    at inject.bundle.js:218:88917
-    at inject.bundle.js:218:88959
-    at inject.bundle.js:218:88963
-inject.bundle.js:218 [ChromePolyfill] Chrome API support enabled for web context
-hook.bundle.js:1 [locatorjs]: Unsupported React renderer, only bundle type 1 (development) is supported but 0 (production) is found
-6
-Unchecked runtime.lastError: The message port closed before a response was received.
-inject.bundle.js:169 [ExtensionPerf] Failed to log metric: TypeError: crypto.randomUUID is not a function
-    at a (inject.bundle.js:169:339330)
-    at assets_chrome-extens…5dd.chunk.js:1:4972
-    at sz (inject.bundle.js:65:14466)
-    at oF (inject.bundle.js:65:43457)
-    at inject.bundle.js:65:38032
-    at A (inject.bundle.js:130:3038)
-    at MessagePort.O (inject.bundle.js:130:3568)
-hook.bundle.js:1 [locatorjs]: Unsupported React renderer, only bundle type 1 (development) is supported but 0 (production) is found
-inject.bundle.js:169 [ExtensionPerf] Failed to log metric: TypeError: crypto.randomUUID is not a function
-    at a (inject.bundle.js:169:339330)
-    at inject.bundle.js:218:49879
-/api/auth/login:1 
- Failed to load resource: the server responded with a status of 500 (Internal Server Error)
-inject.bundle.js:169 [ExtensionPerf] Failed to log metric: TypeError: crypto.randomUUID is not a function
-    at a (inject.bundle.js:169:339330)
-    at inject.bundle.js:218:49879
-/api/auth/login:1 
- Failed to load resource: the server responded with a status of 500 (Internal Server Error)
-﻿
-
-
-
-
-
-
-
-Claim offer
-
-Yesterday 3:50 PM
-
-Pasted code.js
-JavaScript
-files $uri $uri/ =404;
-        }
-
-        # pass PHP scripts to FastCGI server
-        #
-        #location ~ \.php$ {
-        #       include snippets/fastcgi-php.conf;
-        #
-        #       # With php-fpm (or other unix sockets):
-        #       fastcgi_pass unix:/run/php/php7.4-fpm.sock;
-        #       # With php-cgi (or other tcp sockets):
-        #       fastcgi_pass 127.0.0.1:9000;
-        #}
-
-        # deny access to .htaccess files, if Apache's document root
-        # concurs with nginx's one
-        #
-        #location ~ /\.ht {
-        #       deny all;
-        #}
-}
-
-
-# Virtual Host configuration for example.com
-#
-# You can move that to a different file under sites-available/ and symlink that
-# to sites-enabled/ to enable it.
-#
-#server {
-#       listen 80;
-#       listen [::]:80;
-#
-#       server_name example.com;
-#
-#       root /var/www/example.com;
-#       index index.html;
-#
-#       location / {
-#               try_files $uri $uri/ =404;
-#       }
-#}
-ubuntu@ip-172-31-40-66:~/Schedule_Ease/frontend$ 📍 Using explicit API URL from env: /api
-inject.bundle.js:169 [ExtensionPerf] Failed to log metric: TypeError: crypto.randomUUID is not a function
-    at a (inject.bundle.js:169:339330)
-    at nB (inject.bundle.js:218:88770)
-    at inject.bundle.js:218:88917
-    at inject.bundle.js:218:88959
-    at inject.bundle.js:218:88963
-a @ inject.bundle.js:169
-nB @ inject.bundle.js:218
-(anonymous) @ inject.bundle.js:218
-(anonymous) @ inject.bundle.js:218
-(anonymous) @ inject.bundle.js:218
-hook.bundle.js:1 [locatorjs]: loading: No valid renderers found.
-o @ hook.bundle.js:1
-i @ hook.bundle.js:1
-setTimeout
-(anonymous) @ hook.bundle.js:1
-(anonymous) @ hook.bundle.js:1
-(anonymous) @ hook.bundle.js:1
-(anonymous) @ hook.bundle.js:1
-PendingScript
-(anonymous) @ contentScript.bundle.js:1
-(anonymous) @ contentScript.bundle.js:1
-(anonymous) @ contentScript.bundle.js:1
-(anonymous) @ contentScript.bundle.js:1
-inject.bundle.js:218 [ChromePolyfill] Chrome API support enabled for web context
-hook.bundle.js:1 [locatorjs]: loading: No valid renderers found.
-o @ hook.bundle.js:1
-i @ hook.bundle.js:1
-setTimeout
-(anonymous) @ hook.bundle.js:1
-(anonymous) @ hook.bundle.js:1
-(anonymous) @ hook.bundle.js:1
-(anonymous) @ hook.bundle.js:1
-PendingScript
-(anonymous) @ contentScript.bundle.js:1
-(anonymous) @ contentScript.bundle.js:1
-(anonymous) @ contentScript.bundle.js:1
-(anonymous) @ contentScript.bundle.js:1
-5Unchecked runtime.lastError: The message port closed before a response was received.
+[ChromePolyfill] Chrome API support enabled for web context
+6Unchecked runtime.lastError: The message port closed before a response was received.
 inject.bundle.js:169 [ExtensionPerf] Failed to log metric: TypeError: crypto.randomUUID is not a function
     at a (inject.bundle.js:169:339330)
     at assets_chrome-extension_inject_iframe-sidebar_components_IframeSidebar_module_scss-assets_chr-bc65dd.chunk.js:1:4972
     at sz (inject.bundle.js:65:14466)
     at oF (inject.bundle.js:65:43457)
-    at oL (inject.bundle.js:65:26315)
-    at i8 (inject.bundle.js:63:4714)
-    at oD (inject.bundle.js:65:26690)
-    at Object.notify (inject.bundle.js:84:1868)
-    at Object.notifyNestedSubs (inject.bundle.js:84:2276)
-    at s (inject.bundle.js:84:1706)
+    at inject.bundle.js:65:38032
+    at A (inject.bundle.js:130:3038)
+    at MessagePort.O (inject.bundle.js:130:3568)
 a @ inject.bundle.js:169
 (anonymous) @ assets_chrome-extension_inject_iframe-sidebar_components_IframeSidebar_module_scss-assets_chr-bc65dd.chunk.js:1
 sz @ inject.bundle.js:65
 oF @ inject.bundle.js:65
+(anonymous) @ inject.bundle.js:65
+A @ inject.bundle.js:130
+O @ inject.bundle.js:130
+postMessage
+s @ inject.bundle.js:130
+P @ inject.bundle.js:130
+t.unstable_scheduleCallback @ inject.bundle.js:130
+a @ inject.bundle.js:65
+(anonymous) @ inject.bundle.js:65
+oz @ inject.bundle.js:65
 oL @ inject.bundle.js:65
 i8 @ inject.bundle.js:63
-oD @ inject.bundle.js:65
-notify @ inject.bundle.js:84
-notifyNestedSubs @ inject.bundle.js:84
-s @ inject.bundle.js:84
-(anonymous) @ inject.bundle.js:201
-(anonymous) @ inject.bundle.js:201
-E @ inject.bundle.js:201
-dispatch @ inject.bundle.js:201
-(anonymous) @ inject.bundle.js:84
-(anonymous) @ inject.bundle.js:201
-(anonymous) @ inject.bundle.js:201
-(anonymous) @ inject.bundle.js:172
-(anonymous) @ inject.bundle.js:172
-(anonymous) @ inject.bundle.js:176
-(anonymous) @ inject.bundle.js:176
-(anonymous) @ inject.bundle.js:176
-(anonymous) @ inject.bundle.js:176
-(anonymous) @ inject.bundle.js:176
+oM @ inject.bundle.js:65
+aH @ inject.bundle.js:63
+(anonymous) @ assets_chrome-extension_inject_iframe-sidebar_components_IframeSidebar_module_scss-assets_chr-bc65dd.chunk.js:1
 Promise.then
-j @ inject.bundle.js:176
-(anonymous) @ inject.bundle.js:176
-(anonymous) @ inject.bundle.js:107
-n.<computed> @ inject.bundle.js:84
+(anonymous) @ assets_chrome-extension_inject_iframe-sidebar_components_IframeSidebar_module_scss-assets_chr-bc65dd.chunk.js:1
+sz @ inject.bundle.js:65
+oF @ inject.bundle.js:65
+(anonymous) @ inject.bundle.js:65
+A @ inject.bundle.js:130
+O @ inject.bundle.js:130
+postMessage
+s @ inject.bundle.js:130
+O @ inject.bundle.js:130
+postMessage
+s @ inject.bundle.js:130
+P @ inject.bundle.js:130
+t.unstable_scheduleCallback @ inject.bundle.js:130
+a @ inject.bundle.js:65
+(anonymous) @ inject.bundle.js:65
+oz @ inject.bundle.js:65
+oL @ inject.bundle.js:65
+i8 @ inject.bundle.js:63
+oM @ inject.bundle.js:65
+enqueueSetState @ inject.bundle.js:63
+E.setState @ inject.bundle.js:84
 (anonymous) @ inject.bundle.js:218
-componentDidUpdate @ inject.bundle.js:218
+await in (anonymous)
+componentDidMount @ inject.bundle.js:218
 sq @ inject.bundle.js:65
 e @ inject.bundle.js:65
 (anonymous) @ inject.bundle.js:65
@@ -248,35 +131,22 @@ PendingScript
 (anonymous) @ contentScript.bundle.js:1
 (anonymous) @ contentScript.bundle.js:1
 (anonymous) @ contentScript.bundle.js:1
-hook.bundle.js:1 [locatorjs]: No valid renderers found.
-o @ hook.bundle.js:1
-i @ hook.bundle.js:1
-setTimeout
-(anonymous) @ hook.bundle.js:1
-(anonymous) @ hook.bundle.js:1
-(anonymous) @ hook.bundle.js:1
-(anonymous) @ hook.bundle.js:1
-PendingScript
-(anonymous) @ contentScript.bundle.js:1
-(anonymous) @ contentScript.bundle.js:1
-(anonymous) @ contentScript.bundle.js:1
-(anonymous) @ contentScript.bundle.js:1
-index-Cf7ERxQ5.js:70  POST http://51.20.10.115/api/api/auth/login 404 (Not Found)
-(anonymous) @ index-Cf7ERxQ5.js:70
-xhr @ index-Cf7ERxQ5.js:70
-cN @ index-Cf7ERxQ5.js:72
+index-COC3aJzE.js:70  POST http://51.20.10.115/api/auth/login 500 (Internal Server Error)
+(anonymous) @ index-COC3aJzE.js:70
+xhr @ index-COC3aJzE.js:70
+cN @ index-COC3aJzE.js:72
 Promise.then
-_request @ index-Cf7ERxQ5.js:73
-request @ index-Cf7ERxQ5.js:72
-(anonymous) @ index-Cf7ERxQ5.js:73
-(anonymous) @ index-Cf7ERxQ5.js:68
-h @ index-Cf7ERxQ5.js:323
-Lj @ index-Cf7ERxQ5.js:48
-(anonymous) @ index-Cf7ERxQ5.js:48
-HA @ index-Cf7ERxQ5.js:48
-_g @ index-Cf7ERxQ5.js:48
-Vg @ index-Cf7ERxQ5.js:49
-F5 @ index-Cf7ERxQ5.js:49
+_request @ index-COC3aJzE.js:73
+request @ index-COC3aJzE.js:72
+(anonymous) @ index-COC3aJzE.js:73
+(anonymous) @ index-COC3aJzE.js:68
+h @ index-COC3aJzE.js:323
+Lj @ index-COC3aJzE.js:48
+(anonymous) @ index-COC3aJzE.js:48
+HA @ index-COC3aJzE.js:48
+_g @ index-COC3aJzE.js:48
+Vg @ index-COC3aJzE.js:49
+F5 @ index-COC3aJzE.js:49
 hook.bundle.js:1 [locatorjs]: No valid renderers found.
 o @ hook.bundle.js:1
 i @ hook.bundle.js:1
@@ -289,539 +159,5 @@ PendingScript
 (anonymous) @ contentScript.bundle.js:1
 (anonymous) @ contentScript.bundle.js:1
 (anonymous) @ contentScript.bundle.js:1
-(anonymous) @ contentScript.bundle.js:1 
-
-
-Pasted text(7).txt
-Document
-
-
-Pasted text(8).txt
-Document
-
-
-Pasted text(9).txt
-Document
-
-The error:
-
-Invalid workflow file
-
-(Line: 1, Col: 1): A sequence was not expected
-means your .github/workflows/deploy.yml file starts with:
-
-- name: Deploy to EC2
-A GitHub Actions workflow cannot start with - name:. That line must be inside steps:.
-
-Replace your entire .github/workflows/deploy.yml with this:
-name: AWS CI/CD
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install Frontend Dependencies
-        run: |
-          cd frontend
-          npm ci
-
-      - name: Build Frontend
-        run: |
-          cd frontend
-          npm run build
-
-      - name: Install Backend Dependencies
-        run: |
-          cd my-backend
-          npm ci
-
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            cd /home/ubuntu/Schedule_Ease
-
-            git pull origin main
-
-            cd frontend
-            npm ci
-            npm run build
-
-            sudo rm -rf /var/www/html/*
-            sudo cp -r dist/* /var/www/html/
-
-            cd ../my-backend
-            npm ci
-
-            pm2 restart all
-
-            sudo systemctl restart nginx
-Also verify your EC2 project path
-Run on your EC2 server:
-
-pwd
-ls /home/ubuntu
-If your project folder is:
-
-/home/ubuntu/Schedule_Ease
-then the workflow above is correct.
-
-If it is:
-
-/home/ubuntu/nexagen
-change only this line:
-
-cd /home/ubuntu/Schedule_Ease
-to
-
-cd /home/ubuntu/nexagen
-Make sure GitHub Secrets exist
-Your repository Settings → Secrets and variables → Actions should contain:
-
-EC2_HOST
-
-EC2_USER
-
-EC2_SSH_KEY
-
-One more thing
-Earlier I noticed you accidentally committed my-backend/node_modules into Git. Those should be removed from the repository because they can cause problems and unnecessarily bloat the repository.
-
-If you want, I can also provide:
-
-a production-ready deploy.yml,
-
-a proper .gitignore,
-
-and the commands to clean node_modules from Git while keeping them on your local machine.
-
-
-
-Repository navigation
-Code
-Issues
-Pull requests
-Agents
-Actions
-Projects
-Wiki
-Security and quality
-1
- (1)
-Insights
-Settings
-AWS CI/CD
-Fix Workflow #4
-All jobs
-Run details
-Annotations
-1 warning
-deploy
-failed now in 1m 2s
-Search logs
-1s
-3s
-2s
-4s
-8s
-6s
-3s
-32s
-Run appleboy/ssh-action@v1.0.3
-/usr/bin/docker run --name e7406b219e62ed0654789bc22c2cc8368253e_7e0449 --label 4e7406 --workdir /github/workspace --rm -e "INPUT_HOST" -e "INPUT_USERNAME" -e "INPUT_KEY" -e "INPUT_PORT" -e "INPUT_SCRIPT" -e "INPUT_PASSPHRASE" -e "INPUT_PASSWORD" -e "INPUT_SYNC" -e "INPUT_USE_INSECURE_CIPHER" -e "INPUT_CIPHER" -e "INPUT_TIMEOUT" -e "INPUT_COMMAND_TIMEOUT" -e "INPUT_KEY_PATH" -e "INPUT_FINGERPRINT" -e "INPUT_PROXY_HOST" -e "INPUT_PROXY_PORT" -e "INPUT_PROXY_USERNAME" -e "INPUT_PROXY_PASSWORD" -e "INPUT_PROXY_PASSPHRASE" -e "INPUT_PROXY_TIMEOUT" -e "INPUT_PROXY_KEY" -e "INPUT_PROXY_KEY_PATH" -e "INPUT_PROXY_FINGERPRINT" -e "INPUT_PROXY_CIPHER" -e "INPUT_PROXY_USE_INSECURE_CIPHER" -e "INPUT_SCRIPT_STOP" -e "INPUT_ENVS" -e "INPUT_ENVS_FORMAT" -e "INPUT_DEBUG" -e "INPUT_ALLENVS" -e "INPUT_REQUEST_PTY" -e "HOME" -e "GITHUB_JOB" -e "GITHUB_REF" -e "GITHUB_SHA" -e "GITHUB_REPOSITORY" -e "GITHUB_REPOSITORY_OWNER" -e "GITHUB_REPOSITORY_OWNER_ID" -e "GITHUB_RUN_ID" -e "GITHUB_RUN_NUMBER" -e "GITHUB_RETENTION_DAYS" -e "GITHUB_RUN_ATTEMPT" -e "GITHUB_ACTOR_ID" -e "GITHUB_ACTOR" -e "GITHUB_WORKFLOW" -e "GITHUB_HEAD_REF" -e "GITHUB_BASE_REF" -e "GITHUB_EVENT_NAME" -e "GITHUB_SERVER_URL" -e "GITHUB_API_URL" -e "GITHUB_GRAPHQL_URL" -e "GITHUB_REF_NAME" -e "GITHUB_REF_PROTECTED" -e "GITHUB_REF_TYPE" -e "GITHUB_WORKFLOW_REF" -e "GITHUB_WORKFLOW_SHA" -e "GITHUB_REPOSITORY_ID" -e "GITHUB_TRIGGERING_ACTOR" -e "GITHUB_WORKSPACE" -e "GITHUB_ACTION" -e "GITHUB_EVENT_PATH" -e "GITHUB_ACTION_REPOSITORY" -e "GITHUB_ACTION_REF" -e "GITHUB_PATH" -e "GITHUB_ENV" -e "GITHUB_STEP_SUMMARY" -e "GITHUB_STATE" -e "GITHUB_OUTPUT" -e "RUNNER_OS" -e "RUNNER_ARCH" -e "RUNNER_NAME" -e "RUNNER_ENVIRONMENT" -e "RUNNER_TOOL_CACHE" -e "RUNNER_TEMP" -e "RUNNER_WORKSPACE" -e "ACTIONS_RUNTIME_URL" -e "ACTIONS_RUNTIME_TOKEN" -e "ACTIONS_CACHE_URL" -e "ACTIONS_RESULTS_URL" -e "ACTIONS_ORCHESTRATION_ID" -e GITHUB_ACTIONS=true -e CI=true -v "/var/run/docker.sock":"/var/run/docker.sock" -v "/home/runner/work/_temp":"/github/runner_temp" -v "/home/runner/work/_temp/_github_home":"/github/home" -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" -v "/home/runner/work/_temp/_runner_file_commands":"/github/file_commands" -v "/home/runner/work/Schedule_Ease/Schedule_Ease":"/github/workspace" 4e7406:b219e62ed0654789bc22c2cc8368253e
-======CMD======
-cd /home/***/Schedule_Ease
-
-git pull origin main
-
-cd frontend
-npm ci
-npm run build
-
-sudo rm -rf /var/www/html/*
-sudo cp -r dist/* /var/www/html/
-
-cd ../my-backend
-npm ci
-
-pm2 restart all
-
-sudo systemctl restart nginx
-======END======
-2026/07/14 13:50:29 dial tcp ***:22: i/o timeout
-0s
-0s  see it
-
-This is good news. Your GitHub Actions workflow is now valid and it is trying to connect to your EC2.
-
-The new error is:
-
-dial tcp <EC2_IP>:22: i/o timeout
-This is not a GitHub Actions problem. It means GitHub cannot connect to your EC2 over SSH (port 22).
-
-Step 1: Check if your EC2 is running
-On the AWS Console:
-
-Go to EC2 → Instances
-
-Verify:
-
-✅ Instance state = Running
-
-✅ Public IPv4 address is correct
-
-If the IP has changed, update the EC2_HOST GitHub secret.
-
-Step 2: Check the Security Group
-Go to:
-
-EC2 → Security Groups → Inbound Rules
-
-You should have at least:
-
-Type	Port	Source
-SSH	22	0.0.0.0/0 (or a more restrictive rule if appropriate)
-HTTP	80	0.0.0.0/0
-HTTPS	443	0.0.0.0/0
-If SSH (22) is missing, GitHub Actions cannot connect.
-
-Step 3: Test SSH from your own computer
-Run:
-
-ssh -i your-key.pem ubuntu@51.20.10.115
-If this hangs or times out:
-
-Connection timed out
-then the problem is definitely with the EC2 networking (security group, network ACL, wrong IP, etc.), not GitHub Actions.
-
-Step 4: Verify SSH service on EC2
-If you can access the instance another way (for example via AWS Session Manager or EC2 Instance Connect), run:
-
-sudo systemctl status ssh
-or
-
-sudo systemctl status sshd
-It should be active (running).
-
-Step 5: Check the Public IP
-On the EC2 instance, verify the public IP shown in AWS matches the value stored in your GitHub secret EC2_HOST.
-
-You can also check locally:
-
-curl ifconfig.me
-on the instance to compare.
-
-Step 6: Test port 22 from the internet
-From your computer:
-
-telnet 51.20.10.115 22
-or
-
-nc -vz 51.20.10.115 22
-If it times out, port 22 is not reachable.
-
-Most likely causes
-From the error you shared, the most likely causes are:
-
-❌ SSH port 22 is blocked in the EC2 Security Group.
-
-❌ The EC2_HOST secret contains an old or incorrect IP address.
-
-❌ The EC2 instance is stopped or unreachable.
-
-❌ SSH (sshd) is not running on the instance.
-
-Please share these three things so I can pinpoint the issue:
-A screenshot of your EC2 Security Group → Inbound Rules.
-
-The EC2 instance details showing the Public IPv4 address (you can blur the last few digits if you prefer).
-
-The output of:
-
-ssh -i your-key.pem ubuntu@<your-ec2-ip>
-or, if you've already connected to the instance before:
-
-sudo systemctl status ssh
-With those details, we can determine exactly why GitHub Actions cannot reach your EC2 instance.
-
-
-
-muham@DESKTOP-BT54RA8 MINGW64 ~
-$ cd Downloads/
-
-muham@DESKTOP-BT54RA8 MINGW64 ~/Downloads
-$ ssh -i NexagenProject.pem ubuntu@51.20.10.115
-Welcome to Ubuntu 26.04 LTS (GNU/Linux 7.0.0-1006-aws x86_64)
-
- * Documentation:  https://docs.ubuntu.com
- * Management:     https://landscape.canonical.com
- * Support:        https://ubuntu.com/pro
-
- System information as of Tue Jul 14 14:15:37 UTC 2026
-
-  System load:  0.07              Temperature:           -273.1 C
-  Usage of /:   78.9% of 6.61GB   Processes:             120
-  Memory usage: 32%               Users logged in:       0
-  Swap usage:   7%                IPv4 address for ens5: 172.31.40.66
-
-
-Expanded Security Maintenance for Applications is not enabled.
-
-0 updates can be applied immediately.
-
-Enable ESM Apps to receive additional future security updates.
-See https://ubuntu.com/esm or run: sudo pro status
-
-
-*** System restart required ***
-Last login: Tue Jul 14 12:35:54 2026 from 103.117.163.252
-ubuntu@ip-172-31-40-66:~$ sudo systemctl status ssh
-● ssh.service - OpenBSD Secure Shell server
-     Loaded: loaded (/usr/lib/systemd/system/ssh.service; disabled; preset: ena>
-    Drop-In: /usr/lib/systemd/system/ssh.service.d
-             └─ec2-instance-connect.conf
-     Active: active (running) since Tue 2026-07-14 11:50:37 UTC; 2h 25min ago
- Invocation: 073f9f95e4b7450f8ec9e646d5004669
-TriggeredBy: ● ssh.socket
-       Docs: man:sshd(8)
-             man:sshd_config(5)
-    Process: 19980 ExecStartPre=/usr/sbin/sshd -t (code=exited, status=0/SUCCES>
-   Main PID: 19983 (sshd)
-      Tasks: 1 (limit: 627)
-     Memory: 8M (peak: 10.8M, swap: 984K, swap peak: 1.5M)
-        CPU: 254ms
-     CGroup: /system.slice/ssh.service
-             └─19983 "sshd: /usr/sbin/sshd -D -o AuthorizedKeysCommand /usr/sha>
-
-Jul 14 11:58:18 ip-172-31-40-66 sshd-session[20532]: pam_unix(sshd:session): se>
-Jul 14 12:21:09 ip-172-31-40-66 sshd-session[21771]: Accepted publickey for ubu>
-Jul 14 12:21:09 ip-172-31-40-66 sshd-session[21771]: pam_unix(sshd:session): se>
-Jul 14 12:32:01 ip-172-31-40-66 sshd-session[22282]: Accepted publickey for ubu>
-Jul 14 12:32:01 ip-172-31-40-66 sshd-session[22282]: pam_unix(sshd:session): se>
-Jul 14 12:35:53 ip-172-31-40-66 sshd-session[22559]: Accepted publickey for ubu>
-
-ubuntu@ip-172-31-40-66:~$ curl ifconfig.me
-51.20.10.115ubuntu@ip-172-31-40-66:~$
-ubuntu@ip-172-31-40-66:~$ telnet 51.20.10.115 22
-Trying 51.20.10.115...
-Connected to 51.20.10.115.
-Escape character is '^]'.
-SSH-2.0-OpenSSH_10.2p1 Ubuntu-2ubuntu3.4
-
-
-The important part is this:
-
-dial tcp ***:22: i/o timeout
-This is not a GitHub Actions problem and not a workflow YAML problem.
-
-It means:
-
-GitHub runner cannot connect to your EC2 instance on port 22 (SSH).
-
-The fact that you can SSH from your laptop proves:
-
-✅ EC2 is running.
-
-✅ SSH service is running.
-
-✅ Your PEM key works.
-
-The problem is that GitHub's servers are being blocked.
-
-Step 1. Check EC2 Security Group
-Go to
-
-AWS Console
-↓
-EC2
-↓
-Instances
-↓
-Your Instance
-↓
-Security
-↓
-Security Groups
-↓
-Inbound Rules
-You should see something like
-
-Type	Port	Source
-SSH	22	YOUR IP
-If it is only your IP like
-
-103.xxx.xxx.xxx/32
-GitHub cannot connect.
-
-For testing,
-
-Change it to
-
-SSH
-Port 22
-
-Source
-
-0.0.0.0/0
-or
-
-Anywhere IPv4
-Save.
-
-Run the workflow again.
-
-Step 2. Verify GitHub Secrets
-Go to
-
-Repository
-
-↓
-
-Settings
-
-↓
-
-Secrets and Variables
-
-↓
-
-Actions
-You must have
-
-EC2_HOST
-Value
-
-51.20.10.115
-(no spaces)
-
-EC2_USER
-Value
-
-ubuntu
-EC2_SSH_KEY
-Must contain the ENTIRE pem
-
-Like
-
------BEGIN OPENSSH PRIVATE KEY-----
-...
-...
-...
------END OPENSSH PRIVATE KEY-----
-Not
-
-NexagenProject.pem
-Not
-
-path/to/file
-The entire file contents.
-
-Step 3. Check GitHub Action
-Your deploy step should be
-
-- name: Deploy to EC2
-  uses: appleboy/ssh-action@v1.0.3
-  with:
-    host: ${{ secrets.EC2_HOST }}
-    username: ${{ secrets.EC2_USER }}
-    key: ${{ secrets.EC2_SSH_KEY }}
-    port: 22
-    timeout: 60s
-
-    script: |
-      cd /home/ubuntu/Schedule_Ease
-      git pull origin main
-
-      cd frontend
-      npm ci
-      npm run build
-
-      sudo rm -rf /var/www/html/*
-      sudo cp -r dist/* /var/www/html/
-
-      cd ../my-backend
-      npm ci
-
-      pm2 restart all
-
-      sudo systemctl restart nginx
-Step 4. Test SSH from GitHub
-Create a temporary workflow
-
-name: SSH Test
-
-on:
-  workflow_dispatch:
-
-jobs:
-  ssh:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            whoami
-            hostname
-            pwd
-If this fails
-
-dial tcp ... timeout
-then the issue is definitely networking or the security group.
-
-Step 5. If it still times out
-Run these commands on the EC2 instance:
-
-sudo ufw status
-sudo ss -tlnp | grep :22
-sudo cat /etc/ssh/sshd_config | grep Port
-Based on everything you've shown
-✅ SSH from your laptop works.
-
-✅ EC2 is running.
-
-✅ SSH service is active.
-
-✅ Port 22 responds when tested from the instance.
-
-❌ GitHub Actions cannot reach port 22.
-
-This almost always means one of these:
-
-EC2 Security Group only allows your IP (most likely).
-
-GitHub Secrets (EC2_HOST, EC2_USER, or EC2_SSH_KEY) are incorrect.
-
-A network ACL or firewall is blocking GitHub's outbound connection.
-
-If you can share:
-
-a screenshot of your EC2 Security Group inbound rules, and
-
-a screenshot of your GitHub repository Secrets (with the values hidden),
-
-I can tell you exactly which setting is causing the timeout.
-
-
+(anonymous) @ contentScript.bundle.js:1
+hook.bundle.js:1 [locatorjs]: No valid renderers found.
