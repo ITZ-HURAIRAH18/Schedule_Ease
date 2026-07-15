@@ -16,13 +16,7 @@ export const getApiBaseUrl = () => {
     return import.meta.env.VITE_API_BASE;
   }
 
-  // Development
-  if (import.meta.env.DEV) {
-    return "";
-  }
-
-  // Production (Nginx reverse proxy)
-  return "";
+  return "/api";
 };
 
 export const getSocketUrl = () => {
