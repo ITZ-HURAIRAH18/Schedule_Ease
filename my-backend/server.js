@@ -41,6 +41,8 @@ const allowedOrigins = [
   'http://127.0.0.1:5002',
   'https://localhost:5173',
   'https://127.0.0.1:5173',
+   "http://51.20.10.115",
+  "https://51.20.10.115"
 ];
 
 if (FRONTEND_URL) {
