@@ -109,6 +109,13 @@ const MeetingRoom = () => {
 
         // 2. Get Media Stream with fallbacks
         setStatus("Initializing WebRTC...");
+
+        if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+          const httpMediaMsg = "Camera/mic require HTTPS. Your connection is HTTP.";
+          console.warn(httpMediaMsg);
+          setMediaError(httpMediaMsg);
+        }
+
         const mediaConstraints = [
           { video: { width: { ideal: 1280 }, height: { ideal: 720 } }, audio: true },
           { video: true, audio: true },
@@ -130,7 +137,9 @@ const MeetingRoom = () => {
           setStream(localStream);
           if (myVideo.current) myVideo.current.srcObject = localStream;
         } else {
-          const noMediaMsg = "Camera and microphone access denied or unavailable. Please grant permissions and refresh.";
+          const noMediaMsg = window.location.protocol !== 'https:'
+            ? "Camera and microphone require a secure connection (HTTPS). Please use https:// to access this site."
+            : "Camera and microphone access denied. Please grant permissions and refresh.";
           setMediaError(noMediaMsg);
           setError(noMediaMsg);
         }
@@ -143,6 +152,7 @@ const MeetingRoom = () => {
 
         // 4. Initialize Socket.IO Connection for Signaling
         socket = io(getSocketUrl(), {
+          path: '/api/socket.io',
           transports: ['websocket', 'polling'],
         });
 

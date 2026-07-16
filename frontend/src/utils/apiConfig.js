@@ -20,13 +20,11 @@ export const getApiBaseUrl = () => {
 };
 
 export const getSocketUrl = () => {
-  if (import.meta.env.VITE_API_BASE) {
-    return import.meta.env.VITE_API_BASE;
+  if (import.meta.env.VITE_SOCKET_URL) {
+    return import.meta.env.VITE_SOCKET_URL;
   }
 
-  if (import.meta.env.DEV) {
-    return "";
-  }
-
+  // Same origin in all environments; the custom path /api/socket.io
+  // routes through the Nginx /api/ proxy in production and Vite proxy in dev
   return "";
 };

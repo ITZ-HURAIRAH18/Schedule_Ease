@@ -20,7 +20,7 @@ export default defineConfig({
         secure: false,
         rejectUnauthorized: false,
       },
-      '/socket.io': {
+      '/api/socket.io': {
         target: BACKEND_URL,
         changeOrigin: true,
         secure: false,

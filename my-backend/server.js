@@ -255,6 +255,7 @@ if (!isVercel) {
       methods: ['GET', 'POST'],
       credentials: true,
     },
+    path: '/api/socket.io',
   });
 
   setIO(io);
