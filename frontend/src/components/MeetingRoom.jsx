@@ -29,7 +29,8 @@ const MeetingRoom = () => {
   const [videoOn, setVideoOn] = useState(true);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("Loading engine...");
-  
+  const [mediaError, setMediaError] = useState("");
+
   const peerRef = useRef();
   const socketRef = useRef(null);
   const myVideo = useRef();
@@ -44,6 +45,59 @@ const MeetingRoom = () => {
     const STUN_SERVERS = [
       { urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }
     ];
+
+    // Declare createPeerConnection first so event handlers can reference it
+    const createPeerConnection = async (shouldMakeOffer) => {
+      if (peerConnection) return peerConnection;
+
+      peerConnection = new RTCPeerConnection({
+        iceServers: STUN_SERVERS
+      });
+
+      if (localStream) {
+        localStream.getTracks().forEach(track => {
+          peerConnection.addTrack(track, localStream);
+        });
+      }
+
+      peerConnection.ontrack = (event) => {
+        if (event.streams.length > 0 && mounted) {
+          setRemoteStream(event.streams[0]);
+          if (userVideo.current) userVideo.current.srcObject = event.streams[0];
+          setStatus("Session Live");
+        }
+      };
+
+      peerConnection.onicecandidate = (event) => {
+        if (event.candidate && socket) {
+          socket.emit('ice_candidate', {
+            roomId,
+            candidate: event.candidate
+          });
+        }
+      };
+
+      peerConnection.onconnectionstatechange = () => {
+        if (peerConnection.connectionState === 'failed' && mounted) {
+          setError('WebRTC connection failed - trying to reconnect');
+        }
+      };
+
+      peerConnection.oniceconnectionstatechange = () => {};
+
+      if (shouldMakeOffer) {
+        try {
+          const offer = await peerConnection.createOffer();
+          await peerConnection.setLocalDescription(offer);
+          if (socket) socket.emit('webrtc_offer', { roomId, offer });
+        } catch (err) {
+          console.error('❌ Error creating offer:', err.message);
+        }
+      }
+
+      peerRef.current = peerConnection;
+      return peerConnection;
+    };
 
     const initMeeting = async () => {
       try {
@@ -71,23 +125,25 @@ const MeetingRoom = () => {
           }
         }
         if (!mounted) return;
+
         if (localStream) {
           setStream(localStream);
           if (myVideo.current) myVideo.current.srcObject = localStream;
+        } else {
+          const noMediaMsg = "Camera and microphone access denied or unavailable. Please grant permissions and refresh.";
+          setMediaError(noMediaMsg);
+          setError(noMediaMsg);
         }
 
-        // 3. Identity Logic
-        const currentUserId = String(user?._id || user?.id);
-        const isHost = currentUserId === String(data.bookingInfo.hostId);
-        const myPeerId = isHost ? `${roomId}-host` : `${roomId}-guest`;
-        const targetPeerId = isHost ? `${roomId}-guest` : `${roomId}-host`;
+        // 3. Identity Logic — use actual user ID for unique peerId
+        const currentUserId = String(user?._id || user?.id || 'anon');
+        const myPeerId = `${roomId}-${currentUserId}`;
 
-        console.log(`📡 Identity: ${isHost ? 'HOST' : 'GUEST'} | ID: ${myPeerId}`);
+        console.log(`📡 Peer ID: ${myPeerId}`);
 
         // 4. Initialize Socket.IO Connection for Signaling
         socket = io(getSocketUrl(), {
-          secure: window.location.protocol === 'https:',
-          rejectUnauthorized: false,
+          transports: ['websocket', 'polling'],
         });
 
         socketRef.current = socket;
@@ -95,67 +151,37 @@ const MeetingRoom = () => {
         socket.on('connect', () => {
           console.log('✅ Socket.IO connected for signaling');
           socket.emit('join_meeting', { roomId, userId: myPeerId });
-          setStatus(isHost ? "Waiting for Guest..." : "Connecting to Host...");
+          setStatus("Connecting...");
         });
 
         socket.on('user_joined', (data) => {
-          console.log(`📢 User joined: ${data.userId}`);
           if (!peerConnection && data.userId !== myPeerId) {
-            console.log(`🔵 ${isHost ? 'HOST' : 'GUEST'}: Creating peer connection and offer...`);
             createPeerConnection(true);
           }
         });
 
         socket.on('webrtc_offer', async (data) => {
-          console.log('📥 Received offer');
           try {
             if (!peerConnection) {
-              console.log('🔵 Creating peer connection to answer offer...');
               await createPeerConnection(false);
-              // Wait for peer connection to be fully initialized
-              let waitCount = 0;
-              while (!peerConnection && waitCount < 50) {
-                await new Promise(resolve => setTimeout(resolve, 10));
-                waitCount++;
-              }
-              console.log('Peer connection ready after', waitCount * 10, 'ms');
             }
+            if (!peerConnection) return;
 
-            if (!peerConnection) {
-              console.error('❌ Failed to create peer connection');
-              return;
-            }
-
-            console.log('Setting remote description. Current state:', peerConnection.signalingState);
             await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
-            console.log('✅ Remote description set');
-            
             const answer = await peerConnection.createAnswer();
             await peerConnection.setLocalDescription(answer);
-            
-            console.log('📤 Sending answer');
-            socket.emit('webrtc_answer', { roomId, answer: answer });
+            socket.emit('webrtc_answer', { roomId, answer });
           } catch (err) {
-            console.error('❌ Error handling offer:', err.message, err.stack);
+            console.error('❌ Error handling offer:', err.message);
           }
         });
 
         socket.on('webrtc_answer', async (data) => {
-          console.log('📥 Received answer, peer state:', peerConnection?.signalingState);
           try {
-            if (!peerConnection) {
-              console.warn('⚠️ No peer connection when receiving answer');
-              return;
-            }
-            
-            if (peerConnection.signalingState !== 'have-local-offer') {
-              console.warn('⚠️ Cannot set answer - wrong state:', peerConnection.signalingState);
-              return;
-            }
+            if (!peerConnection) return;
+            if (peerConnection.signalingState !== 'have-local-offer') return;
 
-            console.log('Setting remote description from answer...');
             await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
-            console.log('✅ Answer set successfully');
           } catch (err) {
             console.error('❌ Error handling answer:', err.message);
           }
@@ -172,105 +198,8 @@ const MeetingRoom = () => {
         });
 
         socket.on('error', (error) => {
-          console.error('Socket error:', error);
           if (mounted) setError(`Connection error: ${error}`);
         });
-
-        // 5. Create WebRTC Peer Connection
-        const createPeerConnection = async (shouldMakeOffer) => {
-          if (peerConnection) return peerConnection;
-
-          peerConnection = new RTCPeerConnection({
-            iceServers: STUN_SERVERS
-          });
-
-          console.log('🔌 WebRTC Peer Connection created');
-
-          // Add local tracks (if available)
-          if (localStream) {
-            localStream.getTracks().forEach(track => {
-              console.log('Adding local track:', track.kind);
-              peerConnection.addTrack(track, localStream);
-            });
-          }
-
-          // Handle remote stream using ontrack
-          peerConnection.ontrack = (event) => {
-            console.log('✅ ontrack event fired!', event.track.kind, event.streams.length);
-            if (event.streams.length > 0) {
-              if (mounted) {
-                console.log('Setting remote stream from ontrack');
-                setRemoteStream(event.streams[0]);
-                if (userVideo.current) userVideo.current.srcObject = event.streams[0];
-                setStatus("Session Live");
-              }
-            }
-          };
-
-          // Fallback: Poll for receiverStreams if ontrack doesn't work
-          const streamCheckInterval = setInterval(() => {
-            if (!peerConnection) {
-              clearInterval(streamCheckInterval);
-              return;
-            }
-            try {
-              const receivers = peerConnection.getReceivers();
-              if (receivers.length > 0 && receivers.some(r => r.track)) {
-                console.log('Found remote track via receivers');
-                const streams = peerConnection.getRemoteStreams();
-                if (streams.length > 0 && mounted) {
-                  console.log('Setting remote stream from receivers');
-                  setRemoteStream(streams[0]);
-                  if (userVideo.current) userVideo.current.srcObject = streams[0];
-                  setStatus("Session Live");
-                  clearInterval(streamCheckInterval);
-                }
-              }
-            } catch (err) {
-              console.error('Error checking receivers:', err.message);
-            }
-          }, 1000);
-
-          // Handle ICE candidates
-          peerConnection.onicecandidate = (event) => {
-            if (event.candidate) {
-              console.log('📤 ICE candidate:', event.candidate.candidate.substring(0, 50));
-              socket.emit('ice_candidate', { 
-                roomId, 
-                candidate: event.candidate 
-              });
-            }
-          };
-
-          peerConnection.onconnectionstatechange = () => {
-            console.log('🔗 Connection state:', peerConnection.connectionState);
-            if (peerConnection.connectionState === 'failed' && mounted) {
-              setError('WebRTC connection failed - trying to reconnect');
-            } else if (peerConnection.connectionState === 'connected') {
-              console.log('✨ WebRTC connected!');
-            }
-          };
-
-          peerConnection.oniceconnectionstatechange = () => {
-            console.log('❄️ ICE connection state:', peerConnection.iceConnectionState);
-          };
-
-          // Create and send offer if this peer should initiate
-          if (shouldMakeOffer) {
-            try {
-              console.log('Creating offer...');
-              const offer = await peerConnection.createOffer();
-              await peerConnection.setLocalDescription(offer);
-              console.log('📤 Sent offer');
-              socket.emit('webrtc_offer', { roomId, offer: offer });
-            } catch (err) {
-              console.error('❌ Error creating offer:', err.message);
-            }
-          }
-
-          peerRef.current = peerConnection;
-          return peerConnection;
-        };
 
       } catch (err) {
         console.error('❌ Meeting init error:', err);
@@ -278,10 +207,8 @@ const MeetingRoom = () => {
       }
     };
 
-    // Start initialization
     initMeeting();
 
-    // Cleanup function - must be returned directly from useEffect
     return () => {
       mounted = false;
       if (peerConnection) {
@@ -366,6 +293,9 @@ const MeetingRoom = () => {
                 </div>
                 <h2 className="text-2xl font-semibold text-white/60">Waiting for participant...</h2>
                 <p className="text-sm text-white/30 mt-2">They will appear here when they join</p>
+                {mediaError && (
+                  <p className="text-xs text-red-400/70 mt-3 max-w-sm text-center">{mediaError}</p>
+                )}
               </div>
             )}
 

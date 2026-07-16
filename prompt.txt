@@ -1,1 +1,34 @@
-getUserMedia is not supported in this browser. Please use HTTPS or a supported browser.
+inject.bundle.js:169 [ExtensionPerf] Failed to log metric: TypeError: crypto.randomUUID is not a function
+    at a (inject.bundle.js:169:339330)
+    at nB (inject.bundle.js:218:88770)
+    at inject.bundle.js:218:88917
+    at inject.bundle.js:218:88959
+    at inject.bundle.js:218:88963
+a @ inject.bundle.js:169
+inject.bundle.js:218 [ChromePolyfill] Chrome API support enabled for web context
+hook.bundle.js:1 [locatorjs]: loading: No valid renderers found.
+o @ hook.bundle.js:1
+6Unchecked runtime.lastError: The message port closed before a response was received.
+inject.bundle.js:169 [ExtensionPerf] Failed to log metric: TypeError: crypto.randomUUID is not a function
+    at a (inject.bundle.js:169:339330)
+    at assets_chrome-extension_inject_iframe-sidebar_components_IframeSidebar_module_scss-assets_chr-bc65dd.chunk.js:1:4972
+    at sz (inject.bundle.js:65:14466)
+    at oF (inject.bundle.js:65:43457)
+    at inject.bundle.js:65:38032
+    at A (inject.bundle.js:130:3038)
+    at MessagePort.O (inject.bundle.js:130:3568)
+a @ inject.bundle.js:169
+hook.bundle.js:1 [locatorjs]: loading: No valid renderers found.
+o @ hook.bundle.js:1
+index-u_s3bfWu.js:563 📡 Identity: GUEST | ID: 7b5f49d7-1cfc-412e-b21a-961822bf09cc-guest
+hook.bundle.js:1 [locatorjs]: loading: No valid renderers found.
+o @ hook.bundle.js:1
+2hook.bundle.js:1 [locatorjs]: No valid renderers found.
+o @ hook.bundle.js:1
+index-u_s3bfWu.js:563 📡 Identity: GUEST | ID: 7b5f49d7-1cfc-412e-b21a-961822bf09cc-guest
+client:87 [GSI_LOGGER]: Provided button width is invalid: 100%
+_.G @ client:87
+accounts.google.com/gsi/status?client_id=77809119535-r5ivv8inbitphbo2rcf5bik2d7grgf5g.apps.googleusercontent.com&cas=9oVaaD7coS%2F%2F0rwSQW7FPUFvMpOR1HRtDMR686eMcHk&bs=62XEbQKvbJRZFRvE59O7J9GuwUe9zEQVsNXYJgWzNT0&is_itp=false:1  Failed to load resource: the server responded with a status of 403 ()
+client:88 [GSI_LOGGER]: The given origin is not allowed for the given client ID.
+_.H @ client:88
+index-u_s3bfWu.js:563 📡
