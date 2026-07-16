@@ -53,18 +53,25 @@ const MeetingRoom = () => {
         setMeetingInfo(res.data);
         const data = res.data;
 
-        // 2. Get Media Stream
+        // 2. Get Media Stream (optional - meeting works without it)
         setStatus("Initializing WebRTC...");
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          throw new Error("getUserMedia is not supported in this browser. Please use HTTPS or a supported browser.");
+        try {
+          if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            localStream = await navigator.mediaDevices.getUserMedia({ 
+              video: { width: { ideal: 1280 }, height: { ideal: 720 } },
+              audio: true 
+            });
+          } else {
+            console.warn('⚠️ getUserMedia not available - joining without camera/mic');
+          }
+        } catch (mediaErr) {
+          console.warn('⚠️ Media access denied:', mediaErr.message);
         }
-        localStream = await navigator.mediaDevices.getUserMedia({ 
-          video: { width: { ideal: 1280 }, height: { ideal: 720 } },
-          audio: true 
-        });
         if (!mounted) return;
-        setStream(localStream);
-        if (myVideo.current) myVideo.current.srcObject = localStream;
+        if (localStream) {
+          setStream(localStream);
+          if (myVideo.current) myVideo.current.srcObject = localStream;
+        }
 
         // 3. Identity Logic
         const currentUserId = String(user?._id || user?.id);
@@ -176,11 +183,13 @@ const MeetingRoom = () => {
 
           console.log('🔌 WebRTC Peer Connection created');
 
-          // Add local tracks
-          localStream.getTracks().forEach(track => {
-            console.log('Adding local track:', track.kind);
-            peerConnection.addTrack(track, localStream);
-          });
+          // Add local tracks (if available)
+          if (localStream) {
+            localStream.getTracks().forEach(track => {
+              console.log('Adding local track:', track.kind);
+              peerConnection.addTrack(track, localStream);
+            });
+          }
 
           // Handle remote stream using ontrack
           peerConnection.ontrack = (event) => {

@@ -1,4 +1,1 @@
-https://localhost:5173/host/manage-availability
-
-On this page When Host Create its NEw Schedule it put all data but when 
-i see host avalibality in cards it show nothing ike no day  no timing  no sesion time ansl no buffer ime
+getUserMedia is not supported in this browser. Please use HTTPS or a supported browser.
