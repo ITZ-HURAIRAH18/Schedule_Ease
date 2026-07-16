@@ -76,16 +76,16 @@ const AddAvailability = () => {
       <div className="flex items-center">
         <button 
           onClick={() => onChange(Math.max(min, value - step))}
-          className="w-11 h-11 flex items-center justify-center border border-[#E8E4DF] border-r-0 rounded-l-lg bg-[#F5F3F0] hover:bg-[#E8E4DF] transition-colors"
+          className="w-11 h-11 flex items-center justify-center border border-[#E8DCC0] border-r-0 rounded-l-lg bg-[#FFF4D6] hover:bg-[#E8DCC0] transition-colors"
         >
           <Minus className="w-4 h-4 text-[#4A4A4A]" />
         </button>
-        <div className="flex-1 h-11 border border-[#E8E4DF] flex items-center justify-center bg-white text-[14px] font-medium text-[#1A1A1A]">
+        <div className="flex-1 h-11 border border-[#E8DCC0] flex items-center justify-center bg-[#FFF4D6] text-[14px] font-medium text-[#1A1A1A]">
           {value} min
         </div>
         <button 
           onClick={() => onChange(Math.min(max, value + step))}
-          className="w-11 h-11 flex items-center justify-center border border-[#E8E4DF] border-l-0 rounded-r-lg bg-[#F5F3F0] hover:bg-[#E8E4DF] transition-colors"
+          className="w-11 h-11 flex items-center justify-center border border-[#E8DCC0] border-l-0 rounded-r-lg bg-[#FFF4D6] hover:bg-[#E8DCC0] transition-colors"
         >
           <Plus className="w-4 h-4 text-[#4A4A4A]" />
         </button>
@@ -94,7 +94,7 @@ const AddAvailability = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] page-enter">
+    <div className="min-h-screen bg-[#FFF4D6] page-enter">
       <Toaster position="bottom-right" />
       <HostHeader />
 
@@ -104,7 +104,7 @@ const AddAvailability = () => {
           <p className="text-[14px] text-[#8A8A8A] mt-2">Define your working hours and preferences.</p>
         </header>
 
-        <div className="bg-white border border-[#E8E4DF] rounded-[16px] p-8 shadow-sm space-y-10">
+        <div className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[16px] p-8 shadow-sm space-y-10">
           {/* Weekly Schedule */}
           <section>
             <span className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#92694A] block mb-6">
@@ -112,10 +112,10 @@ const AddAvailability = () => {
             </span>
             <div className="space-y-6">
               {weekly.map((slot, i) => (
-                <div key={i} className="p-6 bg-[#F5F3F0]/50 border border-[#E8E4DF] rounded-[12px] relative group">
+                <div key={i} className="p-6 bg-[#FFF4D6]/50 border border-[#E8DCC0] rounded-[12px] relative group">
                   <button
                     onClick={() => removeDay(i)}
-                    className="absolute -top-2 -right-2 w-8 h-8 bg-white border border-[#E8E4DF] rounded-full flex items-center justify-center text-[#B91C1C] hover:bg-[#FEF2F2] transition-colors shadow-sm"
+                    className="absolute -top-2 -right-2 w-8 h-8 bg-[#FFF4D6] border border-[#E8DCC0] rounded-full flex items-center justify-center text-[#B91C1C] hover:bg-[#FEF2F2] transition-colors shadow-sm"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -129,8 +129,8 @@ const AddAvailability = () => {
                           onClick={() => updateDay(i, "day", day.full)}
                           className={`h-9 px-4 rounded-full text-[13px] font-medium transition-all ${
                             slot.day === day.full
-                              ? "bg-[#C8622A] text-white"
-                              : "bg-[#F5F3F0] text-[#4A4A4A] hover:bg-[#E8E4DF]"
+                              ? "bg-[#FC6C26] text-white"
+                              : "bg-[#FFF4D6] text-[#4A4A4A] hover:bg-[#E8DCC0]"
                           }`}
                         >
                           {day.short}
@@ -146,7 +146,7 @@ const AddAvailability = () => {
                           type="time"
                           value={slot.start}
                           onChange={(e) => updateDay(i, "start", e.target.value)}
-                          className="h-11 px-4 border border-[#E8E4DF] rounded-lg text-[14px] focus:outline-none focus:border-[#C8622A]"
+                          className="h-11 px-4 border border-[#E8DCC0] rounded-lg text-[14px] focus:outline-none focus:border-[#FC6C26]"
                         />
                       </div>
                       <div className="flex flex-col gap-2">
@@ -155,7 +155,7 @@ const AddAvailability = () => {
                           type="time"
                           value={slot.end}
                           onChange={(e) => updateDay(i, "end", e.target.value)}
-                          className="h-11 px-4 border border-[#E8E4DF] rounded-lg text-[14px] focus:outline-none focus:border-[#C8622A]"
+                          className="h-11 px-4 border border-[#E8DCC0] rounded-lg text-[14px] focus:outline-none focus:border-[#FC6C26]"
                         />
                       </div>
                     </div>
@@ -165,7 +165,7 @@ const AddAvailability = () => {
 
               <button
                 onClick={addDay}
-                className="flex items-center gap-2 text-[#C8622A] text-[14px] font-medium hover:text-[#A84E20] transition-colors"
+                className="flex items-center gap-2 text-[#FC6C26] text-[14px] font-medium hover:text-[#E05A1A] transition-colors"
               >
                 <Plus className="w-4 h-4" /> Add Day
               </button>
@@ -181,7 +181,7 @@ const AddAvailability = () => {
           </section>
 
           {/* Timezone */}
-          <section className="pt-6 border-t border-[#E8E4DF]">
+          <section className="pt-6 border-t border-[#E8DCC0]">
             <label className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#92694A] block mb-2">Timezone</label>
             <div className="relative">
               <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8A8A]" />
@@ -189,13 +189,13 @@ const AddAvailability = () => {
                 type="text"
                 value={timezone}
                 onChange={(e) => setTimezone(e.target.value)}
-                className="w-full h-11 pl-10 pr-4 bg-[#F5F3F0] border border-transparent rounded-lg text-[14px] focus:bg-white focus:border-[#C8622A] outline-none transition-all"
+                className="w-full h-11 pl-10 pr-4 bg-[#FFF4D6] border border-transparent rounded-lg text-[14px] focus:bg-[#FFF4D6] focus:border-[#FC6C26] outline-none transition-all"
               />
             </div>
           </section>
 
           {/* Blocked Dates */}
-          <section className="pt-6 border-t border-[#E8E4DF]">
+          <section className="pt-6 border-t border-[#E8DCC0]">
             <span className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#92694A] block mb-4">
               Blocked Dates
             </span>
@@ -206,7 +206,7 @@ const AddAvailability = () => {
                     type="date"
                     value={date}
                     onChange={(e) => updateBlock(i, e.target.value)}
-                    className="flex-1 h-11 px-4 border border-[#E8E4DF] rounded-lg text-[14px] focus:outline-none focus:border-[#C8622A]"
+                    className="flex-1 h-11 px-4 border border-[#E8DCC0] rounded-lg text-[14px] focus:outline-none focus:border-[#FC6C26]"
                   />
                   <button
                     onClick={() => removeBlock(i)}
@@ -218,7 +218,7 @@ const AddAvailability = () => {
               ))}
               <button
                 onClick={addBlocked}
-                className="flex items-center gap-2 text-[#C8622A] text-[13px] font-medium mt-2"
+                className="flex items-center gap-2 text-[#FC6C26] text-[13px] font-medium mt-2"
               >
                 <Plus className="w-4 h-4" /> Add Blocked Date
               </button>
@@ -229,7 +229,7 @@ const AddAvailability = () => {
           <button
             onClick={save}
             disabled={isSaving}
-            className="w-full h-[48px] bg-[#1A1A1A] hover:bg-black text-white font-medium text-[16px] rounded-[10px] transition-all flex items-center justify-center disabled:opacity-50"
+            className="w-full h-[48px] bg-[#FC6C26] hover:bg-[#E05A1A] text-white font-medium text-[16px] rounded-[10px] transition-all flex items-center justify-center disabled:opacity-50"
           >
             {isSaving ? "Saving..." : "Save Availability"}
           </button>

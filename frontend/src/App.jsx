@@ -87,15 +87,15 @@ const AppRoutes = () => {
 const App = () => {
   return (
     <Router>
-      <div className="min-h-screen bg-[#FAFAF8] text-[#1A1A1A] font-inter">
+      <div className="min-h-screen bg-[#FFF4D6] text-[#1A1A1A] font-inter">
         <Toaster 
           position="bottom-right"
           toastOptions={{
             duration: 2500,
             style: {
-              background: '#FFFFFF',
+              background: '#FFF4D6',
               color: '#1A1A1A',
-              border: '1px solid #E8E4DF',
+              border: '1px solid #E8DCC0',
               borderRadius: '10px',
               fontSize: '14px',
               padding: '12px 16px',

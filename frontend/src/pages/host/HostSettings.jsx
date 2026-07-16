@@ -64,9 +64,9 @@ const HostSettings = () => {
         icon: <CheckCircle className="w-5 h-5 text-[#2D7D52]" />,
         style: {
           borderRadius: '10px',
-          background: '#FFFFFF',
+          background: '#FFF4D6',
           color: '#1A1A1A',
-          border: '1px solid #E8E4DF',
+          border: '1px solid #E8DCC0',
           fontSize: '14px',
           padding: '12px 16px',
         },
@@ -83,16 +83,16 @@ const HostSettings = () => {
   );
 
   if (loading) return (
-    <div className="min-h-screen bg-[#FAFAF8] flex flex-col">
+    <div className="min-h-screen bg-[#FFF4D6] flex flex-col">
       <HostHeader />
       <div className="flex-1 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#E8E4DF] border-t-[#C8622A] rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#E8DCC0] border-t-[#FC6C26] rounded-full animate-spin" />
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] page-enter">
+    <div className="min-h-screen bg-[#FFF4D6] page-enter">
       <Toaster position="bottom-right" />
       <HostHeader />
 
@@ -102,7 +102,7 @@ const HostSettings = () => {
           <p className="text-[14px] text-[#8A8A8A] mt-2">Manage your profile and preferences.</p>
         </header>
 
-        <div className="bg-white border border-[#E8E4DF] rounded-[16px] p-8 shadow-sm space-y-8">
+        <div className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[16px] p-8 shadow-sm space-y-8">
           {/* Username */}
           <div className="space-y-2">
             <label className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#92694A]">Username</label>
@@ -113,7 +113,7 @@ const HostSettings = () => {
                 value={settings.username}
                 onChange={(e) => setSettings({...settings, username: e.target.value})}
                 placeholder="Enter username"
-                className="w-full h-11 pl-10 pr-4 bg-white border border-[#E8E4DF] rounded-lg text-[14px] focus:outline-none focus:border-[#C8622A] transition-all"
+                className="w-full h-11 pl-10 pr-4 bg-[#FFF4D6] border border-[#E8DCC0] rounded-lg text-[14px] focus:outline-none focus:border-[#FC6C26] transition-all"
               />
             </div>
           </div>
@@ -123,7 +123,7 @@ const HostSettings = () => {
             <label className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#92694A]">Timezone</label>
             <button 
               onClick={() => setShowTzDropdown(!showTzDropdown)}
-              className="w-full h-11 px-4 bg-white border border-[#E8E4DF] rounded-lg text-[14px] flex items-center justify-between text-[#1A1A1A] focus:border-[#C8622A] transition-all"
+              className="w-full h-11 px-4 bg-[#FFF4D6] border border-[#E8DCC0] rounded-lg text-[14px] flex items-center justify-between text-[#1A1A1A] focus:border-[#FC6C26] transition-all"
             >
               <div className="flex items-center gap-2">
                 <Globe className="w-4 h-4 text-[#8A8A8A]" />
@@ -133,8 +133,8 @@ const HostSettings = () => {
             </button>
             
             {showTzDropdown && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[#E8E4DF] rounded-lg shadow-lg z-50 overflow-hidden">
-                <div className="p-2 border-b border-[#E8E4DF]">
+              <div className="absolute top-full left-0 right-0 mt-1 bg-[#FFF4D6] border border-[#E8DCC0] rounded-lg shadow-lg z-50 overflow-hidden">
+                <div className="p-2 border-b border-[#E8DCC0]">
                   <div className="relative">
                     <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#8A8A8A]" />
                     <input 
@@ -142,7 +142,7 @@ const HostSettings = () => {
                       value={tzSearch}
                       onChange={(e) => setTzSearch(e.target.value)}
                       placeholder="Search timezone..."
-                      className="w-full h-8 pl-8 pr-2 bg-[#F5F3F0] border-none rounded-md text-[13px] focus:outline-none"
+                      className="w-full h-8 pl-8 pr-2 bg-[#FFF4D6] border-none rounded-md text-[13px] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -154,7 +154,7 @@ const HostSettings = () => {
                         setSettings({...settings, timezone: tz});
                         setShowTzDropdown(false);
                       }}
-                      className="w-full px-4 py-2 text-left text-[13px] text-[#4A4A4A] hover:bg-[#F5F3F0] transition-colors"
+                      className="w-full px-4 py-2 text-left text-[13px] text-[#4A4A4A] hover:bg-[#FFF4D6] transition-colors"
                     >
                       {tz}
                     </button>
@@ -174,7 +174,7 @@ const HostSettings = () => {
                 value={settings.bookingLink}
                 onChange={(e) => setSettings({...settings, bookingLink: e.target.value})}
                 placeholder="https://zoom.us/j/..."
-                className="w-full h-11 pl-10 pr-4 bg-white border border-[#E8E4DF] rounded-lg text-[14px] focus:outline-none focus:border-[#C8622A] transition-all"
+                className="w-full h-11 pl-10 pr-4 bg-[#FFF4D6] border border-[#E8DCC0] rounded-lg text-[14px] focus:outline-none focus:border-[#FC6C26] transition-all"
               />
             </div>
           </div>
@@ -210,7 +210,7 @@ const HostSettings = () => {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full h-11 bg-[#C8622A] hover:bg-[#A84E20] text-white font-medium text-[14px] rounded-[10px] transition-all shadow-sm flex items-center justify-center disabled:opacity-50"
+            className="w-full h-11 bg-[#FC6C26] hover:bg-[#E05A1A] text-white font-medium text-[14px] rounded-[10px] transition-all shadow-sm flex items-center justify-center disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save Settings"}
           </button>
@@ -223,9 +223,9 @@ const HostSettings = () => {
 const Toggle = ({ enabled, onChange }) => (
   <button
     onClick={() => onChange(!enabled)}
-    className={`w-10 h-5 rounded-full transition-colors relative ${enabled ? 'bg-[#C8622A]' : 'bg-[#E8E4DF]'}`}
+    className={`w-10 h-5 rounded-full transition-colors relative ${enabled ? 'bg-[#FC6C26]' : 'bg-[#E8DCC0]'}`}
   >
-    <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all ${enabled ? 'left-6' : 'left-1'}`} />
+    <div className={`absolute top-1 w-3 h-3 bg-[#FFF4D6] rounded-full transition-all ${enabled ? 'left-6' : 'left-1'}`} />
   </button>
 );
 

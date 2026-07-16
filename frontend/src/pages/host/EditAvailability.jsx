@@ -121,7 +121,7 @@ const EditAvailability = () => {
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
         >
-          <Loader2 className="w-12 h-12 text-violet-600 animate-pulse" />
+          <Loader2 className="w-12 h-12 text-[#FC6C26] animate-pulse" />
         </motion.div>
       </div>
     );
@@ -144,7 +144,7 @@ const EditAvailability = () => {
             <motion.div 
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-violet-600/10 text-violet-600 mb-4"
+              className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#FC6C26]/10 text-[#FC6C26] mb-4"
             >
               <CalendarDays className="w-8 h-8" />
             </motion.div>
@@ -162,11 +162,11 @@ const EditAvailability = () => {
               {/* Weekly Schedule Card */}
               <motion.section 
                 variants={itemVariants}
-                className="bg-white/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-slate-200/50 rounded-3xl p-6 sm:p-8"
+                className="bg-[#FFF4D6]/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-slate-200/50 rounded-3xl p-6 sm:p-8"
               >
                 <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-violet-100 rounded-lg text-violet-600">
+                    <div className="p-2 bg-[#FFF4D6] rounded-lg text-[#FC6C26]">
                       <Clock className="w-5 h-5" />
                     </div>
                     <h2 className="text-xl font-bold">Weekly Schedule</h2>
@@ -182,11 +182,11 @@ const EditAvailability = () => {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="group relative p-6 rounded-2xl bg-slate-50/50 border border-slate-200 hover:border-violet-200 hover:bg-white transition-all duration-300"
+                        className="group relative p-6 rounded-2xl bg-slate-50/50 border border-slate-200 hover:border-[#FC6C26] hover:bg-[#FFF4D6] transition-all duration-300"
                       >
                         <button
                           onClick={() => removeDay(i)}
-                          className="absolute -top-3 -right-3 p-2 bg-white border border-slate-200 rounded-full text-slate-400 hover:text-rose-500 hover:border-rose-200 shadow-sm transition-colors opacity-0 group-hover:opacity-100"
+                          className="absolute -top-3 -right-3 p-2 bg-[#FFF4D6] border border-slate-200 rounded-full text-slate-400 hover:text-[#FFF4D6] hover:border-[#E8DCC0] shadow-sm transition-colors opacity-0 group-hover:opacity-100"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -201,8 +201,8 @@ const EditAvailability = () => {
                                 onClick={() => updateDay(i, "day", day.full)}
                                 className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
                                   slot.day === day.full
-                                    ? "bg-violet-600 text-white shadow-lg shadow-violet-200 ring-2 ring-violet-600 ring-offset-2"
-                                    : "bg-white text-slate-600 border border-slate-200 hover:border-violet-300 hover:bg-violet-50"
+                                    ? "bg-[#FC6C26] text-white shadow-lg shadow-[#FC6C26]/40 ring-2 ring-[#FC6C26] ring-offset-2"
+                                    : "bg-[#FFF4D6] text-slate-600 border border-slate-200 hover:border-[#FC6C26] hover:bg-[#FFF4D6]"
                                 }`}
                               >
                                 {day.short}
@@ -220,7 +220,7 @@ const EditAvailability = () => {
                                   type="time"
                                   value={slot.start}
                                   onChange={(e) => updateDay(i, "start", e.target.value)}
-                                  className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all font-medium"
+                                  className="w-full pl-11 pr-4 py-3 bg-[#FFF4D6] border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#FC6C26]/20 focus:border-[#FC6C26] outline-none transition-all font-medium"
                                 />
                               </div>
                             </div>
@@ -232,7 +232,7 @@ const EditAvailability = () => {
                                   type="time"
                                   value={slot.end}
                                   onChange={(e) => updateDay(i, "end", e.target.value)}
-                                  className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all font-medium"
+                                  className="w-full pl-11 pr-4 py-3 bg-[#FFF4D6] border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#FC6C26]/20 focus:border-[#FC6C26] outline-none transition-all font-medium"
                                 />
                               </div>
                             </div>
@@ -246,7 +246,7 @@ const EditAvailability = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={addDay}
-                    className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-500 font-semibold hover:border-violet-300 hover:text-violet-600 hover:bg-violet-50/50 transition-all flex items-center justify-center gap-2"
+                    className="w-full py-4 border-2 border-dashed border-slate-200 rounded-2xl text-slate-500 font-semibold hover:border-[#FC6C26] hover:text-[#FC6C26] hover:bg-[#FFF4D6]/50 transition-all flex items-center justify-center gap-2"
                   >
                     <Plus className="w-5 h-5" />
                     Add Another Slot
@@ -257,10 +257,10 @@ const EditAvailability = () => {
               {/* Blocked Dates Card */}
               <motion.section 
                 variants={itemVariants}
-                className="bg-white/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-slate-200/50 rounded-3xl p-6 sm:p-8"
+                className="bg-[#FFF4D6]/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-slate-200/50 rounded-3xl p-6 sm:p-8"
               >
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-rose-100 rounded-lg text-rose-600">
+                  <div className="p-2 bg-[#FFF4D6] rounded-lg text-[#FFF4D6]">
                     <Calendar className="w-5 h-5" />
                   </div>
                   <h2 className="text-xl font-bold">Blocked Dates</h2>
@@ -282,12 +282,12 @@ const EditAvailability = () => {
                             type="date"
                             value={date}
                             onChange={(e) => updateBlock(i, e.target.value)}
-                            className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all font-medium"
+                            className="w-full px-4 py-3 bg-[#FFF4D6] border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#FC6C26]/20 focus:border-[#FC6C26] outline-none transition-all font-medium"
                           />
                         </div>
                         <button
                           onClick={() => removeBlock(i)}
-                          className="p-3 bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-100 transition-colors"
+                          className="p-3 bg-[#FFF4D6] text-[#FFF4D6] rounded-xl hover:bg-[#E8DCC0] transition-colors"
                         >
                           <Trash2 className="w-5 h-5" />
                         </button>
@@ -297,7 +297,7 @@ const EditAvailability = () => {
 
                   <button
                     onClick={addBlocked}
-                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-rose-600 hover:text-rose-700 transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-[#FFF4D6] hover:text-[#E05A1A] transition-colors"
                   >
                     <Plus className="w-4 h-4" /> Add Blocked Date
                   </button>
@@ -309,10 +309,10 @@ const EditAvailability = () => {
             <div className="space-y-6">
               <motion.section 
                 variants={itemVariants}
-                className="bg-white/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-slate-200/50 rounded-3xl p-6 sm:p-8"
+                className="bg-[#FFF4D6]/70 backdrop-blur-xl border border-white/40 shadow-2xl shadow-slate-200/50 rounded-3xl p-6 sm:p-8"
               >
                 <div className="flex items-center gap-3 mb-8">
-                  <div className="p-2 bg-indigo-100 rounded-lg text-indigo-600">
+                  <div className="p-2 bg-[#FFF4D6] rounded-lg text-[#FC6C26]">
                     <Settings2 className="w-5 h-5" />
                   </div>
                   <h2 className="text-xl font-bold">Preferences</h2>
@@ -323,7 +323,7 @@ const EditAvailability = () => {
                   <div className="space-y-4">
                     <div className="flex justify-between">
                       <label className="text-sm font-bold text-slate-700">Buffer Before</label>
-                      <span className="text-sm font-mono font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded">
+                      <span className="text-sm font-mono font-bold text-[#FC6C26] bg-[#FFF4D6] px-2 py-0.5 rounded">
                         {bufferBefore}m
                       </span>
                     </div>
@@ -334,7 +334,7 @@ const EditAvailability = () => {
                       step="5"
                       value={bufferBefore}
                       onChange={(e) => setBufferBefore(Number(e.target.value))}
-                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#FC6C26]"
                     />
                   </div>
 
@@ -342,7 +342,7 @@ const EditAvailability = () => {
                   <div className="space-y-4">
                     <div className="flex justify-between">
                       <label className="text-sm font-bold text-slate-700">Buffer After</label>
-                      <span className="text-sm font-mono font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded">
+                      <span className="text-sm font-mono font-bold text-[#FC6C26] bg-[#FFF4D6] px-2 py-0.5 rounded">
                         {bufferAfter}m
                       </span>
                     </div>
@@ -353,7 +353,7 @@ const EditAvailability = () => {
                       step="5"
                       value={bufferAfter}
                       onChange={(e) => setBufferAfter(Number(e.target.value))}
-                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#FC6C26]"
                     />
                   </div>
 
@@ -361,7 +361,7 @@ const EditAvailability = () => {
                   <div className="space-y-4">
                     <div className="flex justify-between">
                       <label className="text-sm font-bold text-slate-700">Meeting Duration</label>
-                      <span className="text-sm font-mono font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded">
+                      <span className="text-sm font-mono font-bold text-[#FC6C26] bg-[#FFF4D6] px-2 py-0.5 rounded">
                         {durations}m
                       </span>
                     </div>
@@ -372,7 +372,7 @@ const EditAvailability = () => {
                       step="15"
                       value={durations}
                       onChange={(e) => setDurations(Number(e.target.value))}
-                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#FC6C26]"
                     />
                   </div>
 
@@ -380,7 +380,7 @@ const EditAvailability = () => {
                   <div className="space-y-4">
                     <div className="flex justify-between">
                       <label className="text-sm font-bold text-slate-700">Daily Limit</label>
-                      <span className="text-sm font-mono font-bold text-violet-600 bg-violet-50 px-2 py-0.5 rounded">
+                      <span className="text-sm font-mono font-bold text-[#FC6C26] bg-[#FFF4D6] px-2 py-0.5 rounded">
                         {maxPerDay}
                       </span>
                     </div>
@@ -391,7 +391,7 @@ const EditAvailability = () => {
                       step="1"
                       value={maxPerDay}
                       onChange={(e) => setMaxPerDay(Number(e.target.value))}
-                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
+                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#FC6C26]"
                     />
                   </div>
 
@@ -403,7 +403,7 @@ const EditAvailability = () => {
                         type="text"
                         value={timezone}
                         onChange={(e) => setTimezone(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 outline-none transition-all"
+                        className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-[#FC6C26]/20 focus:border-[#FC6C26] outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -417,7 +417,7 @@ const EditAvailability = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => navigate("/host/manage-availability")}
-                  className="py-4 rounded-2xl font-bold text-slate-600 bg-white border border-slate-200 shadow-lg shadow-slate-200/50 transition-all flex items-center justify-center gap-2"
+                  className="py-4 rounded-2xl font-bold text-slate-600 bg-[#FFF4D6] border border-slate-200 shadow-lg shadow-slate-200/50 transition-all flex items-center justify-center gap-2"
                 >
                   <XCircle className="w-5 h-5" />
                   Cancel
@@ -431,8 +431,8 @@ const EditAvailability = () => {
                   disabled={isSaving}
                   className={`py-4 rounded-2xl font-bold shadow-xl transition-all duration-300 flex items-center justify-center gap-3 ${
                     isSuccess 
-                      ? "bg-emerald-500 text-white shadow-emerald-200" 
-                      : "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-violet-200 hover:shadow-2xl hover:shadow-violet-300"
+                      ? "bg-[#2D7D52] text-white shadow-[#2D7D52]/30" 
+                      : "bg-[#FC6C26] text-white shadow-lg shadow-[#FC6C26]/30 hover:shadow-2xl hover:shadow-[#FC6C26]/40"
                   }`}
                 >
                   {isSaving ? (
@@ -464,7 +464,7 @@ const EditAvailability = () => {
         </motion.div>
       </main>
       
-      <div className="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-600 via-indigo-600 to-fuchsia-600 z-50" />
+      <div className="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-[#FC6C26] to-[#E05A1A] z-50" />
     </div>
   );
 };

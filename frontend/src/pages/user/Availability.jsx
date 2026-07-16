@@ -37,11 +37,11 @@ const Availability = () => {
 
   if (loading)
     return (
-      <div className="min-h-screen bg-[#FAFAF8] flex flex-col">
+      <div className="min-h-screen bg-[#FFF4D6] flex flex-col">
         <UserHeader />
         <div className="flex-1 flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-8 border-2 border-[#E8E4DF] border-t-[#C8622A] rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-[#E8DCC0] border-t-[#FC6C26] rounded-full animate-spin" />
             <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#92694A]">Finding available hosts...</p>
           </div>
         </div>
@@ -49,7 +49,7 @@ const Availability = () => {
     );
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] page-enter">
+    <div className="min-h-screen bg-[#FFF4D6] page-enter">
       <UserHeader />
 
       <main className="max-w-6xl mx-auto px-6 py-12">
@@ -57,7 +57,7 @@ const Availability = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
           <div className="flex items-center gap-4">
             <h1 className="text-[28px] font-semibold text-[#1A1A1A]">Available Hosts</h1>
-            <span className="bg-[#FDF0EA] text-[#C8622A] px-3 py-1 rounded-full text-[13px] font-semibold">
+            <span className="bg-[#FFF4D6] text-[#FC6C26] px-3 py-1 rounded-full text-[13px] font-semibold">
               {hosts.length}
             </span>
           </div>
@@ -67,7 +67,7 @@ const Availability = () => {
             <input 
               type="text"
               placeholder="Search hosts by name or email..."
-              className="w-full h-11 pl-10 pr-4 bg-white border border-[#E8E4DF] rounded-lg text-[14px] focus:outline-none focus:border-[#C8622A] focus:ring-4 focus:ring-[#C8622A]/10 transition-all placeholder:text-[#B0B0B0]"
+              className="w-full h-11 pl-10 pr-4 bg-[#FFF4D6] border border-[#E8DCC0] rounded-lg text-[14px] focus:outline-none focus:border-[#FC6C26] focus:ring-4 focus:ring-[#FC6C26]/10 transition-all placeholder:text-[#B0B0B0]"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -75,8 +75,8 @@ const Availability = () => {
         </div>
 
         {filteredHosts.length === 0 ? (
-          <div className="bg-white border border-[#E8E4DF] rounded-[16px] p-12 text-center">
-            <div className="w-16 h-16 bg-[#F5F3F0] rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[16px] p-12 text-center">
+            <div className="w-16 h-16 bg-[#FFF4D6] rounded-full flex items-center justify-center mx-auto mb-4">
               <Search className="w-6 h-6 text-[#8A8A8A]" />
             </div>
             <h3 className="text-[18px] font-semibold text-[#1A1A1A] mb-2">No hosts found</h3>
@@ -85,7 +85,7 @@ const Availability = () => {
             </p>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filteredHosts.map((h) => (
               <HostCard
                 key={h._id}
@@ -109,10 +109,10 @@ const HostCard = ({ host, onBook }) => {
   const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
   return (
-    <div className="bg-white border border-[#E8E4DF] rounded-[16px] p-6 hover-card flex flex-col h-full">
+    <div className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[16px] p-6 hover-card flex flex-col h-full">
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
-        <div className="w-14 h-14 rounded-full bg-[#F5F3F0] flex items-center justify-center text-[#92694A] font-semibold text-[18px]">
+        <div className="w-14 h-14 rounded-full bg-[#FFF4D6] flex items-center justify-center text-[#92694A] font-semibold text-[18px]">
           {initials}
         </div>
         <div className="overflow-hidden">
@@ -150,7 +150,7 @@ const HostCard = ({ host, onBook }) => {
       {/* CTA Button */}
       <button
         onClick={() => onBook(host)}
-        className="w-full h-11 bg-[#C8622A] hover:bg-[#A84E20] text-white font-medium text-[14px] rounded-[10px] transition-colors flex items-center justify-center gap-2 group"
+        className="w-full h-11 bg-[#FC6C26] hover:bg-[#E05A1A] text-white font-medium text-[14px] rounded-[10px] transition-colors flex items-center justify-center gap-2 group"
       >
         Book Meeting
         <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
@@ -160,7 +160,7 @@ const HostCard = ({ host, onBook }) => {
 };
 
 const Chip = ({ icon, text }) => (
-  <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#F5F3F0] border border-[#E8E4DF] rounded-md text-[12px] font-medium text-[#4A4A4A]">
+  <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#FFF4D6] border border-[#E8DCC0] rounded-md text-[12px] font-medium text-[#4A4A4A]">
     <span className="text-[#92694A]">{icon}</span>
     {text}
   </div>

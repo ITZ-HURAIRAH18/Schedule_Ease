@@ -21,17 +21,17 @@ import AdminHeader from "../../components/AdminHeader";
 // --- Sub-components ---
 
 const ShimmerRow = () => (
-  <div className="flex items-center gap-4 px-8 py-5 border-b border-[#E8E4DF] animate-pulse">
-    <div className="w-10 h-10 rounded-full bg-[#F5F3F0]" />
+  <div className="flex items-center gap-4 px-8 py-5 border-b border-[#E8DCC0] animate-pulse">
+    <div className="w-10 h-10 rounded-full bg-[#FFF4D6]" />
     <div className="flex-1 space-y-2">
-      <div className="h-4 bg-[#F5F3F0] rounded w-1/4" />
-      <div className="h-3 bg-[#F5F3F0] rounded w-1/3" />
+      <div className="h-4 bg-[#FFF4D6] rounded w-1/4" />
+      <div className="h-3 bg-[#FFF4D6] rounded w-1/3" />
     </div>
-    <div className="w-20 h-6 bg-[#F5F3F0] rounded-full" />
-    <div className="w-20 h-6 bg-[#F5F3F0] rounded-full" />
+    <div className="w-20 h-6 bg-[#FFF4D6] rounded-full" />
+    <div className="w-20 h-6 bg-[#FFF4D6] rounded-full" />
     <div className="flex gap-2">
-      <div className="w-8 h-8 bg-[#F5F3F0] rounded-lg" />
-      <div className="w-8 h-8 bg-[#F5F3F0] rounded-lg" />
+      <div className="w-8 h-8 bg-[#FFF4D6] rounded-lg" />
+      <div className="w-8 h-8 bg-[#FFF4D6] rounded-lg" />
     </div>
   </div>
 );
@@ -53,7 +53,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, confirm
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.95, opacity: 0 }}
-          className="relative w-full max-w-md bg-white border border-[#E8E4DF] rounded-2xl shadow-xl overflow-hidden"
+          className="relative w-full max-w-md bg-[#FFF4D6] border border-[#E8DCC0] rounded-2xl shadow-xl overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="p-8">
@@ -61,7 +61,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, confirm
               <div className={`p-3 rounded-xl ${type === 'danger' ? 'bg-[#FEF2F2] text-[#B91C1C]' : 'bg-[#FEF3E2] text-[#B45309]'}`}>
                 <AlertCircle size={24} />
               </div>
-              <button onClick={onClose} className="p-2 hover:bg-[#F5F3F0] rounded-lg transition-colors">
+              <button onClick={onClose} className="p-2 hover:bg-[#FFF4D6] rounded-lg transition-colors">
                 <X size={20} className="text-[#8A8A8A]" />
               </button>
             </div>
@@ -70,10 +70,10 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, confirm
             <p className="text-[#4A4A4A] text-[14px] leading-relaxed">{message}</p>
           </div>
           
-          <div className="p-6 bg-[#F5F3F0] border-t border-[#E8E4DF] flex gap-3">
+          <div className="p-6 bg-[#FFF4D6] border-t border-[#E8DCC0] flex gap-3">
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-2.5 rounded-lg bg-white border border-[#E8E4DF] text-[#4A4A4A] font-medium text-[13px] hover:bg-[#FAFAF8] transition-all"
+              className="flex-1 px-4 py-2.5 rounded-lg bg-[#FFF4D6] border border-[#E8DCC0] text-[#4A4A4A] font-medium text-[13px] hover:bg-[#FFF4D6] transition-all"
             >
               Cancel
             </button>
@@ -83,7 +83,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message, confirm
               className={`flex-[1.5] px-4 py-2.5 rounded-lg font-medium text-[13px] flex items-center justify-center gap-2 transition-all ${
                 type === 'danger' 
                   ? 'bg-[#B91C1C] text-white hover:bg-[#991B1B]' 
-                  : 'bg-[#C8622A] text-white hover:bg-[#A84E20]'
+                  : 'bg-[#FC6C26] text-white hover:bg-[#E05A1A]'
               }`}
             >
               {loading ? <Loader2 className="animate-spin" size={16} /> : confirmText}
@@ -99,9 +99,9 @@ const RoleBadge = ({ role }) => {
   const getStyle = (role) => {
     switch (role?.toLowerCase()) {
       case "admin": return "bg-[#1A1A1A] text-white";
-      case "host": return "bg-[#F5F3F0] text-[#92694A]";
-      case "user": return "bg-[#FDF0EA] text-[#C8622A]";
-      default: return "bg-[#F5F3F0] text-[#4A4A4A]";
+      case "host": return "bg-[#FFF4D6] text-[#FC6C26]";
+      case "user": return "bg-[#FFF4D6] text-[#FC6C26]";
+      default: return "bg-[#FFF4D6] text-[#4A4A4A]";
     }
   };
 
@@ -128,11 +128,11 @@ const UserRow = ({ user, index, onSuspend, onUnsuspend, onDelete }) => (
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ duration: 0.3, delay: index * 0.03 }}
-    className="group hover:bg-[#FAFAF8] transition-colors"
+    className="group hover:bg-[#FFF4D6] transition-colors"
   >
     <td className="px-8 py-4">
       <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-full bg-[#F5F3F0] text-[#92694A] flex items-center justify-center text-sm font-semibold">
+        <div className="w-9 h-9 rounded-full bg-[#FFF4D6] text-[#FC6C26] flex items-center justify-center text-sm font-semibold">
           {(user.fullName || "U").charAt(0).toUpperCase()}
         </div>
         <div>
@@ -245,7 +245,7 @@ const AdminUsers = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] font-['Inter'] selection:bg-[#FDF0EA] selection:text-[#C8622A]">
+    <div className="min-h-screen bg-[#FFF4D6] font-['Inter'] selection:bg-[#FFF4D6] selection:text-[#FC6C26]">
       <AdminHeader />
 
       <motion.main 
@@ -263,14 +263,14 @@ const AdminUsers = () => {
             
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               {/* Filter Tabs */}
-              <div className="flex items-center gap-6 border-b border-[#E8E4DF]">
+              <div className="flex items-center gap-6 border-b border-[#E8DCC0]">
                 {roles.map((role) => (
                   <button
                     key={role.id}
                     onClick={() => setFilteredRole(role.id)}
                     className={`pb-3 text-[14px] font-medium transition-all relative ${
                       filteredRole === role.id
-                        ? "text-[#C8622A]"
+                        ? "text-[#FC6C26]"
                         : "text-[#8A8A8A] hover:text-[#4A4A4A]"
                     }`}
                   >
@@ -278,7 +278,7 @@ const AdminUsers = () => {
                     {filteredRole === role.id && (
                       <motion.div
                         layoutId="activeTab"
-                        className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#C8622A]"
+                        className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#FC6C26]"
                       />
                     )}
                   </button>
@@ -293,25 +293,25 @@ const AdminUsers = () => {
                   placeholder="Search users..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-9 pr-4 py-2 bg-white border border-[#E8E4DF] rounded-lg text-[14px] placeholder:text-[#B0B0B0] focus:outline-none focus:border-[#C8622A] transition-colors"
+                  className="w-full pl-9 pr-4 py-2 bg-[#FFF4D6] border border-[#E8DCC0] rounded-lg text-[14px] placeholder:text-[#B0B0B0] focus:outline-none focus:border-[#FC6C26] transition-colors"
                 />
               </div>
             </div>
           </div>
 
           {/* Table Container */}
-          <div className="bg-white rounded-2xl border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06)] overflow-hidden">
+          <div className="bg-[#FFF4D6] rounded-2xl border border-[#E8DCC0] shadow-[0_1px_3px_rgba(0,0,0,0.06)] overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="bg-[#F5F3F0]">
+                  <tr className="bg-[#FFF4D6]">
                     <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.06em] text-[#8A8A8A]">User Identity</th>
                     <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.06em] text-[#8A8A8A]">Security Role</th>
                     <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.06em] text-[#8A8A8A]">Access Status</th>
                     <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.06em] text-[#8A8A8A] text-right">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E8E4DF]">
+                <tbody className="divide-y divide-[#E8DCC0]">
                   <AnimatePresence mode="popLayout">
                     {loading ? (
                       [...Array(6)].map((_, i) => (
@@ -323,7 +323,7 @@ const AdminUsers = () => {
                       <tr key="empty">
                         <td colSpan={4} className="py-20 text-center">
                           <div className="flex flex-col items-center gap-2">
-                            <Users size={40} className="text-[#E8E4DF]" />
+                            <Users size={40} className="text-[#E8DCC0]" />
                             <p className="text-[#8A8A8A] font-medium">No users found</p>
                           </div>
                         </td>
@@ -347,11 +347,11 @@ const AdminUsers = () => {
             
             {/* Table Footer */}
             {!loading && filteredUsers.length > 0 && (
-              <div className="px-8 py-4 bg-[#FAFAF8] border-t border-[#E8E4DF] flex items-center justify-between">
+              <div className="px-8 py-4 bg-[#FFF4D6] border-t border-[#E8DCC0] flex items-center justify-between">
                 <p className="text-[12px] font-medium text-[#8A8A8A]">
                   Showing <span className="text-[#1A1A1A]">{filteredUsers.length}</span> users
                 </p>
-                <div className="flex items-center gap-1.5 text-[12px] font-medium text-[#C8622A] cursor-pointer hover:gap-2 transition-all">
+                <div className="flex items-center gap-1.5 text-[12px] font-medium text-[#FC6C26] cursor-pointer hover:gap-2 transition-all">
                   View Audit Logs <ChevronRight size={14} />
                 </div>
               </div>

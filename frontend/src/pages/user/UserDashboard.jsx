@@ -19,7 +19,7 @@ const UserDashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8]">
+    <div className="min-h-screen bg-[#FFF4D6]">
       <UserHeader />
       
       <div className="max-w-[900px] mx-auto px-6 py-12">
@@ -31,13 +31,13 @@ const UserDashboard = () => {
         </header>
 
         {loading ? (
-          <div className="grid md:grid-cols-2 gap-5">
+          <div className="grid sm:grid-cols-2 gap-5">
             {[1, 2, 3, 4].map((n) => <SkeletonCard key={n} />)}
           </div>
         ) : bookings.length === 0 ? (
           <EmptyState />
         ) : (
-          <div className="grid md:grid-cols-2 gap-5">
+          <div className="grid sm:grid-cols-2 gap-5">
             {bookings.map((b) => (
               <BookingCard
                 key={b._id}
@@ -55,28 +55,28 @@ const UserDashboard = () => {
 };
 
 const SkeletonCard = () => (
-  <div className="bg-white border border-[#E8E4DF] rounded-[16px] p-6 h-[220px] animate-pulse">
+  <div className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[16px] p-6 h-[220px] animate-pulse">
     <div className="flex justify-between mb-6">
       <div className="flex gap-3">
-        <div className="w-12 h-12 rounded-full bg-[#F5F3F0]" />
+        <div className="w-12 h-12 rounded-full bg-[#FFF4D6]" />
         <div className="space-y-2">
-          <div className="h-4 bg-[#F5F3F0] rounded w-24" />
-          <div className="h-3 bg-[#F5F3F0] rounded w-16" />
+          <div className="h-4 bg-[#FFF4D6] rounded w-24" />
+          <div className="h-3 bg-[#FFF4D6] rounded w-16" />
         </div>
       </div>
-      <div className="w-20 h-6 bg-[#F5F3F0] rounded-[6px]" />
+      <div className="w-20 h-6 bg-[#FFF4D6] rounded-[6px]" />
     </div>
     <div className="space-y-4">
-      <div className="h-4 bg-[#F5F3F0] rounded w-1/2" />
-      <div className="h-8 bg-[#F5F3F0] rounded w-3/4" />
+      <div className="h-4 bg-[#FFF4D6] rounded w-1/2" />
+      <div className="h-8 bg-[#FFF4D6] rounded w-3/4" />
     </div>
   </div>
 );
 
 const EmptyState = () => (
-  <div className="text-center py-20 bg-white border border-[#E8E4DF] rounded-[16px]">
-    <div className="w-16 h-16 bg-[#FDF0EA] rounded-full flex items-center justify-center mx-auto mb-4">
-      <Calendar className="h-8 w-8 text-[#C8622A]" />
+  <div className="text-center py-20 bg-[#FFF4D6] border border-[#E8DCC0] rounded-[16px]">
+    <div className="w-16 h-16 bg-[#FFF4D6] rounded-full flex items-center justify-center mx-auto mb-4">
+      <Calendar className="h-8 w-8 text-[#FC6C26]" />
     </div>
     <h3 className="text-[16px] font-medium text-[#1A1A1A]">No bookings yet</h3>
     <p className="text-[14px] text-[#8A8A8A] mt-1 mb-6">
@@ -84,7 +84,7 @@ const EmptyState = () => (
     </p>
     <Link 
       to="/user/availability"
-      className="inline-flex items-center px-6 py-2.5 bg-[#C8622A] text-white text-[14px] font-medium rounded-[10px] hover:bg-[#A84E20] transition-colors"
+      className="inline-flex items-center px-6 py-2.5 bg-[#FC6C26] text-white text-[14px] font-medium rounded-[10px] hover:bg-[#E05A1A] transition-colors"
     >
       Browse hosts
     </Link>
@@ -130,10 +130,10 @@ const BookingCard = ({ booking, formatDate, formatTime, navigate }) => {
   const getInitials = (name) => name.split(' ').map(n => n[0]).join('').toUpperCase();
 
   return (
-    <div className="bg-white border border-[#E8E4DF] rounded-[16px] p-6 transition-all duration-200 hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)] flex flex-col h-full relative">
+    <div className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[16px] p-6 transition-all duration-200 hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)] flex flex-col h-full relative">
       <div className="flex justify-between items-start mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-[#F5F3F0] flex items-center justify-center text-[#92694A] text-[15px] font-semibold">
+          <div className="w-12 h-12 rounded-full bg-[#FFF4D6] flex items-center justify-center text-[#92694A] text-[15px] font-semibold">
             {getInitials(hostName)}
           </div>
           <div>
@@ -147,8 +147,8 @@ const BookingCard = ({ booking, formatDate, formatTime, navigate }) => {
       </div>
 
       <div className="space-y-4 mb-6 flex-1">
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#F5F3F0] rounded-[6px]">
-          <Calendar className="w-3.5 h-3.5 text-[#C8622A]" />
+        <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#FFF4D6] rounded-[6px]">
+          <Calendar className="w-3.5 h-3.5 text-[#FC6C26]" />
           <span className="text-[13px] text-[#4A4A4A] font-medium">{formatDate(start)}</span>
         </div>
         
@@ -168,16 +168,16 @@ const BookingCard = ({ booking, formatDate, formatTime, navigate }) => {
           <button
             onClick={() => joinAllowed && navigate(`/meeting/${meetingRoom}`)}
             disabled={!joinAllowed}
-            className={`w-full h-[40px] rounded-[10px] border-[1.5px] border-[#E8E4DF] text-[14px] font-medium flex items-center justify-center transition-colors ${
+            className={`w-full h-[40px] rounded-[10px] border-[1.5px] border-[#E8DCC0] text-[14px] font-medium flex items-center justify-center transition-colors ${
               joinAllowed 
-                ? "bg-white text-[#1A1A1A] border-[#C8622A] text-[#C8622A] hover:bg-[#FDF0EA]" 
-                : "bg-white text-[#8A8A8A] cursor-not-allowed"
+                ? "bg-[#FFF4D6] text-[#1A1A1A] border-[#FC6C26] text-[#FC6C26] hover:bg-[#FFF4D6]" 
+                : "bg-[#FFF4D6] text-[#8A8A8A] cursor-not-allowed"
             }`}
           >
             {checking ? "Checking..." : joinAllowed ? "Join Meeting" : opensAt ? `Opens at ${opensAt}` : "Meeting Link"}
           </button>
         ) : (
-          <div className="w-full h-[40px] rounded-[10px] border-[1.5px] border-[#E8E4DF] bg-white text-[#8A8A8A] text-[13px] font-medium flex items-center justify-center">
+          <div className="w-full h-[40px] rounded-[10px] border-[1.5px] border-[#E8DCC0] bg-[#FFF4D6] text-[#8A8A8A] text-[13px] font-medium flex items-center justify-center">
             {status === 'confirmed' ? "Waiting for video link..." : "Pending host approval"}
           </div>
         )}

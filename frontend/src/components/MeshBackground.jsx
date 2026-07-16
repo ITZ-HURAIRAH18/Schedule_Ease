@@ -16,7 +16,7 @@ const MeshBackground = () => {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#7C3AED]/20 blur-[120px] rounded-full"
+        className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#FC6C26]/20 blur-[120px] rounded-full"
       />
       <motion.div
         animate={{
@@ -29,7 +29,7 @@ const MeshBackground = () => {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#4F46E5]/15 blur-[120px] rounded-full"
+        className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-[#FFF4D6]/15 blur-[120px] rounded-full"
       />
       <motion.div
         animate={{
@@ -42,7 +42,7 @@ const MeshBackground = () => {
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute top-[30%] left-[40%] w-[30%] h-[30%] bg-[#C026D3]/10 blur-[100px] rounded-full"
+        className="absolute top-[30%] left-[40%] w-[30%] h-[30%] bg-[#FC6C26]/10 blur-[100px] rounded-full"
       />
     </div>
   );

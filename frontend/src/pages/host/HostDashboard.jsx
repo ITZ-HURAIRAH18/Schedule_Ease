@@ -43,7 +43,6 @@ const HostDashboard = () => {
   }, []);
 
   useEffect(() => {
-    // Initialize socket connection
     const socket = io(getSocketUrl(), {
       secure: window.location.protocol === 'https:',
       rejectUnauthorized: false,
@@ -58,7 +57,6 @@ const HostDashboard = () => {
           socket.emit("join_host_room", res.data.hostId);
         }
         
-        // ✨ Proactive Link Sync: If any confirmed booking is missing a link, fix it now
         if (res.data.recentBookings) {
           res.data.recentBookings.forEach(async (b) => {
             if (b.status === 'confirmed' && !b.meetingRoom) {
@@ -93,7 +91,7 @@ const HostDashboard = () => {
   const paginated = data?.recentBookings?.slice(start, start + pageSize) || [];
 
   const statConfigs = {
-    totalBookings: { icon: CalendarDays, color: "#C8622A", bg: "#FDF0EA", label: "Total Bookings" },
+    totalBookings: { icon: CalendarDays, color: "#FC6C26", bg: "#FFF4D6", label: "Total Bookings" },
     upcomingBookings: { icon: CheckCircle2, color: "#2D7D52", bg: "#EDF7F1", label: "Upcoming" },
     pendingBookings: { icon: AlertCircle, color: "#B45309", bg: "#FEF3E2", label: "Pending" },
     cancelledBookings: { icon: XCircle, color: "#B91C1C", bg: "#FEF2F2", label: "Cancelled" },
@@ -101,7 +99,7 @@ const HostDashboard = () => {
   };
 
   if (error) return (
-    <div className="min-h-screen bg-[#FAFAF8] flex flex-col">
+    <div className="min-h-screen bg-[#FFF4D6] flex flex-col">
       <HostHeader />
       <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
         <div className="w-16 h-16 bg-[#FEF2F2] rounded-full flex items-center justify-center mb-4">
@@ -111,7 +109,7 @@ const HostDashboard = () => {
         <p className="text-[#8A8A8A] max-w-md mb-6">{error}</p>
         <button 
           onClick={() => window.location.reload()}
-          className="px-6 py-2.5 bg-[#C8622A] text-white rounded-lg font-semibold text-[14px] hover:bg-[#A84E20] transition-all"
+          className="px-6 py-2.5 bg-[#FC6C26] text-white rounded-lg font-semibold text-[14px] hover:bg-[#E05A1A] transition-all"
         >
           Retry Connection
         </button>
@@ -124,7 +122,7 @@ const HostDashboard = () => {
   const { stats = {} } = data;
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] page-enter">
+    <div className="min-h-screen bg-[#FFF4D6] page-enter">
       <HostHeader />
       
       <main className="max-w-7xl mx-auto px-6 py-10">
@@ -138,7 +136,7 @@ const HostDashboard = () => {
           {Object.entries(stats).map(([key, value]) => {
             const config = statConfigs[key] || statConfigs.totalBookings;
             return (
-              <div key={key} className="bg-white border border-[#E8E4DF] rounded-[12px] p-5 shadow-sm hover-card">
+              <div key={key} className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[12px] p-5 shadow-sm hover-card">
                 <div 
                   className="w-9 h-9 rounded-[8px] flex items-center justify-center mb-4"
                   style={{ backgroundColor: config.bg, color: config.color }}
@@ -157,27 +155,27 @@ const HostDashboard = () => {
         </div>
 
         {/* Recent Bookings Section */}
-        <section className="bg-white border border-[#E8E4DF] rounded-[16px] overflow-hidden shadow-sm">
-          <div className="px-6 py-5 border-b border-[#E8E4DF] flex items-center justify-between">
+        <section className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[16px] overflow-hidden shadow-sm">
+          <div className="px-6 py-5 border-b border-[#E8DCC0] flex items-center justify-between">
             <h2 className="text-[18px] font-semibold text-[#1A1A1A]">Recent Bookings</h2>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A8A8A]" />
               <input 
                 type="text" 
                 placeholder="Search guests..." 
-                className="h-9 pl-9 pr-4 bg-[#F5F3F0] border border-transparent rounded-lg text-[13px] focus:bg-white focus:border-[#C8622A] focus:outline-none transition-all w-48 md:w-64" 
+                className="h-9 pl-9 pr-4 bg-[#FFF4D6] border border-transparent rounded-lg text-[13px] focus:bg-[#FFF4D6] focus:border-[#FC6C26] focus:outline-none transition-all w-48 md:w-64" 
               />
             </div>
           </div>
 
-          <div className="divide-y divide-[#E8E4DF]">
+          <div className="divide-y divide-[#E8DCC0]">
             {paginated.map((b) => (
               <BookingRow key={b._id} booking={b} navigate={navigate} />
             ))}
             
             {paginated.length === 0 && (
               <div className="py-20 text-center">
-                <div className="w-16 h-16 bg-[#F5F3F0] rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-[#FFF4D6] rounded-full flex items-center justify-center mx-auto mb-4">
                   <CalendarDays className="w-8 h-8 text-[#8A8A8A]" />
                 </div>
                 <p className="text-[#8A8A8A] font-medium">No bookings found</p>
@@ -187,7 +185,7 @@ const HostDashboard = () => {
 
           {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="px-6 py-4 bg-[#FAFAF8] border-t border-[#E8E4DF] flex items-center justify-between">
+            <div className="px-6 py-4 bg-[#FFF4D6] border-t border-[#E8DCC0] flex items-center justify-between">
               <p className="text-[13px] text-[#8A8A8A]">
                 Showing <span className="text-[#1A1A1A] font-medium">{start + 1}</span> to <span className="text-[#1A1A1A] font-medium">{Math.min(start + pageSize, total)}</span> of <span className="text-[#1A1A1A] font-medium">{total}</span>
               </p>
@@ -195,7 +193,7 @@ const HostDashboard = () => {
                 <button
                   onClick={() => setPage((p) => Math.max(p - 1, 1))}
                   disabled={page === 1}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#E8E4DF] bg-white text-[#4A4A4A] hover:border-[#C8622A] hover:text-[#C8622A] disabled:opacity-40 disabled:hover:border-[#E8E4DF] disabled:hover:text-[#4A4A4A] transition-all"
+                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#E8DCC0] bg-[#FFF4D6] text-[#4A4A4A] hover:border-[#FC6C26] hover:text-[#FC6C26] disabled:opacity-40 disabled:hover:border-[#E8DCC0] disabled:hover:text-[#4A4A4A] transition-all"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
@@ -205,7 +203,7 @@ const HostDashboard = () => {
                 <button
                   onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
                   disabled={page === totalPages}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#E8E4DF] bg-white text-[#4A4A4A] hover:border-[#C8622A] hover:text-[#C8622A] disabled:opacity-40 disabled:hover:border-[#E8E4DF] disabled:hover:text-[#4A4A4A] transition-all"
+                  className="w-8 h-8 flex items-center justify-center rounded-lg border border-[#E8DCC0] bg-[#FFF4D6] text-[#4A4A4A] hover:border-[#FC6C26] hover:text-[#FC6C26] disabled:opacity-40 disabled:hover:border-[#E8DCC0] disabled:hover:text-[#4A4A4A] transition-all"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -273,9 +271,9 @@ const BookingRow = ({ booking, navigate }) => {
   const style = statusMap[safeStatus] || statusMap.pending;
 
   return (
-    <div className="px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-[#FAFAF8] transition-colors">
+    <div className="px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-[#FFF4D6] transition-colors">
       <div className="flex items-center gap-4">
-        <div className="w-10 h-10 rounded-full bg-[#F5F3F0] text-[#92694A] flex items-center justify-center font-semibold">
+        <div className="w-10 h-10 rounded-full bg-[#FFF4D6] text-[#92694A] flex items-center justify-center font-semibold">
           {initials}
         </div>
         <div>
@@ -309,8 +307,8 @@ const BookingRow = ({ booking, navigate }) => {
               disabled={!joinAllowed}
               className={`px-3 py-1.5 rounded-lg border text-[12px] font-medium transition-all flex items-center gap-1.5 ${
                 joinAllowed 
-                ? "border-[#C8622A] text-[#C8622A] hover:bg-[#C8622A] hover:text-white" 
-                : "border-[#E8E4DF] text-[#8A8A8A] cursor-not-allowed"
+                ? "border-[#FC6C26] text-[#FC6C26] hover:bg-[#FC6C26] hover:text-white" 
+                : "border-[#E8DCC0] text-[#8A8A8A] cursor-not-allowed"
               }`}
             >
               <Video className="w-3.5 h-3.5" />
@@ -326,7 +324,7 @@ const BookingRow = ({ booking, navigate }) => {
                   console.error("Link sync failed", e);
                 }
               }}
-              className="px-3 py-1.5 rounded-lg border border-[#C8622A] text-[#C8622A] text-[12px] font-medium hover:bg-[#C8622A] hover:text-white transition-all flex items-center gap-1.5"
+              className="px-3 py-1.5 rounded-lg border border-[#FC6C26] text-[#FC6C26] text-[12px] font-medium hover:bg-[#FC6C26] hover:text-white transition-all flex items-center gap-1.5"
             >
               <RefreshCcw className="w-3.5 h-3.5" />
               Generate Link

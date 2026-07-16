@@ -57,16 +57,16 @@ const ManageAvailability = () => {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-[#FAFAF8] flex flex-col">
+    <div className="min-h-screen bg-[#FFF4D6] flex flex-col">
       <HostHeader />
       <div className="flex-1 flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#E8E4DF] border-t-[#C8622A] rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#E8DCC0] border-t-[#FC6C26] rounded-full animate-spin" />
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] page-enter">
+    <div className="min-h-screen bg-[#FFF4D6] page-enter">
       <HostHeader />
       
       <main className="max-w-6xl mx-auto px-6 py-10">
@@ -78,7 +78,7 @@ const ManageAvailability = () => {
 
           <button
             onClick={() => navigate("/host/add-availability")}
-            className="flex items-center gap-2 bg-[#C8622A] hover:bg-[#A84E20] text-white px-5 py-2.5 rounded-[10px] font-medium text-[14px] transition-all shadow-sm"
+            className="flex items-center gap-2 bg-[#FC6C26] hover:bg-[#E05A1A] text-white px-5 py-2.5 rounded-[10px] font-medium text-[14px] transition-all shadow-sm"
           >
             <Plus className="w-4 h-4" />
             <span>Create New Schedule</span>
@@ -86,8 +86,8 @@ const ManageAvailability = () => {
         </header>
 
         {availability.length === 0 ? (
-          <div className="bg-white border border-[#E8E4DF] rounded-[16px] p-16 text-center shadow-sm">
-            <div className="w-16 h-16 bg-[#F5F3F0] rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[16px] p-16 text-center shadow-sm">
+            <div className="w-16 h-16 bg-[#FFF4D6] rounded-full flex items-center justify-center mx-auto mb-4">
               <Calendar className="w-8 h-8 text-[#8A8A8A]" />
             </div>
             <h3 className="text-[18px] font-semibold text-[#1A1A1A] mb-2">No schedules found</h3>
@@ -96,7 +96,7 @@ const ManageAvailability = () => {
             </p>
             <button
               onClick={() => navigate("/host/add-availability")}
-              className="bg-[#C8622A] hover:bg-[#A84E20] text-white px-6 py-3 rounded-[10px] font-medium text-[15px] transition-all"
+              className="bg-[#FC6C26] hover:bg-[#E05A1A] text-white px-6 py-3 rounded-[10px] font-medium text-[15px] transition-all"
             >
               Get Started
             </button>
@@ -129,10 +129,10 @@ const ManageAvailability = () => {
 
 const AvailabilityCard = ({ item, onEdit, onDelete, onView }) => {
   return (
-    <div className="bg-white border border-[#E8E4DF] rounded-[16px] p-6 hover-card flex flex-col shadow-sm">
+    <div className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[16px] p-6 hover-card flex flex-col shadow-sm">
       <div className="flex justify-between items-start mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-[#FDF0EA] text-[#C8622A] flex items-center justify-center">
+          <div className="w-10 h-10 rounded-lg bg-[#FFF4D6] text-[#FC6C26] flex items-center justify-center">
             <Globe className="w-5 h-5" />
           </div>
           <h3 className="text-[14px] font-semibold text-[#1A1A1A]">{item.timezone}</h3>
@@ -157,7 +157,7 @@ const AvailabilityCard = ({ item, onEdit, onDelete, onView }) => {
         )}
       </div>
 
-      <div className="mt-auto pt-4 border-t border-[#E8E4DF] flex items-center justify-between">
+      <div className="mt-auto pt-4 border-t border-[#E8DCC0] flex items-center justify-between">
         <div className="flex items-center gap-1.5 text-[12px] text-[#8A8A8A]">
           <Timer className="w-3.5 h-3.5" />
           <span>{item.durations[0]}m session</span>
@@ -174,7 +174,7 @@ const AvailabilityCard = ({ item, onEdit, onDelete, onView }) => {
 const IconButton = ({ icon, onClick }) => (
   <button 
     onClick={onClick}
-    className="w-8 h-8 rounded-full bg-[#F5F3F0] text-[#4A4A4A] flex items-center justify-center hover:bg-[#E8E4DF] transition-colors shadow-sm"
+    className="w-8 h-8 rounded-full bg-[#FFF4D6] text-[#4A4A4A] flex items-center justify-center hover:bg-[#E8DCC0] transition-colors shadow-sm"
   >
     {icon}
   </button>
@@ -184,10 +184,10 @@ const ViewModal = ({ data, formatTime, onClose }) => {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
       <div onClick={onClose} className="absolute inset-0 bg-black/35" />
-      <div className="relative w-full max-w-lg bg-white rounded-[20px] shadow-2xl p-8 overflow-hidden">
+      <div className="relative w-full max-w-lg bg-[#FFF4D6] rounded-[20px] shadow-2xl p-8 overflow-hidden">
         <button 
           onClick={onClose}
-          className="absolute top-6 right-6 p-1.5 rounded-lg hover:bg-[#F5F3F0] text-[#8A8A8A] transition-colors"
+          className="absolute top-6 right-6 p-1.5 rounded-lg hover:bg-[#FFF4D6] text-[#8A8A8A] transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
@@ -204,7 +204,7 @@ const ViewModal = ({ data, formatTime, onClose }) => {
 
           <div>
             <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#92694A] block mb-4">Weekly Schedule</span>
-            <div className="space-y-3 bg-[#F5F3F0]/50 p-4 rounded-xl border border-[#E8E4DF]">
+            <div className="space-y-3 bg-[#FFF4D6]/50 p-4 rounded-xl border border-[#E8DCC0]">
               {data.weekly.map((w, i) => (
                 <div key={i} className="flex justify-between items-center text-[13px]">
                   <span className="text-[#92694A] font-medium capitalize">{w.day}</span>
@@ -217,7 +217,7 @@ const ViewModal = ({ data, formatTime, onClose }) => {
 
         <button
           onClick={onClose}
-          className="w-full h-11 mt-10 bg-[#C8622A] hover:bg-[#A84E20] text-white font-medium text-[14px] rounded-[10px] transition-all shadow-sm"
+          className="w-full h-11 mt-10 bg-[#FC6C26] hover:bg-[#E05A1A] text-white font-medium text-[14px] rounded-[10px] transition-all shadow-sm"
         >
           Close Preview
         </button>

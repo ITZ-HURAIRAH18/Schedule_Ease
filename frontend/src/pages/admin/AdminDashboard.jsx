@@ -55,13 +55,13 @@ const AdminDashboard = () => {
       label: "Total Users",
       value: data?.totalUsers ?? 0,
       icon: <Users className="w-5 h-5 text-white" />,
-      iconBg: "bg-[#C8622A]", // terracotta
+      iconBg: "bg-[#FC6C26]", // terracotta
     },
     {
       label: "Total Bookings",
       value: data?.totalBookings ?? 0,
       icon: <Calendar className="w-5 h-5 text-white" />,
-      iconBg: "bg-[#92694A]", // brown
+      iconBg: "bg-[#FC6C26]", // brown
     },
     {
       label: "Recent Sign-ups",
@@ -72,7 +72,7 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] font-['Inter'] selection:bg-[#FDF0EA] selection:text-[#C8622A]">
+    <div className="min-h-screen bg-[#FFF4D6] font-['Inter'] selection:bg-[#FFF4D6] selection:text-[#FC6C26]">
       <AdminHeader />
       
       <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
@@ -98,7 +98,7 @@ const AdminDashboard = () => {
               {[1, 2, 3].map((i) => <StatSkeleton key={i} />)}
             </div>
           ) : !data ? (
-            <div className="text-center py-20 bg-white rounded-2xl border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+            <div className="text-center py-20 bg-[#FFF4D6] rounded-2xl border border-[#E8DCC0] shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
               <p className="text-[#8A8A8A] font-medium">No dashboard data available.</p>
             </div>
           ) : (
@@ -115,14 +115,14 @@ const AdminDashboard = () => {
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.25, duration: 0.35 }}
-                className="bg-white rounded-2xl border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06)] overflow-hidden"
+                className="bg-[#FFF4D6] rounded-2xl border border-[#E8DCC0] shadow-[0_1px_3px_rgba(0,0,0,0.06)] overflow-hidden"
               >
-                <div className="px-8 py-6 border-b border-[#E8E4DF] flex items-center justify-between">
+                <div className="px-8 py-6 border-b border-[#E8DCC0] flex items-center justify-between">
                   <div>
                     <h2 className="text-lg font-semibold text-[#1A1A1A]">Recent Sign-ups</h2>
                     <p className="text-[13px] text-[#8A8A8A]">Newest members of your platform</p>
                   </div>
-                  <a href="/admin/users" className="text-[13px] font-medium text-[#C8622A] hover:text-[#A84E20] transition-colors flex items-center gap-1.5">
+                  <a href="/admin/users" className="text-[13px] font-medium text-[#FC6C26] hover:text-[#E05A1A] transition-colors flex items-center gap-1.5">
                     View all users <ArrowRight size={14} />
                   </a>
                 </div>
@@ -130,14 +130,14 @@ const AdminDashboard = () => {
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-[#F5F3F0]">
+                      <tr className="bg-[#FFF4D6]">
                         <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8A8A8A]">User</th>
                         <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8A8A8A]">Role</th>
                         <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8A8A8A]">Joined Date</th>
                         <th className="px-8 py-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8A8A8A] text-right">Activity</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#E8E4DF]">
+                    <tbody className="divide-y divide-[#E8DCC0]">
                       <AnimatePresence mode="popLayout">
                         {data.recentUsers?.map((user, idx) => (
                           <UserTableRow key={user._id} user={user} index={idx} />
@@ -181,7 +181,7 @@ const StatCard = ({ label, value, icon, iconBg, delay }) => {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.35 }}
-      className="group bg-white rounded-xl p-[20px_24px] border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)] transition-all duration-200"
+      className="group bg-[#FFF4D6] rounded-xl p-[20px_24px] border border-[#E8DCC0] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)] transition-all duration-200"
     >
       <div className={`w-9 h-9 rounded-lg ${iconBg} flex items-center justify-center mb-4`}>
         {icon}
@@ -207,9 +207,9 @@ const UserTableRow = ({ user, index }) => {
   const getRoleStyle = (role) => {
     switch (role?.toLowerCase()) {
       case "admin": return "bg-[#1A1A1A] text-white";
-      case "host": return "bg-[#F5F3F0] text-[#92694A]";
-      case "user": return "bg-[#FDF0EA] text-[#C8622A]";
-      default: return "bg-[#F5F3F0] text-[#4A4A4A]";
+      case "host": return "bg-[#FFF4D6] text-[#FC6C26]";
+      case "user": return "bg-[#FFF4D6] text-[#FC6C26]";
+      default: return "bg-[#FFF4D6] text-[#4A4A4A]";
     }
   };
 
@@ -222,11 +222,11 @@ const UserTableRow = ({ user, index }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.3 + index * 0.03 }}
-      className="group hover:bg-[#FAFAF8] transition-colors"
+      className="group hover:bg-[#FFF4D6] transition-colors"
     >
       <td className="px-8 py-4">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-[#F5F3F0] text-[#92694A] flex items-center justify-center font-semibold text-sm">
+          <div className="w-9 h-9 rounded-full bg-[#FFF4D6] text-[#FC6C26] flex items-center justify-center font-semibold text-sm">
             {(user.fullName || "U").charAt(0).toUpperCase()}
           </div>
           <div>
@@ -242,7 +242,7 @@ const UserTableRow = ({ user, index }) => {
       </td>
       <td className="px-8 py-4 text-[13px] text-[#4A4A4A]">
         <div className="flex items-center gap-2">
-          <Clock size={14} className="text-[#D4CEC8]" />
+          <Clock size={14} className="text-[#D4C8AC]" />
           {formattedDate}
         </div>
       </td>
@@ -254,10 +254,10 @@ const UserTableRow = ({ user, index }) => {
 };
 
 const StatSkeleton = () => (
-  <div className="bg-white rounded-xl p-[20px_24px] border border-[#E8E4DF] h-[140px] animate-pulse">
-    <div className="w-9 h-9 rounded-lg bg-[#F5F3F0] mb-4" />
-    <div className="h-4 w-24 bg-[#F5F3F0] rounded-md mb-2" />
-    <div className="h-8 w-16 bg-[#F5F3F0] rounded-md" />
+  <div className="bg-[#FFF4D6] rounded-xl p-[20px_24px] border border-[#E8DCC0] h-[140px] animate-pulse">
+    <div className="w-9 h-9 rounded-lg bg-[#FFF4D6] mb-4" />
+    <div className="h-4 w-24 bg-[#FFF4D6] rounded-md mb-2" />
+    <div className="h-8 w-16 bg-[#FFF4D6] rounded-md" />
   </div>
 );
 

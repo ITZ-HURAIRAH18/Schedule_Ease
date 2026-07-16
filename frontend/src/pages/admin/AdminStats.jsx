@@ -37,7 +37,7 @@ const MetricCard = ({ label, value, icon: Icon, iconBg, delay }) => {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.35 }}
-      className="group bg-white rounded-xl p-[20px_24px] border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)] transition-all duration-200"
+      className="group bg-[#FFF4D6] rounded-xl p-[20px_24px] border border-[#E8DCC0] shadow-[0_1px_3px_rgba(0,0,0,0.06),0_4px_12px_rgba(0,0,0,0.04)] hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)] transition-all duration-200"
     >
       <div className={`w-9 h-9 rounded-lg ${iconBg} flex items-center justify-center mb-4`}>
         <Icon className="w-5 h-5 text-white" />
@@ -64,11 +64,11 @@ const Leaderboard = ({ topHosts }) => {
   );
 
   return (
-    <div className="bg-white rounded-2xl p-8 border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06)] h-full">
+    <div className="bg-[#FFF4D6] rounded-2xl p-8 border border-[#E8DCC0] shadow-[0_1px_3px_rgba(0,0,0,0.06)] h-full">
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-[#FDF0EA] flex items-center justify-center">
-            <Trophy className="w-5 h-5 text-[#C8622A]" />
+          <div className="w-10 h-10 rounded-xl bg-[#FFF4D6] flex items-center justify-center">
+            <Trophy className="w-5 h-5 text-[#FC6C26]" />
           </div>
           <div>
             <h3 className="text-[18px] font-semibold text-[#1A1A1A]">Top Hosts</h3>
@@ -82,20 +82,20 @@ const Leaderboard = ({ topHosts }) => {
           topHosts.map((host, idx) => (
             <div key={host._id} className="group">
               <div className="flex items-center gap-4 mb-2">
-                <div className={`text-[14px] font-bold w-6 ${idx === 0 ? 'text-[#C8622A]' : 'text-[#8A8A8A]'}`}>
+                <div className={`text-[14px] font-bold w-6 ${idx === 0 ? 'text-[#FC6C26]' : 'text-[#8A8A8A]'}`}>
                   #{idx + 1}
                 </div>
                 <div className="flex-grow">
                   <div className="flex justify-between items-end mb-1.5">
                     <span className="text-[14px] font-medium text-[#1A1A1A]">{host.fullName}</span>
-                    <span className="text-[12px] font-semibold text-[#92694A]">{host.totalBookings} Bookings</span>
+                    <span className="text-[12px] font-semibold text-[#FC6C26]">{host.totalBookings} Bookings</span>
                   </div>
-                  <div className="h-1.5 w-full bg-[#F5F3F0] rounded-full overflow-hidden">
+                  <div className="h-1.5 w-full bg-[#FFF4D6] rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${(host.totalBookings / maxBookings) * 100}%` }}
                       transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 + (idx * 0.05) }}
-                      className="h-full bg-[#C8622A] rounded-full"
+                      className="h-full bg-[#FC6C26] rounded-full"
                     />
                   </div>
                 </div>
@@ -104,7 +104,7 @@ const Leaderboard = ({ topHosts }) => {
           ))
         ) : (
           <div className="py-12 text-center">
-            <Activity className="w-10 h-10 mx-auto mb-3 text-[#E8E4DF]" />
+            <Activity className="w-10 h-10 mx-auto mb-3 text-[#E8DCC0]" />
             <p className="text-[#8A8A8A] text-[14px]">No rankings available yet</p>
           </div>
         )}
@@ -120,10 +120,10 @@ const StatsChart = ({ data }) => {
   );
 
   return (
-    <div className="bg-white rounded-2xl p-8 border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06)] h-full">
+    <div className="bg-[#FFF4D6] rounded-2xl p-8 border border-[#E8DCC0] shadow-[0_1px_3px_rgba(0,0,0,0.06)] h-full">
       <div className="flex items-center gap-3 mb-8">
         <div className="w-10 h-10 rounded-xl bg-[#F7F0EA] flex items-center justify-center">
-          <Target className="w-5 h-5 text-[#92694A]" />
+          <Target className="w-5 h-5 text-[#FC6C26]" />
         </div>
         <div>
           <h3 className="text-[18px] font-semibold text-[#1A1A1A]">Booking Distribution</h3>
@@ -134,7 +134,7 @@ const StatsChart = ({ data }) => {
       <div className="h-[320px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F5F3F0" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#FFF4D6" />
             <XAxis 
               dataKey="name" 
               axisLine={false} 
@@ -148,19 +148,19 @@ const StatsChart = ({ data }) => {
               tick={{ fill: '#8A8A8A', fontSize: 11, fontWeight: 500 }} 
             />
             <Tooltip 
-              cursor={{ fill: '#F5F3F0', radius: 4 }}
+              cursor={{ fill: '#FFF4D6', radius: 4 }}
               contentStyle={{ 
                 borderRadius: '12px', 
-                border: '1px solid #E8E4DF', 
+                border: '1px solid #E8DCC0', 
                 boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                backgroundColor: '#FFFFFF',
+                backgroundColor: '#FFF4D6',
                 padding: '12px'
               }}
               labelStyle={{ fontWeight: 600, color: '#1A1A1A', marginBottom: '4px' }}
             />
             <Bar dataKey="bookings" radius={[4, 4, 0, 0]} barSize={32}>
               {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "#C8622A" : "#92694A"} />
+                <Cell key={`cell-${index}`} fill="#FC6C26" />
               ))}
             </Bar>
           </BarChart>
@@ -198,7 +198,7 @@ const AdminStats = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8] font-['Inter'] selection:bg-[#FDF0EA] selection:text-[#C8622A]">
+    <div className="min-h-screen bg-[#FFF4D6] font-['Inter'] selection:bg-[#FFF4D6] selection:text-[#FC6C26]">
       <AdminHeader />
 
       <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
@@ -206,14 +206,14 @@ const AdminStats = () => {
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
             <div>
-              <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#92694A] mb-1">Administrative Intelligence</p>
+              <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#FC6C26] mb-1">Administrative Intelligence</p>
               <h1 className="text-[28px] font-semibold text-[#1A1A1A] tracking-tight">
                 Platform Analytics
               </h1>
             </div>
             <button
               onClick={fetchStats}
-              className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-lg border border-[#E8E4DF] text-[13px] font-medium text-[#4A4A4A] hover:bg-[#FAFAF8] hover:border-[#D4CEC8] transition-all shadow-sm"
+              className="flex items-center gap-2 bg-[#FFF4D6] px-4 py-2.5 rounded-lg border border-[#E8DCC0] text-[13px] font-medium text-[#4A4A4A] hover:bg-[#FFF4D6] hover:border-[#D4C8AC] transition-all shadow-sm"
             >
               <RefreshCcw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
               Refresh Metrics
@@ -229,7 +229,7 @@ const AdminStats = () => {
                 exit={{ opacity: 0 }}
                 className="h-[60vh] flex flex-col items-center justify-center"
               >
-                <div className="w-10 h-10 border-2 border-[#C8622A] border-t-transparent rounded-full animate-spin mb-4" />
+                <div className="w-10 h-10 border-2 border-[#FC6C26] border-t-transparent rounded-full animate-spin mb-4" />
                 <p className="text-[#8A8A8A] font-medium text-[14px]">Computing analytics...</p>
               </motion.div>
             ) : (
@@ -241,8 +241,8 @@ const AdminStats = () => {
                 className="space-y-8"
               >
                 {!stats ? (
-                  <div className="text-center py-32 bg-white rounded-2xl border border-[#E8E4DF] shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-                    <Users className="w-12 h-12 mx-auto text-[#E8E4DF] mb-4" />
+                  <div className="text-center py-32 bg-[#FFF4D6] rounded-2xl border border-[#E8DCC0] shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+                    <Users className="w-12 h-12 mx-auto text-[#E8DCC0] mb-4" />
                     <p className="text-[#8A8A8A] font-medium">No statistical data discovered.</p>
                   </div>
                 ) : (
@@ -253,14 +253,14 @@ const AdminStats = () => {
                         label="Total Bookings"
                         value={stats.totalBookings || 0}
                         icon={CalendarCheck}
-                        iconBg="bg-[#C8622A]"
+                        iconBg="bg-[#FC6C26]"
                         delay={0.1}
                       />
                       <MetricCard
                         label="Active Hosts"
                         value={totalHosts}
                         icon={Users}
-                        iconBg="bg-[#92694A]"
+                        iconBg="bg-[#FC6C26]"
                         delay={0.15}
                       />
                       <MetricCard
@@ -291,13 +291,13 @@ const AdminStats = () => {
                             Generate comprehensive performance reports for all hosts and bookings in CSV or PDF format.
                           </p>
                         </div>
-                        <button className="bg-[#C8622A] text-white px-8 py-3 rounded-lg font-medium text-[14px] hover:bg-[#A84E20] transition-all flex items-center gap-2 shadow-lg">
+                        <button className="bg-[#FC6C26] text-white px-8 py-3 rounded-lg font-medium text-[14px] hover:bg-[#E05A1A] transition-all flex items-center gap-2 shadow-lg">
                           Generate Report
                           <ArrowUpRight className="w-4 h-4" />
                         </button>
                       </div>
                       {/* Subtle pattern instead of glow */}
-                      <div className="absolute top-0 right-0 w-64 h-64 bg-white/[0.03] rounded-full -translate-y-1/2 translate-x-1/2" />
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-[#FFF4D6]/[0.03] rounded-full -translate-y-1/2 translate-x-1/2" />
                     </div>
                   </>
                 )}

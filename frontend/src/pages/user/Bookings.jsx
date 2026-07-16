@@ -27,7 +27,7 @@ const Bookings = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF8]">
+    <div className="min-h-screen bg-[#FFF4D6]">
       <UserHeader />
 
       <div className="max-w-[900px] mx-auto px-6 py-12">
@@ -45,17 +45,17 @@ const Bookings = () => {
               <input 
                 type="text" 
                 placeholder="Search..." 
-                className="pl-9 pr-4 h-[40px] bg-white border border-[#E8E4DF] rounded-[10px] text-[14px] focus:outline-none focus:border-[#C8622A] transition-all w-[200px]"
+                className="pl-9 pr-4 h-[40px] bg-[#FFF4D6] border border-[#E8DCC0] rounded-[10px] text-[14px] focus:outline-none focus:border-[#FC6C26] transition-all w-full md:w-80"
               />
             </div>
-            <button className="w-[40px] h-[40px] flex items-center justify-center bg-white border border-[#E8E4DF] rounded-[10px] hover:bg-[#F5F3F0] transition-colors">
+            <button className="w-[40px] h-[40px] flex items-center justify-center bg-[#FFF4D6] border border-[#E8DCC0] rounded-[10px] hover:bg-[#FFF4D6] transition-colors">
               <Filter className="w-4 h-4 text-[#4A4A4A]" />
             </button>
           </div>
         </header>
 
         {loading ? (
-          <div className="grid md:grid-cols-2 gap-5">
+          <div className="grid sm:grid-cols-2 gap-5">
             {[1, 2, 3, 4].map((n) => <SkeletonCard key={n} />)}
           </div>
         ) : error ? (
@@ -65,7 +65,7 @@ const Bookings = () => {
         ) : bookings.length === 0 ? (
           <EmptyState />
         ) : (
-          <div className="grid md:grid-cols-2 gap-5">
+          <div className="grid sm:grid-cols-2 gap-5">
             {bookings.map((b) => (
               <BookingCard
                 key={b._id}
@@ -83,21 +83,21 @@ const Bookings = () => {
 };
 
 const SkeletonCard = () => (
-  <div className="bg-white border border-[#E8E4DF] rounded-[16px] p-6 h-[200px] animate-pulse">
+  <div className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[16px] p-6 h-[200px] animate-pulse">
     <div className="flex justify-between mb-4">
-      <div className="w-12 h-12 rounded-full bg-[#F5F3F0]" />
-      <div className="w-20 h-6 bg-[#F5F3F0] rounded-[6px]" />
+      <div className="w-12 h-12 rounded-full bg-[#FFF4D6]" />
+      <div className="w-20 h-6 bg-[#FFF4D6] rounded-[6px]" />
     </div>
     <div className="space-y-3">
-      <div className="h-4 bg-[#F5F3F0] rounded w-1/2" />
-      <div className="h-6 bg-[#F5F3F0] rounded w-3/4" />
+      <div className="h-4 bg-[#FFF4D6] rounded w-1/2" />
+      <div className="h-6 bg-[#FFF4D6] rounded w-3/4" />
     </div>
   </div>
 );
 
 const EmptyState = () => (
-  <div className="text-center py-20 bg-white border border-[#E8E4DF] rounded-[16px]">
-    <div className="w-16 h-16 bg-[#F5F3F0] rounded-full flex items-center justify-center mx-auto mb-4">
+  <div className="text-center py-20 bg-[#FFF4D6] border border-[#E8DCC0] rounded-[16px]">
+    <div className="w-16 h-16 bg-[#FFF4D6] rounded-full flex items-center justify-center mx-auto mb-4">
       <Calendar className="h-8 w-8 text-[#8A8A8A]" />
     </div>
     <h3 className="text-[16px] font-medium text-[#1A1A1A]">Your schedule is empty</h3>
@@ -106,7 +106,7 @@ const EmptyState = () => (
     </p>
     <Link 
       to="/user/availability"
-      className="inline-flex items-center gap-2 px-8 py-2.5 bg-[#C8622A] text-white text-[14px] font-medium rounded-[10px] hover:bg-[#A84E20] transition-all"
+      className="inline-flex items-center gap-2 px-8 py-2.5 bg-[#FC6C26] text-white text-[14px] font-medium rounded-[10px] hover:bg-[#E05A1A] transition-all"
     >
       Find a Host <ArrowRight className="w-4 h-4" />
     </Link>
@@ -131,10 +131,10 @@ const BookingCard = ({ booking, formatDate, formatTime, navigate }) => {
   const getInitials = (name) => name.split(' ').map(n => n[0]).join('').toUpperCase();
 
   return (
-    <div className="bg-white border border-[#E8E4DF] rounded-[16px] p-6 transition-all duration-200 hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)] flex flex-col h-full relative group">
+    <div className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[16px] p-6 transition-all duration-200 hover:translate-y-[-3px] hover:shadow-[0_4px_16px_rgba(0,0,0,0.10),0_8px_24px_rgba(0,0,0,0.06)] flex flex-col h-full relative group">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-[#F5F3F0] flex items-center justify-center text-[#92694A] text-[15px] font-semibold border border-[#E8E4DF]">
+          <div className="w-12 h-12 rounded-full bg-[#FFF4D6] flex items-center justify-center text-[#92694A] text-[15px] font-semibold border border-[#E8DCC0]">
             {getInitials(hostName)}
           </div>
           <div>
@@ -148,8 +148,8 @@ const BookingCard = ({ booking, formatDate, formatTime, navigate }) => {
       </div>
 
       <div className="space-y-4 mb-6 flex-1">
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#F5F3F0] rounded-[6px]">
-          <Calendar className="w-3.5 h-3.5 text-[#C8622A]" />
+        <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#FFF4D6] rounded-[6px]">
+          <Calendar className="w-3.5 h-3.5 text-[#FC6C26]" />
           <span className="text-[13px] text-[#4A4A4A] font-medium">{formatDate(start)}</span>
         </div>
         
@@ -164,13 +164,13 @@ const BookingCard = ({ booking, formatDate, formatTime, navigate }) => {
         {status === 'confirmed' && meetingRoom ? (
           <button
             onClick={() => navigate(`/meeting/${meetingRoom}`)}
-            className="w-full h-[40px] rounded-[10px] bg-[#C8622A] text-white text-[14px] font-medium flex items-center justify-center gap-2 hover:bg-[#A84E20] transition-colors"
+            className="w-full h-[40px] rounded-[10px] bg-[#FC6C26] text-white text-[14px] font-medium flex items-center justify-center gap-2 hover:bg-[#E05A1A] transition-colors"
           >
             <Video className="w-4 h-4" />
             Join Room
           </button>
         ) : (
-          <div className="w-full h-[40px] rounded-[10px] bg-[#F5F3F0] text-[#8A8A8A] text-[12px] font-medium flex items-center justify-center border border-[#E8E4DF]">
+          <div className="w-full h-[40px] rounded-[10px] bg-[#FFF4D6] text-[#8A8A8A] text-[12px] font-medium flex items-center justify-center border border-[#E8DCC0]">
             {status === 'cancelled' ? "Meeting Cancelled" : "Awaiting Host Access"}
           </div>
         )}

@@ -115,11 +115,11 @@ const BookingForm = () => {
 
   if (!host) {
     return (
-      <div className="min-h-screen bg-[#FAFAF8] flex flex-col">
+      <div className="min-h-screen bg-[#FFF4D6] flex flex-col">
         <UserHeader />
         <div className="flex-1 flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-8 border-2 border-[#E8E4DF] border-t-[#C8622A] rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-[#E8DCC0] border-t-[#FC6C26] rounded-full animate-spin" />
             <p className="text-[12px] font-medium uppercase tracking-[0.08em] text-[#92694A]">Loading booking details...</p>
           </div>
         </div>
@@ -130,7 +130,7 @@ const BookingForm = () => {
   const hostName = host.hostId?.name || host.hostId?.fullName || "Host";
 
   return (
-    <div className="relative min-h-screen bg-[#FAFAF8] font-sans text-[#1A1A1A]">
+    <div className="relative min-h-screen bg-[#FFF4D6] font-sans text-[#1A1A1A]">
       <Toaster position="top-right" />
       <UserHeader />
 
@@ -147,34 +147,34 @@ const BookingForm = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.35 }}
-              className="bg-white border border-[#E8E4DF] rounded-[12px] p-6 sticky top-24"
+              className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[12px] p-6 sticky top-24"
             >
               <div className="flex justify-center mb-6">
-                <div className="w-20 h-20 rounded-[10px] bg-[#C8622A] flex items-center justify-center text-white text-[32px] font-bold border-2 border-[#FDF0EA]">
+                <div className="w-20 h-20 rounded-[10px] bg-[#FC6C26] flex items-center justify-center text-white text-[32px] font-bold border-2 border-[#FFF4D6]">
                   {hostName.charAt(0).toUpperCase()}
                 </div>
               </div>
               
               <h2 className="text-[18px] font-semibold text-[#1A1A1A] text-center mb-1">{hostName}</h2>
-              <p className="text-[13px] text-[#8A8A8A] text-center mb-6 pb-6 border-b border-[#E8E4DF]">Professional Host</p>
+              <p className="text-[13px] text-[#8A8A8A] text-center mb-6 pb-6 border-b border-[#E8DCC0]">Professional Host</p>
 
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <Globe className="w-5 h-5 text-[#C8622A]" />
+                  <Globe className="w-5 h-5 text-[#FC6C26]" />
                   <div>
                     <p className="text-[11px] font-medium uppercase tracking-[0.06em] text-[#92694A]">Timezone</p>
                     <p className="text-[13px] font-semibold text-[#1A1A1A]">{host.timezone || "UTC"}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Clock className="w-5 h-5 text-[#C8622A]" />
+                  <Clock className="w-5 h-5 text-[#FC6C26]" />
                   <div>
                     <p className="text-[11px] font-medium uppercase tracking-[0.06em] text-[#92694A]">Duration</p>
                     <p className="text-[13px] font-semibold text-[#1A1A1A]">{host.durations?.[0] || "-"} minutes</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Timer className="w-5 h-5 text-[#C8622A]" />
+                  <Timer className="w-5 h-5 text-[#FC6C26]" />
                   <div>
                     <p className="text-[11px] font-medium uppercase tracking-[0.06em] text-[#92694A]">Buffer</p>
                     <p className="text-[13px] font-semibold text-[#1A1A1A]">{host.bufferBefore || "0"} min before</p>
@@ -182,7 +182,7 @@ const BookingForm = () => {
                 </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-[#E8E4DF]">
+              <div className="mt-8 pt-6 border-t border-[#E8DCC0]">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#92694A] mb-3">Weekly Schedule</p>
                 <div className="space-y-2">
                   {host.weekly && host.weekly.length > 0 ? (
@@ -198,9 +198,9 @@ const BookingForm = () => {
                 </div>
               </div>
 
-              <div className="mt-6 pt-6 border-t border-[#E8E4DF]">
-                <div className="flex gap-2 p-3 rounded-[10px] bg-[#FDF0EA]">
-                  <Info className="w-4 h-4 text-[#C8622A] flex-shrink-0 mt-0.5" />
+              <div className="mt-6 pt-6 border-t border-[#E8DCC0]">
+                <div className="flex gap-2 p-3 rounded-[10px] bg-[#FFF4D6]">
+                  <Info className="w-4 h-4 text-[#FC6C26] flex-shrink-0 mt-0.5" />
                   <p className="text-[12px] text-[#92694A] leading-relaxed">All meetings are secure and encrypted. Links sent upon confirmation.</p>
                 </div>
               </div>
@@ -212,7 +212,7 @@ const BookingForm = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15, duration: 0.35 }}
-              className="bg-white border border-[#E8E4DF] rounded-[12px] p-8"
+              className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[12px] p-8"
             >
               <h1 className="text-[24px] font-semibold text-[#1A1A1A] mb-1">Book Your Meeting</h1>
               <p className="text-[14px] text-[#8A8A8A] mb-8">Fill in your details to confirm</p>
@@ -221,28 +221,28 @@ const BookingForm = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-[13px] font-semibold text-[#1A1A1A] flex items-center gap-2">
-                      <User className="w-4 h-4 text-[#C8622A]" /> Full Name
+                      <User className="w-4 h-4 text-[#FC6C26]" /> Full Name
                     </label>
                     <input
                       type="text"
                       value={form.name}
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                       required
-                      className="w-full h-11 px-4 bg-white border border-[#E8E4DF] rounded-[10px] text-[14px] focus:outline-none focus:border-[#C8622A] focus:ring-4 focus:ring-[#C8622A]/10 transition-all placeholder:text-[#B0B0B0]"
+                      className="w-full h-11 px-4 bg-[#FFF4D6] border border-[#E8DCC0] rounded-[10px] text-[14px] focus:outline-none focus:border-[#FC6C26] focus:ring-4 focus:ring-[#FC6C26]/10 transition-all placeholder:text-[#B0B0B0]"
                       placeholder="Your full name"
                     />
                   </div>
 
                   <div className="space-y-2">
                     <label className="text-[13px] font-semibold text-[#1A1A1A] flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-[#C8622A]" /> Phone
+                      <Phone className="w-4 h-4 text-[#FC6C26]" /> Phone
                     </label>
                     <input
                       type="tel"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       required
-                      className="w-full h-11 px-4 bg-white border border-[#E8E4DF] rounded-[10px] text-[14px] focus:outline-none focus:border-[#C8622A] focus:ring-4 focus:ring-[#C8622A]/10 transition-all placeholder:text-[#B0B0B0]"
+                      className="w-full h-11 px-4 bg-[#FFF4D6] border border-[#E8DCC0] rounded-[10px] text-[14px] focus:outline-none focus:border-[#FC6C26] focus:ring-4 focus:ring-[#FC6C26]/10 transition-all placeholder:text-[#B0B0B0]"
                       placeholder="+1 (555) 000-0000"
                     />
                   </div>
@@ -250,14 +250,14 @@ const BookingForm = () => {
 
                 <div className="space-y-2">
                   <label className="text-[13px] font-semibold text-[#1A1A1A] flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-[#C8622A]" /> Email Address
+                    <Mail className="w-4 h-4 text-[#FC6C26]" /> Email Address
                   </label>
                   <input
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     required
-                    className="w-full h-11 px-4 bg-white border border-[#E8E4DF] rounded-[10px] text-[14px] focus:outline-none focus:border-[#C8622A] focus:ring-4 focus:ring-[#C8622A]/10 transition-all placeholder:text-[#B0B0B0]"
+                    className="w-full h-11 px-4 bg-[#FFF4D6] border border-[#E8DCC0] rounded-[10px] text-[14px] focus:outline-none focus:border-[#FC6C26] focus:ring-4 focus:ring-[#FC6C26]/10 transition-all placeholder:text-[#B0B0B0]"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -272,8 +272,8 @@ const BookingForm = () => {
                         onClick={() => setForm({ ...form, duration: Number(d) })}
                         className={`px-4 py-2 rounded-[8px] text-[13px] font-semibold border-2 transition-all duration-200 ${
                           Number(form.duration) === Number(d)
-                            ? "bg-[#C8622A] text-white border-[#C8622A]"
-                            : "bg-[#F5F3F0] text-[#4A4A4A] border-[#E8E4DF] hover:border-[#C8622A]"
+                            ? "bg-[#FC6C26] text-white border-[#FC6C26]"
+                            : "bg-[#FFF4D6] text-[#4A4A4A] border-[#E8DCC0] hover:border-[#FC6C26]"
                         }`}
                       >
                         {d}m
@@ -285,14 +285,14 @@ const BookingForm = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-[13px] font-semibold text-[#1A1A1A] flex items-center gap-2">
-                      <CalendarDays className="w-4 h-4 text-[#C8622A]" /> Start Time
+                      <CalendarDays className="w-4 h-4 text-[#FC6C26]" /> Start Time
                     </label>
                     <input
                       type="datetime-local"
                       value={form.start}
                       onChange={(e) => setForm({ ...form, start: e.target.value })}
                       required
-                      className="w-full h-11 px-4 bg-white border border-[#E8E4DF] rounded-[10px] text-[14px] focus:outline-none focus:border-[#C8622A] focus:ring-4 focus:ring-[#C8622A]/10 transition-all"
+                      className="w-full h-11 px-4 bg-[#FFF4D6] border border-[#E8DCC0] rounded-[10px] text-[14px] focus:outline-none focus:border-[#FC6C26] focus:ring-4 focus:ring-[#FC6C26]/10 transition-all"
                     />
                   </div>
                   <div className="space-y-2">
@@ -303,7 +303,7 @@ const BookingForm = () => {
                       type="datetime-local"
                       value={form.end}
                       readOnly
-                      className="w-full h-11 px-4 bg-[#F5F3F0] border border-[#E8E4DF] rounded-[10px] text-[14px] cursor-not-allowed text-[#8A8A8A]"
+                      className="w-full h-11 px-4 bg-[#FFF4D6] border border-[#E8DCC0] rounded-[10px] text-[14px] cursor-not-allowed text-[#8A8A8A]"
                     />
                   </div>
                 </div>
@@ -331,8 +331,8 @@ const BookingForm = () => {
                     isSuccess 
                       ? "bg-[#2D7D52] text-white shadow-[0_4px_12px_rgba(45,125,82,0.2)]" 
                       : loading
-                        ? "bg-[#E8E4DF] text-[#8A8A8A] cursor-not-allowed"
-                        : "bg-[#C8622A] text-white hover:bg-[#A84E20] shadow-[0_4px_12px_rgba(200,98,42,0.2)] hover:shadow-[0_8px_16px_rgba(200,98,42,0.3)]"
+                        ? "bg-[#E8DCC0] text-[#8A8A8A] cursor-not-allowed"
+                        : "bg-[#FC6C26] text-white hover:bg-[#E05A1A] shadow-[0_4px_12px_rgba(252,108,38,0.2)] hover:shadow-[0_8px_16px_rgba(252,108,38,0.3)]"
                   }`}
                 >
                   {loading ? (
@@ -358,7 +358,7 @@ const BookingForm = () => {
         </motion.div>
       </main>
 
-      <div className="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-600 via-indigo-600 to-fuchsia-600 z-50" />
+      <div className="fixed top-0 left-0 w-full h-1 bg-[#FC6C26] z-50" />
     </div>
   );
 };
