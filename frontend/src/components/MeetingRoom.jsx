@@ -55,6 +55,9 @@ const MeetingRoom = () => {
 
         // 2. Get Media Stream
         setStatus("Initializing WebRTC...");
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          throw new Error("getUserMedia is not supported in this browser. Please use HTTPS or a supported browser.");
+        }
         localStream = await navigator.mediaDevices.getUserMedia({ 
           video: { width: { ideal: 1280 }, height: { ideal: 720 } },
           audio: true 
@@ -88,14 +91,8 @@ const MeetingRoom = () => {
         socket.on('user_joined', (data) => {
           console.log(`📢 User joined: ${data.userId}`);
           if (!peerConnection && data.userId !== myPeerId) {
-            // Only GUEST creates offer - HOST waits to receive it
-            if (!isHost) {
-              console.log('🔵 GUEST: Creating peer connection and offer...');
-              createPeerConnection(true); // GUEST creates offer
-            } else {
-              console.log('🔴 HOST: Waiting for offer from guest...');
-              // HOST waits to receive offer before creating peer connection
-            }
+            console.log(`🔵 ${isHost ? 'HOST' : 'GUEST'}: Creating peer connection and offer...`);
+            createPeerConnection(true);
           }
         });
 
@@ -103,7 +100,7 @@ const MeetingRoom = () => {
           console.log('📥 Received offer');
           try {
             if (!peerConnection) {
-              console.log('🔴 HOST: Creating peer connection to answer offer...');
+              console.log('🔵 Creating peer connection to answer offer...');
               await createPeerConnection(false);
               // Wait for peer connection to be fully initialized
               let waitCount = 0;
