@@ -36,6 +36,20 @@ const MeetingRoom = () => {
   const myVideo = useRef();
   const userVideo = useRef();
 
+  // Attach remote stream to video element after React renders it
+  useEffect(() => {
+    if (userVideo.current && remoteStream) {
+      userVideo.current.srcObject = remoteStream;
+    }
+  }, [remoteStream]);
+
+  // Attach local stream to video element after React renders it
+  useEffect(() => {
+    if (myVideo.current && stream) {
+      myVideo.current.srcObject = stream;
+    }
+  }, [stream]);
+
   useEffect(() => {
     let mounted = true;
     let peerConnection = null;
@@ -69,7 +83,6 @@ const MeetingRoom = () => {
         console.log('✅ ontrack:', event.track.kind, 'streams:', event.streams.length);
         if (event.streams.length > 0 && mounted) {
           setRemoteStream(event.streams[0]);
-          if (userVideo.current) userVideo.current.srcObject = event.streams[0];
           setStatus("Session Live");
         }
       };
@@ -157,7 +170,6 @@ const MeetingRoom = () => {
 
         if (localStream) {
           setStream(localStream);
-          if (myVideo.current) myVideo.current.srcObject = localStream;
           setStatus("Connecting...");
         } else {
           const noMediaMsg = !isSecure
