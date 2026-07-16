@@ -21,13 +21,13 @@ import MeshBackground from "../../components/MeshBackground";
 import toast, { Toaster } from "react-hot-toast";
 
 const daysOfWeek = [
-  { full: "Monday", short: "Mon" },
-  { full: "Tuesday", short: "Tue" },
-  { full: "Wednesday", short: "Wed" },
-  { full: "Thursday", short: "Thu" },
-  { full: "Friday", short: "Fri" },
-  { full: "Saturday", short: "Sat" },
-  { full: "Sunday", short: "Sun" },
+  { full: "monday", short: "Mon" },
+  { full: "tuesday", short: "Tue" },
+  { full: "wednesday", short: "Wed" },
+  { full: "thursday", short: "Thu" },
+  { full: "friday", short: "Fri" },
+  { full: "saturday", short: "Sat" },
+  { full: "sunday", short: "Sun" },
 ];
 
 const EditAvailability = () => {

@@ -19,42 +19,66 @@ jobs:
           node-version: 20
 
       - name: Install Frontend Dependencies
-        run: |
-          cd frontend
-          npm ci
+        working-directory: frontend
+        run: npm ci
 
       - name: Build Frontend
-        run: |
-          cd frontend
-          npm run build
+        working-directory: frontend
+        run: npm run build
 
       - name: Install Backend Dependencies
-        run: |
-          cd my-backend
-          npm ci
+        working-directory: my-backend
+        run: npm ci
 
-      - name: Deploy to EC2
+      - name: Deploy to AWS EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
+          timeout: 120s
+          command_timeout: 30m
+          script_stop: true
+
           script: |
+            set -e
+
+            echo "========== CONNECTED =========="
+
             cd /home/ubuntu/Schedule_Ease
 
-            git pull origin main
+            echo "========== CURRENT COMMIT =========="
+            git rev-parse HEAD
 
+            echo "========== FETCH =========="
+            git fetch origin
+
+            echo "========== RESET TO GITHUB =========="
+            git reset --hard origin/main
+
+            echo "========== CLEAN =========="
+            git clean -fd
+
+            echo "========== NEW COMMIT =========="
+            git rev-parse HEAD
+
+            echo "========== FRONTEND =========="
             cd frontend
+
             npm ci
             npm run build
 
             sudo rm -rf /var/www/html/*
             sudo cp -r dist/* /var/www/html/
 
+            echo "========== BACKEND =========="
             cd ../my-backend
+
             npm ci
 
-            pm2 restart all
+            pm2 restart server || pm2 restart all
 
             sudo systemctl restart nginx
+
+            echo "========== DEPLOYMENT SUCCESS =========="

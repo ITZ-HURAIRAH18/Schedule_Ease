@@ -55,7 +55,7 @@ const AddAvailability = () => {
         weekly: weekly.filter((w) => w.day && w.start && w.end),
         bufferBefore: Number(bufferBefore),
         bufferAfter: Number(bufferAfter),
-        durations: Number(durations),
+        durations: [Number(durations)],
         maxPerDay: Number(maxPerDay),
         timezone,
         blockedDates: blockedDates.filter(Boolean),

@@ -129,7 +129,7 @@ export const updateBookingStatus = async (req, res) => {
 export const getMyAvailability = async (req, res) => {
     try {
       const hostId = req.user._id;
-      const availabilityList = await Availability.find({ hostId }).sort({ day: 1 });
+      const availabilityList = await Availability.find({ hostId }).sort({ createdAt: -1 });
       res.json({ success: true, availability: availabilityList });
     } catch (err) {
       res.status(500).json({ message: "Server error" });
@@ -139,8 +139,8 @@ export const getMyAvailability = async (req, res) => {
 export const addAvailability = async (req, res) => {
     try {
       const hostId = req.user._id;
-      const { day, slots, timezone } = req.body;
-      const newAvail = new Availability({ hostId, day, slots, timezone });
+      const { weekly, bufferBefore, bufferAfter, durations, maxPerDay, timezone, blockedDates } = req.body;
+      const newAvail = new Availability({ hostId, weekly, bufferBefore, bufferAfter, durations, maxPerDay, timezone, blockedDates });
       await newAvail.save();
       res.json({ success: true, availability: newAvail });
     } catch (err) {
@@ -151,8 +151,8 @@ export const addAvailability = async (req, res) => {
 export const updateAvailabilityById = async (req, res) => {
     try {
       const { id } = req.params;
-      const { day, slots, timezone } = req.body;
-      const updated = await Availability.findByIdAndUpdate(id, { day, slots, timezone }, { new: true });
+      const { weekly, bufferBefore, bufferAfter, durations, maxPerDay, timezone, blockedDates } = req.body;
+      const updated = await Availability.findByIdAndUpdate(id, { weekly, bufferBefore, bufferAfter, durations, maxPerDay, timezone, blockedDates }, { new: true });
       res.json({ success: true, availability: updated });
     } catch (err) {
       res.status(500).json({ message: "Failed to update availability" });

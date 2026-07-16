@@ -3,3 +3,17 @@
 .env.development.local
 .env.test.local
 .env.production.local
+
+node_modules/
+**/node_modules/
+
+dist/
+build/
+
+.env
+.env.local
+.env.production
+
+.vscode/
+
+npm-debug.log*
