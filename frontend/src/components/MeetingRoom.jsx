@@ -321,10 +321,10 @@ const MeetingRoom = () => {
   };
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-[#0a0a0f] text-white flex flex-col">
+    <div ref={containerRef} className="h-screen max-h-screen bg-[#0a0a0f] text-white flex flex-col overflow-hidden">
 
       {/* TOP BAR */}
-      <div className="h-14 bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/[0.04] flex items-center justify-between px-4 md:px-6 z-40">
+      <div className="h-14 bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/[0.04] flex items-center justify-between px-4 md:px-6 z-40 shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FC6C26] to-[#E05A1A] flex items-center justify-center shadow-lg shadow-[#FC6C26]/20">
             <VideoIcon className="w-4 h-4 text-white" />
@@ -599,8 +599,8 @@ const MeetingRoom = () => {
       </div>
 
       {/* BOTTOM TOOLBAR */}
-      <div className="h-20 md:h-24 bg-[#0a0a0f]/80 backdrop-blur-xl border-t border-white/[0.04] flex items-center justify-center px-4">
-        <div className="flex items-center gap-2 md:gap-3 bg-[#0d0d14] rounded-2xl p-2 md:p-2.5 border border-white/[0.06] shadow-xl overflow-x-auto max-w-full">
+      <div className="h-16 md:h-20 bg-[#0a0a0f]/80 backdrop-blur-xl border-t border-white/[0.04] flex items-center justify-center px-4 shrink-0">
+        <div className="flex items-center gap-2 md:gap-3 bg-[#0d0d14] rounded-xl p-1.5 md:p-2 border border-white/[0.06] shadow-xl overflow-x-auto max-w-full">
           {/* MIC BUTTON */}
           <button
             onClick={toggleMic}
