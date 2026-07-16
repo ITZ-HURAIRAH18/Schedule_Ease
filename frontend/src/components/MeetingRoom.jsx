@@ -53,19 +53,22 @@ const MeetingRoom = () => {
         setMeetingInfo(res.data);
         const data = res.data;
 
-        // 2. Get Media Stream (optional - meeting works without it)
+        // 2. Get Media Stream with fallbacks
         setStatus("Initializing WebRTC...");
-        try {
+        const mediaConstraints = [
+          { video: { width: { ideal: 1280 }, height: { ideal: 720 } }, audio: true },
+          { video: true, audio: true },
+          { audio: true },
+        ];
+        for (const constraints of mediaConstraints) {
           if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            localStream = await navigator.mediaDevices.getUserMedia({ 
-              video: { width: { ideal: 1280 }, height: { ideal: 720 } },
-              audio: true 
-            });
-          } else {
-            console.warn('⚠️ getUserMedia not available - joining without camera/mic');
+            try {
+              localStream = await navigator.mediaDevices.getUserMedia(constraints);
+              if (localStream) break;
+            } catch (mediaErr) {
+              console.warn(`⚠️ Media failed for`, constraints, mediaErr.message);
+            }
           }
-        } catch (mediaErr) {
-          console.warn('⚠️ Media access denied:', mediaErr.message);
         }
         if (!mounted) return;
         if (localStream) {
