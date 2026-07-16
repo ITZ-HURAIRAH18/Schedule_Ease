@@ -1,26 +1,106 @@
-📡 Peer ID: 7b5f49d7-1cfc-412e-b21a-961822bf09cc-6a57a4cefcc0b4c0be4770e8
-index-DiMxtxtJ.js:499 WebSocket connection to 'ws://51.20.10.115/socket.io/?EIO=4&transport=websocket' failed: 
-createSocket @ index-DiMxtxtJ.js:499
-doOpen @ index-DiMxtxtJ.js:499
-open @ index-DiMxtxtJ.js:499
-_open @ index-DiMxtxtJ.js:499
-Ta @ index-DiMxtxtJ.js:499
-dY @ index-DiMxtxtJ.js:499
-hY @ index-DiMxtxtJ.js:499
-open @ index-DiMxtxtJ.js:499
-$x @ index-DiMxtxtJ.js:499
-qo @ index-DiMxtxtJ.js:499
-(anonymous) @ index-DiMxtxtJ.js:563
-index-DiMxtxtJ.js:499 WebSocket connection to 'ws://51.20.10.115/socket.io/?EIO=4&transport=websocket' failed: 
-createSocket @ index-DiMxtxtJ.js:499
-doOpen @ index-DiMxtxtJ.js:499
-open @ index-DiMxtxtJ.js:499
-_open @ index-DiMxtxtJ.js:499
-Ta @ index-DiMxtxtJ.js:499
-dY @ index-DiMxtxtJ.js:499
-hY @ index-DiMxtxtJ.js:499
-open @ index-DiMxtxtJ.js:499
-(anonymous) @ index-DiMxtxtJ.js:499
-index-DiMxtxtJ.js:499 WebSocket connection to 'ws://51.20.10.115/socket.io/?EIO=4&transport=websocket' failed: 
+hook.bundle.js:1 [locatorjs]: loading: No valid renderers found.
+o @ hook.bundle.js:1
+hook.bundle.js:1 [locator-js] React instance (react-dom v19.1.1) is not supported
+inject @ hook.bundle.js:1
+hook.bundle.js:1 [locatorjs]: loading: Unsupported React renderer, only bundle type 1 (development) is supported but 0 (production) is found
+o @ hook.bundle.js:1
+inject.bundle.js:169 [ExtensionPerf] logged entry: Object | buffer size: 1662
+hook.bundle.js:1 [locatorjs]: loading: Unsupported React renderer, only bundle type 1 (development) is supported but 0 (production) is found
+o @ hook.bundle.js:1
+inject.bundle.js:218 [ChromePolyfill] Chrome API support enabled for web context
+5Unchecked runtime.lastError: The message port closed before a response was received.
+inject.bundle.js:169 [ExtensionPerf] logged entry: Object | buffer size: 1663
+hook.bundle.js:1 [locatorjs]: Unsupported React renderer, only bundle type 1 (development) is supported but 0 (production) is found
+o @ hook.bundle.js:1
+index-DjVDQ9ue.js:563 📡 Peer ID: 613dfe2d-6452-4d67-a5a4-d5a2ef119054-6a57a4cefcc0b4c0be4770e8
+index-DjVDQ9ue.js:563 ✅ Socket.IO connected for signaling
+2hook.bundle.js:1 [locatorjs]: Unsupported React renderer, only bundle type 1 (development) is supported but 0 (production) is found
 
-Camera and microphone access denied or unavailable. Please grant permissions and refresh.
+ubuntu@ip-172-31-40-66:~/Schedule_Ease/my-backend$ sudo tee /etc/nginx/sites-available/default > /dev/null << 'NGINXCONFIG'
+server {
+    listen 80;
+    server_name _;
+    root /var/www/html;
+    index index.html;
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+
+    location /api/ {
+        proxy_pass https://localhost:5001;
+        proxy_ssl_verify off;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+    }
+}
+
+server {
+ubuntu@ip-172-31-40-66:~/Schedule_Ease/my-backend$ sudo tee /etc/nginx/sites-available/default > /dev/null << 'NGINXCONFIG'
+server {
+    listen 80;
+    server_name _;
+    root /var/www/html;
+    index index.html;
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+
+    location /socket.io/ {
+        proxy_pass http://localhost:5002;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+    }
+
+    location /api/ {
+        proxy_pass https://localhost:5001;
+        proxy_ssl_verify off;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name _;
+
+    ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
+    ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
+
+    root /var/www/html;
+    index index.html;
+
+    location / {
+        try_files $uri /index.html;
+    }
+
+    location /socket.io/ {
+        proxy_pass http://localhost:5002;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+    }
+
+    location /api/ {
+        proxy_pass https://localhost:5001;
+        proxy_ssl_verify off;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+    }
+}
+NGINXCONFIG
+
+sudo nginx -t && sudo systemctl restart nginx
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+ubuntu@ip-172-31-40-66:~/Schedule_Ease/my-backend$ 

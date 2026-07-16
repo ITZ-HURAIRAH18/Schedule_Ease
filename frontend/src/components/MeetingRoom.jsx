@@ -53,14 +53,20 @@ const MeetingRoom = () => {
       peerConnection = new RTCPeerConnection({
         iceServers: STUN_SERVERS
       });
+      console.log('🔌 PC created', shouldMakeOffer ? '(initiator)' : '(responder)');
 
       if (localStream) {
-        localStream.getTracks().forEach(track => {
+        const tracks = localStream.getTracks();
+        console.log(`Adding ${tracks.length} local tracks to PC`);
+        tracks.forEach(track => {
           peerConnection.addTrack(track, localStream);
         });
+      } else {
+        console.warn('⚠️ No local stream to add to PC - media unavailable');
       }
 
       peerConnection.ontrack = (event) => {
+        console.log('✅ ontrack:', event.track.kind, 'streams:', event.streams.length);
         if (event.streams.length > 0 && mounted) {
           setRemoteStream(event.streams[0]);
           if (userVideo.current) userVideo.current.srcObject = event.streams[0];
@@ -78,17 +84,24 @@ const MeetingRoom = () => {
       };
 
       peerConnection.onconnectionstatechange = () => {
+        console.log('🔗 Connection state:', peerConnection.connectionState);
+        if (peerConnection.connectionState === 'connected') {
+          console.log('✨ WebRTC fully connected');
+        }
         if (peerConnection.connectionState === 'failed' && mounted) {
           setError('WebRTC connection failed - trying to reconnect');
         }
       };
 
-      peerConnection.oniceconnectionstatechange = () => {};
+      peerConnection.oniceconnectionstatechange = () => {
+        console.log('❄️ ICE state:', peerConnection.iceConnectionState);
+      };
 
       if (shouldMakeOffer) {
         try {
           const offer = await peerConnection.createOffer();
           await peerConnection.setLocalDescription(offer);
+          console.log('📤 Sending offer');
           if (socket) socket.emit('webrtc_offer', { roomId, offer });
         } catch (err) {
           console.error('❌ Error creating offer:', err.message);
@@ -108,12 +121,15 @@ const MeetingRoom = () => {
         const data = res.data;
 
         // 2. Get Media Stream with fallbacks
-        setStatus("Initializing WebRTC...");
+        setStatus("Requesting camera/mic...");
 
-        if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-          const httpMediaMsg = "Camera/mic require HTTPS. Your connection is HTTP.";
-          console.warn(httpMediaMsg);
-          setMediaError(httpMediaMsg);
+        console.log(`🌐 Page protocol: ${window.location.protocol}`);
+        const isSecure = window.location.protocol === 'https:' || 
+                         window.location.hostname === 'localhost' || 
+                         window.location.hostname === '127.0.0.1';
+        if (!isSecure) {
+          console.warn('🚫 HTTP detected - getUserMedia will be blocked');
+          setMediaError("Camera/mic require HTTPS. Your connection is HTTP.");
         }
 
         const mediaConstraints = [
@@ -121,14 +137,20 @@ const MeetingRoom = () => {
           { video: true, audio: true },
           { audio: true },
         ];
+        console.log(`🎥 Requesting media (secure: ${isSecure})`);
         for (const constraints of mediaConstraints) {
           if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             try {
               localStream = await navigator.mediaDevices.getUserMedia(constraints);
-              if (localStream) break;
+              if (localStream) {
+                console.log(`✅ Media acquired:`, localStream.getTracks().map(t => t.kind).join(', '));
+                break;
+              }
             } catch (mediaErr) {
-              console.warn(`⚠️ Media failed for`, constraints, mediaErr.message);
+              console.warn(`⚠️ Media failed:`, mediaErr.message);
             }
+          } else {
+            console.warn('❌ navigator.mediaDevices.getUserMedia not available');
           }
         }
         if (!mounted) return;
@@ -136,10 +158,11 @@ const MeetingRoom = () => {
         if (localStream) {
           setStream(localStream);
           if (myVideo.current) myVideo.current.srcObject = localStream;
+          setStatus("Connecting...");
         } else {
-          const noMediaMsg = window.location.protocol !== 'https:'
-            ? "Camera and microphone require a secure connection (HTTPS). Please use https:// to access this site."
-            : "Camera and microphone access denied. Please grant permissions and refresh.";
+          const noMediaMsg = !isSecure
+            ? "Camera/mic require HTTPS. Open https://51.20.10.115 and accept the security warning."
+            : "Camera/mic access denied. Click the camera icon in the address bar to allow permissions, then refresh.";
           setMediaError(noMediaMsg);
           setError(noMediaMsg);
         }
@@ -165,12 +188,15 @@ const MeetingRoom = () => {
         });
 
         socket.on('user_joined', (data) => {
+          console.log('👤 User joined:', data.userId);
           if (!peerConnection && data.userId !== myPeerId) {
+            console.log('🔵 Initiating WebRTC as offerer');
             createPeerConnection(true);
           }
         });
 
         socket.on('webrtc_offer', async (data) => {
+          console.log('📥 Received offer');
           try {
             if (!peerConnection) {
               await createPeerConnection(false);
@@ -180,6 +206,7 @@ const MeetingRoom = () => {
             await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
             const answer = await peerConnection.createAnswer();
             await peerConnection.setLocalDescription(answer);
+            console.log('📤 Sending answer');
             socket.emit('webrtc_answer', { roomId, answer });
           } catch (err) {
             console.error('❌ Error handling offer:', err.message);
@@ -187,11 +214,16 @@ const MeetingRoom = () => {
         });
 
         socket.on('webrtc_answer', async (data) => {
+          console.log('📥 Received answer');
           try {
             if (!peerConnection) return;
-            if (peerConnection.signalingState !== 'have-local-offer') return;
+            if (peerConnection.signalingState !== 'have-local-offer') {
+              console.warn('⚠️ Wrong state for answer:', peerConnection.signalingState);
+              return;
+            }
 
             await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+            console.log('✅ Remote description set from answer');
           } catch (err) {
             console.error('❌ Error handling answer:', err.message);
           }
