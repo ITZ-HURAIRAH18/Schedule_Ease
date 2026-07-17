@@ -19,6 +19,7 @@ import {
   RefreshCcw,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
 
 const HostDashboard = () => {
   const [data, setData] = useState(null);
@@ -117,7 +118,43 @@ const HostDashboard = () => {
     </div>
   );
 
-  if (!data) return null;
+  if (!data) {
+    return (
+      <div className="min-h-screen bg-[#FFF4D6] page-enter">
+        <HostHeader />
+        <main className="max-w-7xl mx-auto px-6 py-10">
+          <header className="mb-10">
+            <Skeleton height={36} width={280} className="mb-2" containerClassName="block" />
+            <Skeleton height={20} width={200} />
+          </header>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[12px] p-5">
+                <Skeleton height={36} width={36} borderRadius={8} className="mb-4" containerClassName="block" />
+                <Skeleton height={14} width={100} className="mb-2" containerClassName="block" />
+                <Skeleton height={32} width={80} />
+              </div>
+            ))}
+          </div>
+          <div className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[16px] p-6">
+            <Skeleton height={24} width={180} className="mb-6" containerClassName="block" />
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="flex items-center justify-between py-4 border-b border-[#E8DCC0] last:border-b-0">
+                <div className="flex items-center gap-4">
+                  <Skeleton circle height={40} width={40} containerClassName="block" />
+                  <div>
+                    <Skeleton height={16} width={150} className="mb-1" containerClassName="block" />
+                    <Skeleton height={12} width={180} />
+                  </div>
+                </div>
+                <Skeleton height={28} width={100} borderRadius={8} />
+              </div>
+            ))}
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   const { stats = {} } = data;
 

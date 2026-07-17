@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
 import axiosInstance from "../../api/axiosInstance";
 import HostHeader from "../../components/HostHeader";
+import Skeleton from "react-loading-skeleton";
 import {
   Search,
   Filter,
@@ -30,6 +31,7 @@ const HostBookings = () => {
   const [filterStatus, setFilterStatus] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [updatingId, setUpdatingId] = useState(null);
+  const [loading, setLoading] = useState(true);
   const itemsPerPage = 8;
 
   useEffect(() => {
@@ -37,12 +39,14 @@ const HostBookings = () => {
   }, []);
 
   const fetchBookings = () => {
+    setLoading(true);
     axiosInstance
       .get("/host/bookings")
       .then((res) => {
         if (res.data.success) setBookings(res.data.bookings);
       })
-      .catch(() => { });
+      .catch(() => { })
+      .finally(() => setLoading(false));
   };
 
   const handleUpdateStatus = async (id, newStatus) => {
@@ -139,6 +143,29 @@ const HostBookings = () => {
 
         {/* Table */}
         <div className="bg-[#FFF4D6] border border-[#E8DCC0] rounded-[16px] overflow-hidden shadow-sm">
+          {loading ? (
+            <div className="p-6">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex items-center justify-between py-4 border-b border-[#E8DCC0] last:border-b-0">
+                  <div className="flex items-center gap-4">
+                    <Skeleton circle height={40} width={40} containerClassName="block" />
+                    <div>
+                      <Skeleton height={16} width={160} className="mb-1" containerClassName="block" />
+                      <Skeleton height={12} width={200} />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-8">
+                    <div>
+                      <Skeleton height={14} width={100} className="mb-1" containerClassName="block" />
+                      <Skeleton height={12} width={130} />
+                    </div>
+                    <Skeleton height={28} width={90} borderRadius={6} />
+                    <Skeleton height={20} width={40} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
@@ -229,6 +256,7 @@ const HostBookings = () => {
               </tbody>
             </table>
           </div>
+          )}
         </div>
 
         {/* Pagination */}
