@@ -321,16 +321,19 @@ const MeetingRoom = () => {
   };
 
   return (
-    <div ref={containerRef} className="h-screen max-h-screen bg-[#0a0a0f] text-white flex flex-col overflow-hidden">
+    <div ref={containerRef} className="h-screen max-h-screen bg-[#0a0f1e] text-white flex flex-col overflow-hidden">
 
       {/* TOP BAR */}
-      <div className="h-14 bg-[#0a0a0f]/80 backdrop-blur-xl border-b border-white/[0.04] flex items-center justify-between px-4 md:px-6 z-40 shrink-0">
+      {/* Premium accent line */}
+      <div className="absolute top-0 left-0 right-0 h-[2px] z-50 bg-gradient-to-r from-[#FC6C26] via-[#FFF4D6] to-[#FC6C26] opacity-80" />
+
+      <div className="h-14 bg-[#0a0f1e]/80 backdrop-blur-xl border-b border-white/[0.04] flex items-center justify-between px-4 md:px-6 z-40 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FC6C26] to-[#E05A1A] flex items-center justify-center shadow-lg shadow-[#FC6C26]/20">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FC6C26] to-[#E05A1A] flex items-center justify-center shadow-lg shadow-[#FC6C26]/20 ring-1 ring-[#FFF4D6]/20">
             <VideoIcon className="w-4 h-4 text-white" />
           </div>
           <div className="hidden sm:block">
-            <h1 className="text-sm font-semibold text-white/90">NexGen Meeting</h1>
+            <h1 className="text-sm font-semibold text-[#FFF4D6]/90">NexGen Meeting</h1>
             <p className="text-[11px] text-white/40">{roomId?.slice(0, 8)}...</p>
           </div>
         </div>
@@ -358,12 +361,12 @@ const MeetingRoom = () => {
           <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium ${
             remoteStream
               ? "bg-[#FC6C26]/10 text-[#FC6C26] border border-[#FC6C26]/20"
-              : "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20"
+              : "bg-[#FFF4D6]/10 text-[#FFF4D6]/80 border border-[#FFF4D6]/20"
           }`}>
             <motion.div
               animate={{ scale: [1, 1.3, 1] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-              className={`w-1.5 h-1.5 rounded-full ${remoteStream ? "bg-[#FC6C26]" : "bg-yellow-400"}`}
+              className={`w-1.5 h-1.5 rounded-full ${remoteStream ? "bg-[#FC6C26] shadow-lg shadow-[#FC6C26]/50" : "bg-[#FFF4D6]"}`}
             />
             <span className="hidden sm:inline">{status}</span>
           </div>
@@ -397,7 +400,10 @@ const MeetingRoom = () => {
         <div className={`flex-1 flex flex-col relative transition-all duration-300`}>
 
           {/* Video Grid */}
-          <div className="flex-1 relative overflow-hidden bg-gradient-to-br from-[#0a0a0f] via-[#0d0d14] to-[#0a0a0f]">
+          <div className="flex-1 relative overflow-hidden bg-gradient-to-br from-[#0a0f1e] via-[#0e1528] to-[#0a0f1e]">
+            {/* Premium ambient glow */}
+            <div className="absolute top-1/4 -left-20 w-96 h-96 bg-[#FC6C26]/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute bottom-1/4 -right-20 w-80 h-80 bg-[#FFF4D6]/5 rounded-full blur-3xl pointer-events-none" />
             {remoteStream ? (
               <div className="w-full h-full relative">
                 <video
@@ -406,8 +412,8 @@ const MeetingRoom = () => {
                   playsInline
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute top-4 left-4 px-3 py-1.5 bg-black/50 backdrop-blur-md rounded-lg border border-white/[0.06]">
-                  <p className="text-xs font-medium text-white/80">Participant</p>
+                <div className="absolute top-4 left-4 px-3 py-1.5 bg-black/50 backdrop-blur-md rounded-lg border border-[#FC6C26]/20">
+                  <p className="text-xs font-medium text-[#FFF4D6]/80">Participant</p>
                 </div>
               </div>
             ) : (
@@ -415,12 +421,12 @@ const MeetingRoom = () => {
                 <motion.div
                   animate={{ scale: [1, 1.05, 1], opacity: [0.3, 0.5, 0.3] }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                  className="w-28 h-28 rounded-full bg-gradient-to-br from-[#FC6C26]/10 to-[#FC6C26]/5 flex items-center justify-center mb-6 border border-white/[0.06]"
+                  className="w-28 h-28 rounded-full bg-gradient-to-br from-[#FC6C26]/20 to-[#FC6C26]/5 flex items-center justify-center mb-6 border border-[#FC6C26]/20 shadow-lg shadow-[#FC6C26]/10"
                 >
-                  <Users className="w-14 h-14 text-white/20" />
+                  <Users className="w-14 h-14 text-[#FFF4D6]/30" />
                 </motion.div>
-                <h2 className="text-xl md:text-2xl font-semibold text-white/40">Waiting for participant...</h2>
-                <p className="text-sm text-white/20 mt-2">They will appear here when they join</p>
+                <h2 className="text-xl md:text-2xl font-semibold text-[#FFF4D6]/60">Waiting for participant...</h2>
+                <p className="text-sm text-[#FFF4D6]/30 mt-2">They will appear here when they join</p>
                 {mediaError && (
                   <p className="text-xs text-red-400/60 mt-3 max-w-sm text-center px-4">{mediaError}</p>
                 )}
@@ -428,7 +434,7 @@ const MeetingRoom = () => {
             )}
 
             {/* LOCAL VIDEO - Picture in Picture */}
-            <div className={`absolute bottom-4 right-4 rounded-xl overflow-hidden border-2 border-white/[0.08] shadow-2xl bg-black transition-all duration-300 ${
+            <div className={`absolute bottom-4 right-4 rounded-xl overflow-hidden border-2 border-[#FC6C26]/20 shadow-2xl shadow-[#FC6C26]/10 bg-black transition-all duration-300 ${
               sidePanelOpen
                 ? "w-28 h-20 md:w-36 md:h-28"
                 : "w-36 h-28 md:w-48 md:h-36"
@@ -440,7 +446,7 @@ const MeetingRoom = () => {
                 playsInline
                 className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-2 left-2 px-2 py-1 bg-black/60 backdrop-blur-md rounded-md text-[10px] font-medium text-white/80">
+              <div className="absolute bottom-2 left-2 px-2 py-1 bg-black/60 backdrop-blur-md rounded-md text-[10px] font-medium text-[#FFF4D6]/80">
                 You
               </div>
 
@@ -465,20 +471,20 @@ const MeetingRoom = () => {
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute bottom-4 left-4 px-3 py-1.5 bg-black/50 backdrop-blur-md rounded-lg border border-white/[0.06] flex items-center gap-2"
+                className="absolute bottom-4 left-4 px-3 py-1.5 bg-black/50 backdrop-blur-md rounded-lg border border-[#FC6C26]/20 flex items-center gap-2"
               >
-                <div className="w-1.5 h-1.5 rounded-full bg-[#FC6C26] animate-pulse" />
-                <span className="text-[11px] text-white/60">Live</span>
+                <div className="w-1.5 h-1.5 rounded-full bg-[#FC6C26] animate-pulse shadow-lg shadow-[#FC6C26]/50" />
+                <span className="text-[11px] text-[#FFF4D6]/80 font-medium">Live</span>
               </motion.div>
             )}
           </div>
         </div>
 
         {/* SIDE PANEL - Desktop (always visible on lg+) */}
-        <div className="hidden lg:flex flex-col w-80 bg-[#0d0d14] border-l border-white/[0.04] overflow-hidden">
+        <div className="hidden lg:flex flex-col w-80 bg-[#0e1528] border-l border-white/[0.04] overflow-hidden">
           <div className="p-5 border-b border-white/[0.04]">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-white/80">Meeting Details</h3>
+              <h3 className="text-sm font-semibold text-[#FFF4D6]/80">Meeting Details</h3>
             </div>
             <div className="space-y-2">
               {[
@@ -500,14 +506,14 @@ const MeetingRoom = () => {
           </div>
 
           <div className="flex-1 overflow-y-auto p-5">
-            <h3 className="text-sm font-semibold text-white/80 mb-4">Participants ({participantCount})</h3>
+            <h3 className="text-sm font-semibold text-[#FFF4D6]/80 mb-4">Participants ({participantCount})</h3>
             <div className="space-y-1.5">
               <div className="flex items-center gap-3 p-2.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors">
                 <div className="relative">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FC6C26] to-[#E05A1A] flex items-center justify-center text-xs font-semibold">
                     {user?.fullName?.charAt(0)?.toUpperCase() || "Y"}
                   </div>
-                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#FC6C26] border-2 border-[#0d0d14]" />
+                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#FC6C26] border-2 border-[#0e1528]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-white/80 truncate">{user?.fullName || "You"}</p>
@@ -521,10 +527,10 @@ const MeetingRoom = () => {
               {remoteStream && (
                 <div className="flex items-center gap-3 p-2.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors">
                   <div className="relative">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-xs font-semibold text-white">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFF4D6] to-[#E8DCC0] flex items-center justify-center text-xs font-semibold text-[#1A1A1A]">
                       P
                     </div>
-                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-500 border-2 border-[#0d0d14]" />
+                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-500 border-2 border-[#0e1528]" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-white/80 truncate">Participant</p>
@@ -552,10 +558,10 @@ const MeetingRoom = () => {
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
                 onClick={(e) => e.stopPropagation()}
-                className="absolute right-0 top-0 h-full w-[300px] bg-[#0d0d14] border-l border-white/[0.06] shadow-2xl"
+                className="absolute right-0 top-0 h-full w-[300px] bg-[#0e1528] border-l border-white/[0.06] shadow-2xl"
               >
                 <div className="p-5 border-b border-white/[0.04] flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-white/80">Meeting Details</h3>
+                  <h3 className="text-sm font-semibold text-[#FFF4D6]/80">Meeting Details</h3>
                   <button
                     onClick={() => setSidePanelOpen(false)}
                     className="p-1.5 rounded-lg hover:bg-white/[0.06] transition-colors"
@@ -581,7 +587,7 @@ const MeetingRoom = () => {
                   ))}
                 </div>
                 <div className="px-5">
-                  <h3 className="text-sm font-semibold text-white/80 mb-4">Participants ({participantCount})</h3>
+                  <h3 className="text-sm font-semibold text-[#FFF4D6]/80 mb-4">Participants ({participantCount})</h3>
                   <div className="flex items-center gap-3 p-2.5 rounded-lg bg-white/[0.03]">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FC6C26] to-[#E05A1A] flex items-center justify-center text-xs font-semibold">
                       {user?.fullName?.charAt(0)?.toUpperCase() || "Y"}
