@@ -123,9 +123,7 @@ const Landing = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#FFF4D6]/90 backdrop-blur-xl border-b border-[#FC6C26]/10">
         <div className="max-w-6xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#FC6C26] flex items-center justify-center shadow-lg shadow-[#FC6C26]/20">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
+            <img src="/nexgen-logo.svg" alt="NexGen" className="w-8 h-8" />
             <span className="text-[#1A1A1A] font-semibold text-sm tracking-tight">NexGen</span>
           </div>
           <div className="flex items-center gap-3">
@@ -393,9 +391,7 @@ const Landing = () => {
       <footer className="border-t border-[#FC6C26]/10 py-8 px-4 md:px-6">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-[#FC6C26] flex items-center justify-center">
-              <Sparkles className="w-3 h-3 text-white" />
-            </div>
+            <img src="/nexgen-logo.svg" alt="NexGen" className="w-6 h-6" />
             <span className="text-[13px] text-[#4A4A4A] font-medium">NexGen</span>
           </div>
           <p className="text-[12px] text-[#8A8A8A]">

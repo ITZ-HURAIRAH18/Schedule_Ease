@@ -47,9 +47,7 @@ const Navbar = () => {
     <nav className="sticky top-0 z-[100] h-[56px] bg-[#FFF4D6] border-b border-[#E8DCC0] flex items-center justify-between px-4 md:px-6">
       <div className="flex items-center gap-8">
         <Link to="/" className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-[#FC6C26] rounded-md flex items-center justify-center text-white font-bold">
-            N
-          </div>
+          <img src="/nexgen-logo.svg" alt="NexGen" className="w-8 h-8" />
           <span className="text-base font-semibold text-[#1A1A1A]">NexGen</span>
         </Link>
 
