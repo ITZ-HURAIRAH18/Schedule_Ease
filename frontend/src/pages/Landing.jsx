@@ -22,8 +22,8 @@ const Landing = () => {
   const handleGetStarted = () => {
     setShowRoles(true);
     setTimeout(() => {
-      document.getElementById('hero')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
+      document.getElementById('role-selector')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 250);
   };
 
   const dots = useMemo(() =>
@@ -149,47 +149,72 @@ const Landing = () => {
         className="relative pt-32 md:pt-40 pb-20 md:pb-28 px-4 md:px-6 overflow-hidden"
         style={{ minHeight: '520px' }}
       >
-        {/* Floating gradient orbs */}
+        {/* Background decorative elements — fixed height to prevent stretching */}
         <div
-          className="absolute pointer-events-none"
-          style={{
-            top: '10%', left: '5%', width: '320px', height: '320px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(252,108,38,0.10) 0%, transparent 70%)',
-            zIndex: 0,
-            animation: 'orbFloat 8s ease-in-out infinite',
-          }}
-        />
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            top: '55%', right: '3%', width: '280px', height: '280px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(252,108,38,0.08) 0%, transparent 70%)',
-            zIndex: 0,
-            animation: 'orbFloat2 10s ease-in-out infinite',
-          }}
-        />
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            bottom: '10%', left: '35%', width: '220px', height: '220px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(255,244,214,0.25) 0%, transparent 70%)',
-            zIndex: 0,
-            animation: 'orbFloat3 7s ease-in-out infinite 2s',
-          }}
-        />
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            top: '30%', right: '25%', width: '180px', height: '180px',
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(252,108,38,0.06) 0%, transparent 70%)',
-            zIndex: 0,
-            animation: 'orbFloat 9s ease-in-out infinite 1s',
-          }}
-        />
+          className="absolute top-0 left-0 right-0 pointer-events-none overflow-hidden"
+          style={{ height: '520px', zIndex: 0 }}
+        >
+          {/* Floating gradient orbs */}
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              top: '10%', left: '5%', width: '320px', height: '320px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(252,108,38,0.10) 0%, transparent 70%)',
+              animation: 'orbFloat 8s ease-in-out infinite',
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              top: '55%', right: '3%', width: '280px', height: '280px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(252,108,38,0.08) 0%, transparent 70%)',
+              animation: 'orbFloat2 10s ease-in-out infinite',
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              bottom: '10%', left: '35%', width: '220px', height: '220px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(255,244,214,0.25) 0%, transparent 70%)',
+              animation: 'orbFloat3 7s ease-in-out infinite 2s',
+            }}
+          />
+          <div
+            className="absolute pointer-events-none"
+            style={{
+              top: '30%', right: '25%', width: '180px', height: '180px',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(252,108,38,0.06) 0%, transparent 70%)',
+              animation: 'orbFloat 9s ease-in-out infinite 1s',
+            }}
+          />
+
+          {/* Scattered dots */}
+          <div className="absolute inset-0 pointer-events-none">
+            {dots.map(dot => (
+              <span
+                key={dot.key}
+                style={{
+                  position: 'absolute',
+                  left: `${dot.left}%`,
+                  top: `${dot.top}%`,
+                  width: `${dot.size}px`,
+                  height: `${dot.size}px`,
+                  borderRadius: '50%',
+                  backgroundColor: '#FC6C26',
+                  opacity: dot.opacity,
+                  pointerEvents: 'none',
+                  animation: `${dot.animation} ${dot.duration}s ease-in-out infinite ${dot.delay}s`,
+                  transform: 'translate(-50%, -50%)',
+                  boxShadow: '0 0 8px rgba(252,108,38,0.4)',
+                }}
+              />
+            ))}
+          </div>
+        </div>
 
         {/* Radial overlay — keeps center clean */}
         <div
@@ -206,29 +231,6 @@ const Landing = () => {
             )`,
           }}
         />
-
-        {/* Scattered dots */}
-        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1 }}>
-          {dots.map(dot => (
-            <span
-              key={dot.key}
-              style={{
-                position: 'absolute',
-                left: `${dot.left}%`,
-                top: `${dot.top}%`,
-                width: `${dot.size}px`,
-                height: `${dot.size}px`,
-                borderRadius: '50%',
-                backgroundColor: '#FC6C26',
-                opacity: dot.opacity,
-                pointerEvents: 'none',
-                animation: `${dot.animation} ${dot.duration}s ease-in-out infinite ${dot.delay}s`,
-                transform: 'translate(-50%, -50%)',
-                boxShadow: '0 0 8px rgba(252,108,38,0.4)',
-              }}
-            />
-          ))}
-        </div>
 
         {/* Content */}
         <div className="relative max-w-4xl mx-auto text-center" style={{ zIndex: 2 }}>
@@ -270,7 +272,13 @@ const Landing = () => {
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <button
-              onClick={() => setShowRoles(!showRoles)}
+              onClick={() => {
+                if (!showRoles) {
+                  handleGetStarted();
+                } else {
+                  setShowRoles(false);
+                }
+              }}
               className="inline-flex items-center gap-2 bg-[#FC6C26] text-white text-[15px] font-semibold px-8 py-3.5 rounded-xl hover:bg-[#E05A1A] transition-all shadow-xl shadow-[#FC6C26]/25"
             >
               Get Started
@@ -286,6 +294,7 @@ const Landing = () => {
           <AnimatePresence>
             {showRoles && (
               <motion.div
+                id="role-selector"
                 initial={{ opacity: 0, y: -10, height: 0 }}
                 animate={{ opacity: 1, y: 0, height: 'auto' }}
                 exit={{ opacity: 0, y: -10, height: 0 }}
