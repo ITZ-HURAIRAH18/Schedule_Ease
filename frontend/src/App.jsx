@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import Landing from './pages/Landing';
 import LoginRole from './pages/LoginRole';
 import SignupRole from './pages/SignupRole';
+import Profile from './pages/Profile';
 
 // User Pages
 import UserDashboard from './pages/user/UserDashboard';
@@ -61,6 +62,7 @@ const AppRoutes = () => {
         <Route path="/user/bookings" element={<ProtectedRoute allowedRoles={['user']}><PageWrapper><Bookings /></PageWrapper></ProtectedRoute>} />
         <Route path="/user/availability" element={<ProtectedRoute allowedRoles={['user']}><PageWrapper><Availability /></PageWrapper></ProtectedRoute>} />
         <Route path="/user/book/:hostId" element={<ProtectedRoute allowedRoles={['user']}><PageWrapper><BookingForm /></PageWrapper></ProtectedRoute>} />
+        <Route path="/user/profile" element={<ProtectedRoute allowedRoles={['user']}><PageWrapper><Profile /></PageWrapper></ProtectedRoute>} />
 
         {/* Host Protected Routes */}
         <Route path="/host" element={<ProtectedRoute allowedRoles={['host']}><Navigate to="/host/dashboard" /></ProtectedRoute>} />
@@ -70,12 +72,14 @@ const AppRoutes = () => {
         <Route path="/host/edit-availability/:id" element={<ProtectedRoute allowedRoles={['host']}><PageWrapper><EditAvailability /></PageWrapper></ProtectedRoute>} />
         <Route path="/host/bookings" element={<ProtectedRoute allowedRoles={['host']}><PageWrapper><HostBookings /></PageWrapper></ProtectedRoute>} />
         <Route path="/host/settings" element={<ProtectedRoute allowedRoles={['host']}><PageWrapper><HostSettings /></PageWrapper></ProtectedRoute>} />
+        <Route path="/host/profile" element={<ProtectedRoute allowedRoles={['host']}><PageWrapper><Profile /></PageWrapper></ProtectedRoute>} />
 
         {/* Admin Protected Routes */}
         <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><Navigate to="/admin/dashboard" /></ProtectedRoute>} />
         <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={['admin']}><PageWrapper><AdminDashboard /></PageWrapper></ProtectedRoute>} />
         <Route path="/admin/users" element={<ProtectedRoute allowedRoles={['admin']}><PageWrapper><AdminUsers /></PageWrapper></ProtectedRoute>} />
         <Route path="/admin/stats" element={<ProtectedRoute allowedRoles={['admin']}><PageWrapper><AdminStats /></PageWrapper></ProtectedRoute>} />
+        <Route path="/admin/profile" element={<ProtectedRoute allowedRoles={['admin']}><PageWrapper><Profile /></PageWrapper></ProtectedRoute>} />
 
         {/* Catch-all */}
         <Route path="*" element={<Navigate to="/" replace />} />

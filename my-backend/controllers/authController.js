@@ -286,3 +286,57 @@ export const googleLogin = async (req, res) => {
       .json({ message: "Invalid Google token", error: err.message });
   }
 };
+
+// Get current user profile
+export const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json({
+      success: true,
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        profilePicture: user.profilePicture,
+        username: user.username,
+        timezone: user.timezone,
+        notificationPreferences: user.notificationPreferences,
+        isGoogleAccount: user.isGoogleAccount,
+        bookingLink: user.bookingLink,
+        createdAt: user.createdAt,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Update user profile
+export const updateProfile = async (req, res) => {
+  try {
+    const allowedFields = [
+      "fullName", "username", "timezone", "profilePicture",
+      "notificationPreferences", "bookingLink",
+    ];
+    const updates = {};
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: updates },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!updatedUser) return res.status(404).json({ message: "User not found" });
+
+    res.json({ success: true, user: updatedUser });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
