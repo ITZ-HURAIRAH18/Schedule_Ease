@@ -67,7 +67,7 @@ export const signup = async (req, res) => {
     try {
       await sendEmail(
         newUser._id,
-        "🎉 Welcome to Schedulr Ease!",
+        "Welcome to NexGen — Your time, perfectly orchestrated.",
         userWelcomeTemplate(newUser),
         false
       );
@@ -79,7 +79,7 @@ export const signup = async (req, res) => {
     try {
       await sendEmail(
         newUser._id,
-        "👤 New User Registered on Schedulr Ease",
+        "New User Registered on NexGen",
         adminNewUserTemplate(newUser),
         true
       );
