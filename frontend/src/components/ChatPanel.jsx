@@ -2,11 +2,13 @@ import { useState, useRef, useEffect } from "react";
 import { Send, Paperclip, FileText, Image, Download, X } from "lucide-react";
 import axiosInstance from "../api/axiosInstance";
 
-const ChatPanel = ({ roomId, socket, user, meetingInfo }) => {
+const ChatPanel = ({ roomId, socket, user, meetingInfo, onNewMessage }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [uploading, setUploading] = useState(false);
   const messagesEndRef = useRef(null);
+
+  const myId = String(user?._id || user?.id || "");
 
   useEffect(() => {
     if (!roomId) return;
@@ -19,6 +21,9 @@ const ChatPanel = ({ roomId, socket, user, meetingInfo }) => {
     if (!socket) return;
     const handler = (data) => {
       setMessages((prev) => [...prev, data]);
+      if (onNewMessage && String(data.senderId || "") !== myId) {
+        onNewMessage();
+      }
     };
     const ackHandler = (data) => {
       setMessages((prev) => [...prev, data]);
@@ -29,7 +34,7 @@ const ChatPanel = ({ roomId, socket, user, meetingInfo }) => {
       socket.off("chat_message", handler);
       socket.off("chat_message_ack", ackHandler);
     };
-  }, [socket]);
+  }, [socket, onNewMessage, myId]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

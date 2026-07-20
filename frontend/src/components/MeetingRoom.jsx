@@ -45,6 +45,7 @@ const MeetingRoom = () => {
   const [elapsed, setElapsed] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [sidePanelTab, setSidePanelTab] = useState("details");
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const peerRef = useRef();
   const socketRef = useRef(null);
@@ -185,10 +186,15 @@ const MeetingRoom = () => {
                          window.location.hostname === "localhost" ||
                          window.location.hostname === "127.0.0.1";
 
+        const audioOpts = {
+          echoCancellation: { ideal: true },
+          noiseSuppression: { ideal: true },
+          autoGainControl: { ideal: true },
+        };
         const mediaConstraints = [
-          { video: { width: { ideal: 1280 }, height: { ideal: 720 } }, audio: true },
-          { video: true, audio: true },
-          { audio: true },
+          { video: { width: { ideal: 1280 }, height: { ideal: 720 } }, audio: audioOpts },
+          { video: true, audio: audioOpts },
+          { audio: audioOpts },
         ];
         for (const constraints of mediaConstraints) {
           if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -334,6 +340,17 @@ const MeetingRoom = () => {
     navigate(-1);
   };
 
+  const openChatTab = () => {
+    setSidePanelTab("chat");
+    setUnreadCount(0);
+  };
+
+  const handleNewMessage = () => {
+    if (sidePanelTab !== "chat") {
+      setUnreadCount(prev => prev + 1);
+    }
+  };
+
   const toggleFullscreen = () => {
     if (!document.fullscreenElement) {
       containerRef.current?.requestFullscreen();
@@ -407,13 +424,18 @@ const MeetingRoom = () => {
           {/* Side panel toggle */}
           <button
             onClick={() => {
-              setSidePanelTab("chat");
+              openChatTab();
               setSidePanelOpen(!sidePanelOpen);
             }}
-            className="lg:hidden p-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] transition-colors border border-white/[0.06]"
+            className="lg:hidden relative p-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] transition-colors border border-white/[0.06]"
             title="Chat"
           >
             <MessageCircle className="w-4 h-4 text-white/60" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 inline-flex items-center justify-center min-w-[16px] h-[16px] px-0.5 rounded-full bg-[#FC6C26] text-[9px] font-bold text-white leading-none">
+                {unreadCount}
+              </span>
+            )}
           </button>
 
           {/* Fullscreen toggle */}
@@ -536,7 +558,7 @@ const MeetingRoom = () => {
               )}
             </button>
             <button
-              onClick={() => setSidePanelTab("chat")}
+              onClick={() => { setSidePanelTab("chat"); setUnreadCount(0); }}
               className={`flex-1 py-3 text-xs font-medium transition-colors relative ${
                 sidePanelTab === "chat"
                   ? "text-[#FC6C26]"
@@ -545,6 +567,11 @@ const MeetingRoom = () => {
             >
               <MessageCircle className="w-3.5 h-3.5 inline mr-1.5" />
               Chat
+              {unreadCount > 0 && sidePanelTab !== "chat" && (
+                <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#FC6C26] text-[10px] font-bold text-white leading-none">
+                  {unreadCount}
+                </span>
+              )}
               {sidePanelTab === "chat" && (
                 <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#FC6C26]" />
               )}
@@ -616,6 +643,7 @@ const MeetingRoom = () => {
                 socket={socketRef.current}
                 user={user}
                 meetingInfo={meetingInfo}
+                onNewMessage={handleNewMessage}
               />
             </div>
           )}
@@ -656,7 +684,7 @@ const MeetingRoom = () => {
                     )}
                   </button>
                   <button
-                    onClick={() => setSidePanelTab("chat")}
+                    onClick={() => { setSidePanelTab("chat"); setUnreadCount(0); }}
                     className={`flex-1 py-3 text-xs font-medium transition-colors relative ${
                       sidePanelTab === "chat"
                         ? "text-[#FC6C26]"
@@ -665,6 +693,11 @@ const MeetingRoom = () => {
                   >
                     <MessageCircle className="w-3.5 h-3.5 inline mr-1.5" />
                     Chat
+                    {unreadCount > 0 && sidePanelTab !== "chat" && (
+                      <span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-[#FC6C26] text-[10px] font-bold text-white leading-none">
+                        {unreadCount}
+                      </span>
+                    )}
                     {sidePanelTab === "chat" && (
                       <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#FC6C26]" />
                     )}
@@ -718,6 +751,7 @@ const MeetingRoom = () => {
                       socket={socketRef.current}
                       user={user}
                       meetingInfo={meetingInfo}
+                      onNewMessage={handleNewMessage}
                     />
                   </div>
                 )}
@@ -781,13 +815,21 @@ const MeetingRoom = () => {
 
           {/* Chat Toggle */}
           <button
-            onClick={() => setSidePanelOpen(!sidePanelOpen)}
-            className={`w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white/[0.06] hover:bg-white/[0.10] transition-all flex items-center justify-center shrink-0 ${
+            onClick={() => {
+              openChatTab();
+              setSidePanelOpen(!sidePanelOpen);
+            }}
+            className={`relative w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white/[0.06] hover:bg-white/[0.10] transition-all flex items-center justify-center shrink-0 ${
               sidePanelOpen ? "text-[#FC6C26]" : "text-white/60 hover:text-white/80"
             }`}
             title="Toggle Chat"
           >
             <MessageCircle className="w-4 h-4 md:w-5 md:h-5" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 md:-top-1.5 md:-right-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] md:min-w-[20px] md:h-[20px] px-1 rounded-full bg-[#FC6C26] text-[9px] md:text-[10px] font-bold text-white leading-none shadow-lg shadow-[#FC6C26]/40">
+                {unreadCount}
+              </span>
+            )}
           </button>
         </div>
       </div>
