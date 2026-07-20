@@ -1,6 +1,18 @@
+import ChatMessage from "../models/ChatMessage.js";
+
+const saveMessage = async (data) => {
+  try {
+    const msg = await ChatMessage.create(data);
+    return msg;
+  } catch (err) {
+    console.error("Failed to save chat message:", err.message);
+    return null;
+  }
+};
+
 /**
  * Meeting Socket Handler
- * Manages WebRTC signaling and room coordination for video meetings
+ * Manages WebRTC signaling, room coordination, and chat for video meetings
  */
 export const initMeetingSocket = (io) => {
   const meetingNamespace = io.of("/meeting");
@@ -59,7 +71,7 @@ export const initMeetingSocket = (io) => {
     });
   });
 
-  // ✅ WebRTC Signaling on main namespace (for direct media connection)
+  // ✅ Main namespace: WebRTC Signaling + Chat
   io.on("connection", (socket) => {
     // Join meeting room
     socket.on("join_meeting", (data) => {
@@ -89,6 +101,39 @@ export const initMeetingSocket = (io) => {
     socket.on("ice_candidate", (data) => {
       const { roomId, candidate } = data;
       socket.to(roomId).emit("ice_candidate", { candidate });
+    });
+
+    // 💬 Chat message
+    socket.on("chat_message", async (data) => {
+      const { roomId, message, senderId, senderName, senderRole, messageType, fileUrl, fileName, fileSize, fileType } = data;
+
+      const msgData = {
+        roomId,
+        senderId,
+        senderName,
+        senderRole: senderRole || "user",
+        message: message || "",
+        messageType: messageType || "text",
+        fileUrl: fileUrl || null,
+        fileName: fileName || null,
+        fileSize: fileSize || null,
+        fileType: fileType || null,
+      };
+
+      const saved = await saveMessage(msgData);
+
+      socket.to(roomId).emit("chat_message", {
+        ...msgData,
+        _id: saved?._id?.toString(),
+        createdAt: saved?.createdAt || new Date().toISOString(),
+      });
+
+      // Echo back to sender so they see the saved message with its _id
+      socket.emit("chat_message_ack", {
+        ...msgData,
+        _id: saved?._id?.toString(),
+        createdAt: saved?.createdAt || new Date().toISOString(),
+      });
     });
 
     socket.on("disconnect", () => {

@@ -17,12 +17,14 @@ import {
   Settings,
   MessageSquare,
   Clock,
-  ChevronRight
+  ChevronRight,
+  MessageCircle
 } from "lucide-react";
 import axiosInstance from "../api/axiosInstance";
 import { useAuth } from "../context/AuthContext";
 import io from "socket.io-client";
 import { getSocketUrl } from "../utils/apiConfig";
+import ChatPanel from "./ChatPanel";
 
 const MeetingRoom = () => {
   const navigate = useNavigate();
@@ -42,6 +44,7 @@ const MeetingRoom = () => {
   const [connectionQuality, setConnectionQuality] = useState("good");
   const [elapsed, setElapsed] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [sidePanelTab, setSidePanelTab] = useState("details");
 
   const peerRef = useRef();
   const socketRef = useRef(null);
@@ -371,12 +374,16 @@ const MeetingRoom = () => {
             <span className="hidden sm:inline">{status}</span>
           </div>
 
-          {/* Side panel toggle (mobile/tablet) */}
+          {/* Side panel toggle */}
           <button
-            onClick={() => setSidePanelOpen(!sidePanelOpen)}
+            onClick={() => {
+              setSidePanelTab("chat");
+              setSidePanelOpen(!sidePanelOpen);
+            }}
             className="lg:hidden p-2 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] transition-colors border border-white/[0.06]"
+            title="Chat"
           >
-            <MessageSquare className="w-4 h-4 text-white/60" />
+            <MessageCircle className="w-4 h-4 text-white/60" />
           </button>
 
           {/* Fullscreen toggle */}
@@ -482,64 +489,106 @@ const MeetingRoom = () => {
 
         {/* SIDE PANEL - Desktop (always visible on lg+) */}
         <div className="hidden lg:flex flex-col w-80 bg-[#0e1528] border-l border-white/[0.04] overflow-hidden">
-          <div className="p-5 border-b border-white/[0.04]">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-[#FFF4D6]/80">Meeting Details</h3>
-            </div>
-            <div className="space-y-2">
-              {[
-                { label: "Status", value: "Connected", accent: true },
-                { label: "Duration", value: formatTime(elapsed), mono: true },
-                { label: "Video", value: videoOn ? "On" : "Off", accent: videoOn, danger: !videoOn },
-                { label: "Audio", value: micOn ? "On" : "Off", accent: micOn, danger: !micOn },
-              ].map((item) => (
-                <div key={item.label} className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/[0.03]">
-                  <span className="text-xs text-white/50">{item.label}</span>
-                  <span className={`text-xs font-medium ${
-                    item.accent ? "text-[#FC6C26]" : item.danger ? "text-red-400" : item.mono ? "text-white/70 font-mono" : "text-white/70"
-                  }`}>
-                    {item.value}
-                  </span>
-                </div>
-              ))}
-            </div>
+          {/* Tabs */}
+          <div className="flex border-b border-white/[0.04]">
+            <button
+              onClick={() => setSidePanelTab("details")}
+              className={`flex-1 py-3 text-xs font-medium transition-colors relative ${
+                sidePanelTab === "details"
+                  ? "text-[#FC6C26]"
+                  : "text-white/40 hover:text-white/60"
+              }`}
+            >
+              <Users className="w-3.5 h-3.5 inline mr-1.5" />
+              Details
+              {sidePanelTab === "details" && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#FC6C26]" />
+              )}
+            </button>
+            <button
+              onClick={() => setSidePanelTab("chat")}
+              className={`flex-1 py-3 text-xs font-medium transition-colors relative ${
+                sidePanelTab === "chat"
+                  ? "text-[#FC6C26]"
+                  : "text-white/40 hover:text-white/60"
+              }`}
+            >
+              <MessageCircle className="w-3.5 h-3.5 inline mr-1.5" />
+              Chat
+              {sidePanelTab === "chat" && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#FC6C26]" />
+              )}
+            </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-5">
-            <h3 className="text-sm font-semibold text-[#FFF4D6]/80 mb-4">Participants ({participantCount})</h3>
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-3 p-2.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors">
-                <div className="relative">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FC6C26] to-[#E05A1A] flex items-center justify-center text-xs font-semibold">
-                    {user?.fullName?.charAt(0)?.toUpperCase() || "Y"}
-                  </div>
-                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#FC6C26] border-2 border-[#0e1528]" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-white/80 truncate">{user?.fullName || "You"}</p>
-                  <p className="text-[11px] text-white/40">Host</p>
-                </div>
-                <div className="flex gap-1">
-                  {micOn ? <Mic className="w-3 h-3 text-white/40" /> : <MicOff className="w-3 h-3 text-red-400" />}
-                  {videoOn ? <Video className="w-3 h-3 text-white/40" /> : <VideoOff className="w-3 h-3 text-red-400" />}
+          {sidePanelTab === "details" ? (
+            <>
+              <div className="p-5 border-b border-white/[0.04]">
+                <div className="space-y-2">
+                  {[
+                    { label: "Status", value: "Connected", accent: true },
+                    { label: "Duration", value: formatTime(elapsed), mono: true },
+                    { label: "Video", value: videoOn ? "On" : "Off", accent: videoOn, danger: !videoOn },
+                    { label: "Audio", value: micOn ? "On" : "Off", accent: micOn, danger: !micOn },
+                  ].map((item) => (
+                    <div key={item.label} className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/[0.03]">
+                      <span className="text-xs text-white/50">{item.label}</span>
+                      <span className={`text-xs font-medium ${
+                        item.accent ? "text-[#FC6C26]" : item.danger ? "text-red-400" : item.mono ? "text-white/70 font-mono" : "text-white/70"
+                      }`}>
+                        {item.value}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
-              {remoteStream && (
-                <div className="flex items-center gap-3 p-2.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors">
-                  <div className="relative">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFF4D6] to-[#E8DCC0] flex items-center justify-center text-xs font-semibold text-[#1A1A1A]">
-                      P
+
+              <div className="flex-1 overflow-y-auto p-5">
+                <h3 className="text-sm font-semibold text-[#FFF4D6]/80 mb-4">Participants ({participantCount})</h3>
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-3 p-2.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors">
+                    <div className="relative">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FC6C26] to-[#E05A1A] flex items-center justify-center text-xs font-semibold">
+                        {user?.fullName?.charAt(0)?.toUpperCase() || "Y"}
+                      </div>
+                      <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#FC6C26] border-2 border-[#0e1528]" />
                     </div>
-                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-500 border-2 border-[#0e1528]" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-white/80 truncate">{user?.fullName || "You"}</p>
+                      <p className="text-[11px] text-white/40">{user?.role === "host" ? "Host" : "Guest"}</p>
+                    </div>
+                    <div className="flex gap-1">
+                      {micOn ? <Mic className="w-3 h-3 text-white/40" /> : <MicOff className="w-3 h-3 text-red-400" />}
+                      {videoOn ? <Video className="w-3 h-3 text-white/40" /> : <VideoOff className="w-3 h-3 text-red-400" />}
+                    </div>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white/80 truncate">Participant</p>
-                    <p className="text-[11px] text-white/40">Guest</p>
-                  </div>
+                  {remoteStream && (
+                    <div className="flex items-center gap-3 p-2.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.06] transition-colors">
+                      <div className="relative">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FFF4D6] to-[#E8DCC0] flex items-center justify-center text-xs font-semibold text-[#1A1A1A]">
+                          P
+                        </div>
+                        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-500 border-2 border-[#0e1528]" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-white/80 truncate">Participant</p>
+                        <p className="text-[11px] text-white/40">Guest</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
+            </>
+          ) : (
+            <div className="flex-1 flex flex-col overflow-hidden">
+              <ChatPanel
+                roomId={roomId}
+                socket={socketRef.current}
+                user={user}
+                meetingInfo={meetingInfo}
+              />
             </div>
-          </div>
+          )}
         </div>
 
         {/* MOBILE/TABLET SIDE PANEL - Slide overlay */}
@@ -558,46 +607,90 @@ const MeetingRoom = () => {
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
                 onClick={(e) => e.stopPropagation()}
-                className="absolute right-0 top-0 h-full w-[300px] bg-[#0e1528] border-l border-white/[0.06] shadow-2xl"
+                className="absolute right-0 top-0 h-full w-[300px] bg-[#0e1528] border-l border-white/[0.06] shadow-2xl flex flex-col"
               >
-                <div className="p-5 border-b border-white/[0.04] flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-[#FFF4D6]/80">Meeting Details</h3>
+                {/* Tabs */}
+                <div className="flex border-b border-white/[0.04] shrink-0">
+                  <button
+                    onClick={() => setSidePanelTab("details")}
+                    className={`flex-1 py-3 text-xs font-medium transition-colors relative ${
+                      sidePanelTab === "details"
+                        ? "text-[#FC6C26]"
+                        : "text-white/40 hover:text-white/60"
+                    }`}
+                  >
+                    <Users className="w-3.5 h-3.5 inline mr-1.5" />
+                    Details
+                    {sidePanelTab === "details" && (
+                      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#FC6C26]" />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => setSidePanelTab("chat")}
+                    className={`flex-1 py-3 text-xs font-medium transition-colors relative ${
+                      sidePanelTab === "chat"
+                        ? "text-[#FC6C26]"
+                        : "text-white/40 hover:text-white/60"
+                    }`}
+                  >
+                    <MessageCircle className="w-3.5 h-3.5 inline mr-1.5" />
+                    Chat
+                    {sidePanelTab === "chat" && (
+                      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#FC6C26]" />
+                    )}
+                  </button>
                   <button
                     onClick={() => setSidePanelOpen(false)}
-                    className="p-1.5 rounded-lg hover:bg-white/[0.06] transition-colors"
+                    className="px-3 py-3 text-white/40 hover:text-white/60 transition-colors"
                   >
-                    <ChevronRight className="w-4 h-4 text-white/40" />
+                    <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
-                <div className="p-5 space-y-2">
-                  {[
-                    { label: "Status", value: "Connected", accent: true },
-                    { label: "Duration", value: formatTime(elapsed), mono: true },
-                    { label: "Video", value: videoOn ? "On" : "Off", accent: videoOn, danger: !videoOn },
-                    { label: "Audio", value: micOn ? "On" : "Off", accent: micOn, danger: !micOn },
-                  ].map((item) => (
-                    <div key={item.label} className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/[0.03]">
-                      <span className="text-xs text-white/50">{item.label}</span>
-                      <span className={`text-xs font-medium ${
-                        item.accent ? "text-[#FC6C26]" : item.danger ? "text-red-400" : item.mono ? "text-white/70 font-mono" : "text-white/70"
-                      }`}>
-                        {item.value}
-                      </span>
+
+                {sidePanelTab === "details" ? (
+                  <>
+                    <div className="p-5 border-b border-white/[0.04]">
+                      <div className="space-y-2">
+                        {[
+                          { label: "Status", value: "Connected", accent: true },
+                          { label: "Duration", value: formatTime(elapsed), mono: true },
+                          { label: "Video", value: videoOn ? "On" : "Off", accent: videoOn, danger: !videoOn },
+                          { label: "Audio", value: micOn ? "On" : "Off", accent: micOn, danger: !micOn },
+                        ].map((item) => (
+                          <div key={item.label} className="flex items-center justify-between py-2 px-3 rounded-lg bg-white/[0.03]">
+                            <span className="text-xs text-white/50">{item.label}</span>
+                            <span className={`text-xs font-medium ${
+                              item.accent ? "text-[#FC6C26]" : item.danger ? "text-red-400" : item.mono ? "text-white/70 font-mono" : "text-white/70"
+                            }`}>
+                              {item.value}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  ))}
-                </div>
-                <div className="px-5">
-                  <h3 className="text-sm font-semibold text-[#FFF4D6]/80 mb-4">Participants ({participantCount})</h3>
-                  <div className="flex items-center gap-3 p-2.5 rounded-lg bg-white/[0.03]">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FC6C26] to-[#E05A1A] flex items-center justify-center text-xs font-semibold">
-                      {user?.fullName?.charAt(0)?.toUpperCase() || "Y"}
+                    <div className="flex-1 overflow-y-auto px-5 py-4">
+                      <h3 className="text-sm font-semibold text-[#FFF4D6]/80 mb-4">Participants ({participantCount})</h3>
+                      <div className="flex items-center gap-3 p-2.5 rounded-lg bg-white/[0.03]">
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FC6C26] to-[#E05A1A] flex items-center justify-center text-xs font-semibold">
+                          {user?.fullName?.charAt(0)?.toUpperCase() || "Y"}
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-white/80">{user?.fullName || "You"}</p>
+                          <p className="text-[11px] text-white/40">{user?.role === "host" ? "Host" : "Guest"}</p>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-white/80">{user?.fullName || "You"}</p>
-                      <p className="text-[11px] text-white/40">Host</p>
-                    </div>
+                  </>
+                ) : (
+                  <div className="flex-1 flex flex-col overflow-hidden">
+                    <ChatPanel
+                      roomId={roomId}
+                      socket={socketRef.current}
+                      user={user}
+                      meetingInfo={meetingInfo}
+                    />
                   </div>
-                </div>
+                )}
               </motion.div>
             </motion.div>
           )}
@@ -656,12 +749,15 @@ const MeetingRoom = () => {
             <Settings className="w-4 h-4 md:w-5 md:h-5" />
           </button>
 
-          {/* Chat (mobile/tablet) */}
+          {/* Chat Toggle */}
           <button
             onClick={() => setSidePanelOpen(!sidePanelOpen)}
-            className="lg:hidden w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white/[0.06] hover:bg-white/[0.10] text-white/60 hover:text-white/80 transition-all flex items-center justify-center shrink-0"
+            className={`w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white/[0.06] hover:bg-white/[0.10] transition-all flex items-center justify-center shrink-0 ${
+              sidePanelOpen ? "text-[#FC6C26]" : "text-white/60 hover:text-white/80"
+            }`}
+            title="Toggle Chat"
           >
-            <MessageSquare className="w-4 h-4 md:w-5 md:h-5" />
+            <MessageCircle className="w-4 h-4 md:w-5 md:h-5" />
           </button>
         </div>
       </div>

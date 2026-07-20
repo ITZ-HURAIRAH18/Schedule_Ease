@@ -27,6 +27,11 @@ export default defineConfig({
         ws: true,
         rejectUnauthorized: false,
       },
+      '/uploads': {
+        target: BACKEND_URL,
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
   define: {

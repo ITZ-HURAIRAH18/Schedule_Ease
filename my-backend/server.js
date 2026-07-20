@@ -20,6 +20,7 @@ import userRoutes from "./routes/userRoutes.js";
 import hostRoutes from "./routes/hostRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import meetingRoutes from "./routes/meetingRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
 import { initMeetingSocket } from "./sockets/meetingSocket.js";
 
 const app = express();
@@ -182,6 +183,8 @@ app.use("/api/user", userRoutes);
 app.use("/api/host", hostRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/meetings", meetingRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ✅ Root route
 app.get("/", (req, res) => {
