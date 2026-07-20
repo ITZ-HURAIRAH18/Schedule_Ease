@@ -99,15 +99,25 @@ const MeetingRoom = () => {
     let socket = null;
     let localStream = null;
 
-    const STUN_SERVERS = [
-      { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"] }
+    const ICE_SERVERS = [
+      { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"] },
+      {
+        urls: "turn:openrelay.metered.ca:80",
+        username: "openrelayproject",
+        credential: "openrelayproject",
+      },
+      {
+        urls: "turn:openrelay.metered.ca:443",
+        username: "openrelayproject",
+        credential: "openrelayproject",
+      },
     ];
 
     const createPeerConnection = async (shouldMakeOffer) => {
       if (peerConnection) return peerConnection;
 
       peerConnection = new RTCPeerConnection({
-        iceServers: STUN_SERVERS
+        iceServers: ICE_SERVERS
       });
 
       if (localStream) {
@@ -213,9 +223,9 @@ const MeetingRoom = () => {
           setStatus("Connecting...");
         });
 
-        socket.on("user_joined", (data) => {
+        socket.on("user_joined", () => {
           setParticipantCount(prev => prev + 1);
-          if (!peerConnection && data.userId !== myPeerId) {
+          if (!peerConnection) {
             createPeerConnection(true);
           }
         });
