@@ -85,22 +85,29 @@ export const initMeetingSocket = (io) => {
 
     // Relay WebRTC offer
     socket.on("webrtc_offer", (data) => {
-      const { roomId, offer } = data;
+      const { roomId, offer, senderId } = data;
       console.log(`📤 Relaying offer in room ${roomId}`);
-      socket.to(roomId).emit("webrtc_offer", { offer });
+      socket.to(roomId).emit("webrtc_offer", { offer, senderId });
     });
 
     // Relay WebRTC answer
     socket.on("webrtc_answer", (data) => {
-      const { roomId, answer } = data;
+      const { roomId, answer, senderId } = data;
       console.log(`📤 Relaying answer in room ${roomId}`);
-      socket.to(roomId).emit("webrtc_answer", { answer });
+      socket.to(roomId).emit("webrtc_answer", { answer, senderId });
     });
 
     // Relay ICE candidates
     socket.on("ice_candidate", (data) => {
       const { roomId, candidate } = data;
       socket.to(roomId).emit("ice_candidate", { candidate });
+    });
+
+    // 🔄 Request a fresh offer (for reconnection after ICE failure)
+    socket.on("request_offer", (data) => {
+      const { roomId } = data;
+      console.log(`🔄 Re-offer requested in room ${roomId}`);
+      socket.to(roomId).emit("request_offer");
     });
 
     // 💬 Chat message

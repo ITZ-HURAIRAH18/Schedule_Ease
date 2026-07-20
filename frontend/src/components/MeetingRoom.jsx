@@ -98,23 +98,19 @@ const MeetingRoom = () => {
     let peerConnection = null;
     let socket = null;
     let localStream = null;
+    const currentUserId = String(user?._id || user?.id || "anon");
+    const myPeerId = `${roomId}-${currentUserId}`;
 
     const ICE_SERVERS = [
       { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19302"] },
-      {
-        urls: "turn:openrelay.metered.ca:80",
-        username: "openrelayproject",
-        credential: "openrelayproject",
-      },
-      {
-        urls: "turn:openrelay.metered.ca:443",
-        username: "openrelayproject",
-        credential: "openrelayproject",
-      },
     ];
 
     const createPeerConnection = async (shouldMakeOffer) => {
-      if (peerConnection) return peerConnection;
+      if (peerConnection) {
+        if (peerConnection.connectionState !== "failed") return peerConnection;
+        peerConnection.close();
+        peerConnection = null;
+      }
 
       peerConnection = new RTCPeerConnection({
         iceServers: ICE_SERVERS
@@ -144,11 +140,22 @@ const MeetingRoom = () => {
       };
 
       peerConnection.onconnectionstatechange = () => {
-        if (peerConnection.connectionState === "connected") {
+        const state = peerConnection.connectionState;
+        console.log("🔌 PC state:", state);
+        if (state === "connected") {
           setConnectionQuality("good");
+          setError("");
         }
-        if (peerConnection.connectionState === "failed" && mounted) {
-          setError("WebRTC connection failed - trying to reconnect");
+        if (state === "failed" && mounted) {
+          setConnectionQuality("poor");
+          peerConnection.close();
+          peerConnection = null;
+          peerRef.current = null;
+          setTimeout(() => {
+            if (socket && mounted) {
+              socket.emit("request_offer", { roomId });
+            }
+          }, 1000);
         }
       };
 
@@ -156,7 +163,7 @@ const MeetingRoom = () => {
         try {
           const offer = await peerConnection.createOffer();
           await peerConnection.setLocalDescription(offer);
-          if (socket) socket.emit("webrtc_offer", { roomId, offer });
+          if (socket) socket.emit("webrtc_offer", { roomId, offer, senderId: myPeerId });
         } catch (err) {
           console.error("Error creating offer:", err.message);
         }
@@ -208,9 +215,6 @@ const MeetingRoom = () => {
           setError(noMediaMsg);
         }
 
-        const currentUserId = String(user?._id || user?.id || "anon");
-        const myPeerId = `${roomId}-${currentUserId}`;
-
         socket = io(getSocketUrl(), {
           path: "/api/socket.io",
           transports: ["websocket", "polling"],
@@ -225,9 +229,12 @@ const MeetingRoom = () => {
 
         socket.on("user_joined", () => {
           setParticipantCount(prev => prev + 1);
-          if (!peerConnection) {
-            createPeerConnection(true);
-          }
+          if (socket) createPeerConnection(true);
+        });
+
+        socket.on("request_offer", () => {
+          console.log("🔄 Received request for re-offer");
+          if (socket) createPeerConnection(true);
         });
 
         socket.on("user_left", () => {
@@ -241,10 +248,23 @@ const MeetingRoom = () => {
             }
             if (!peerConnection) return;
 
+            if (peerConnection.signalingState === "have-local-offer") {
+              if (myPeerId < data.senderId) {
+                console.log("🔄 Glare resolve: rolling back for", data.senderId);
+                peerConnection.close();
+                peerConnection = null;
+                await createPeerConnection(false);
+                if (!peerConnection) return;
+              } else {
+                console.log("🔄 Glare resolve: ignoring offer from", data.senderId);
+                return;
+              }
+            }
+
             await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
             const answer = await peerConnection.createAnswer();
             await peerConnection.setLocalDescription(answer);
-            socket.emit("webrtc_answer", { roomId, answer });
+            socket.emit("webrtc_answer", { roomId, answer, senderId: myPeerId });
           } catch (err) {
             console.error("Error handling offer:", err.message);
           }
