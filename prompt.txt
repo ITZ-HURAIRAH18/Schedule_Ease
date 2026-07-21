@@ -1,66 +1,173 @@
+The bucket you are attempting to access must be addressed using the specified endpoint. Please send all future requests to this endpoint. Project\my-backend\node_modules\@aws-sdk\core\dist-cjs\submodules\protocols\index.js:68:67)
+    at S3RestXmlProtocol.handleError (E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\core\dist-cjs\submodules\protocols\index.js:1854:65)    at S3RestXmlProtocol.deserializeResponse (E:\My Projects\Nexagen Project\my-backend\node_modules\@smithy\core\dist-cjs\submodules\protocols\index.js:356:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@smithy\core\dist-cjs\submodules\schema\index.js:23:24
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\middleware-sdk-s3\dist-cjs\submodules\s3\index.js:365:20
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@smithy\core\dist-cjs\submodules\retry\index.js:170:50
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\checksums\dist-cjs\submodules\flexible-checksums\index.js:234:24
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\middleware-sdk-s3\dist-cjs\submodules\s3\index.js:62:28
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\middleware-sdk-s3\dist-cjs\submodules\s3\index.js:89:20 {
+  '$fault': 'client',
+  '$retryable': undefined,
+  '$metadata': {
+    httpStatusCode: 301,
+    requestId: 'WPD9XCXZQCREDY2P',
+    extendedRequestId: 'rua/oiHKm1ReuZpRd0oJ3SQrJ+4RnPg0ldLtyVYrqRlqxOltXRICwiMCn0kZ6gt4pBpPwHeTu1jWPwzSaNXz/b5Uz7jY0w8z',
+    cfId: undefined,
+    attempts: 1,
+    totalRetryDelay: 0
+  },
+  Code: 'PermanentRedirect',
+  Endpoint: 'nexgen-meeting-app.s3.eu-north-1.amazonaws.com',
+  Bucket: 'nexgen-meeting-app',
+  RequestId: 'WPD9XCXZQCREDY2P',
+  HostId: 'rua/oiHKm1ReuZpRd0oJ3SQrJ+4RnPg0ldLtyVYrqRlqxOltXRICwiMCn0kZ6gt4pBpPwHeTu1jWPwzSaNXz/b5Uz7jY0w8z'
+}
+⏳ Waiting for DB connection for request: /api/auth/upload-profile-image
+Profile image upload error: PermanentRedirect: The bucket you are attempting 
+to access must be addressed using the specified endpoint. Please send all future requests to this endpoint.
+    at ProtocolLib.getErrorSchemaOrThrowBaseException (E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\core\dist-cjs\submodules\protocols\index.js:68:67)
+    at S3RestXmlProtocol.handleError (E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\core\dist-cjs\submodules\protocols\index.js:1854:65)    at S3RestXmlProtocol.deserializeResponse (E:\My Projects\Nexagen Project\my-backend\node_modules\@smithy\core\dist-cjs\submodules\protocols\index.js:356:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@smithy\core\dist-cjs\submodules\schema\index.js:23:24
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\middleware-sdk-s3\dist-cjs\submodules\s3\index.js:365:20
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@smithy\core\dist-cjs\submodules\retry\index.js:170:50
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\checksums\dist-cjs\submodules\flexible-checksums\index.js:234:24
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\middleware-sdk-s3\dist-cjs\submodules\s3\index.js:62:28
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\middleware-sdk-s3\dist-cjs\submodules\s3\index.js:89:20 {
+  '$fault': 'client',
+  '$retryable': undefined,
+  '$metadata': {
+    httpStatusCode: 301,
+    requestId: '2C0CC2Z12G809TTX',
+    extendedRequestId: 'CjkWJ374lmnvZr8Vnw34r+MUwCGjERIsvJc2sa/rYKnMCkybxRtkHRXVlg1CuaOOKeagQHzdwJxR6iF3V+jBd7WByF4cjSwn',
+    cfId: undefined,
+    attempts: 1,
+    totalRetryDelay: 0
+  },
+  Code: 'PermanentRedirect',
+  Endpoint: 'nexgen-meeting-app.s3.eu-north-1.amazonaws.com',
+  Bucket: 'nexgen-meeting-app',
+  RequestId: '2C0CC2Z12G809TTX',
+  HostId: 'CjkWJ374lmnvZr8Vnw34r+MUwCGjERIsvJc2sa/rYKnMCkybxRtkHRXVlg1CuaOOKeagQHzdwJxR6iF3V+jBd7WByF4cjSwn'
+}
+[nodemon] restarting due to changes...
+[nodemon] restarting due to changes...
+[nodemon] starting `node server.js`
+[dotenv@17.2.3] injecting env (15) from .env -- tip: 🛠️  run anywhere with `
+dotenvx run -- yourcommand`
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  load multiple .env fi
+les with { path: ['.env.local', '.env'] }
+🔄 Initializing database connection...
+⏳ Connecting to MongoDB (SRV)...
+🔐 HTTPS enabled (localhost-key.pem, localhost.pem)
+🌐 HTTP fallback server on port 5002
+✅ Socket.io instance initialized
+📍 Meeting namespace (/meeting) initialized
+✅ Socket.io instance initialized
+✅ Server running on port 5001
+✅ HTTP fallback on port 5002
+✅ MongoDB connected successfully (SRV)
+   Database: FirstData
+✅ Database initialized successfully
+[nodemon] restarting due to changes...
+[nodemon] starting `node server.js`
+[dotenv@17.2.3] injecting env (15) from .env -- tip: 🛠️  run anywhere with `
+dotenvx run -- yourcommand`
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  override existing env
+ vars with { override: true }
+🔄 Initializing database connection...
+⏳ Connecting to MongoDB (SRV)...
+🔐 HTTPS enabled (localhost-key.pem, localhost.pem)
+🌐 HTTP fallback server on port 5002
+✅ Socket.io instance initialized
+📍 Meeting namespace (/meeting) initialized
+✅ Socket.io instance initialized
+✅ Server running on port 5001
+✅ HTTP fallback on port 5002
+✅ MongoDB connected successfully (SRV)
+   Database: FirstData
+✅ Database initialized successfully
+⏳ Waiting for DB connection for request: /api/auth/upload-profile-image
+Profile image upload error: PermanentRedirect: The bucket you are attempting 
+to access must be addressed using the specified endpoint. Please send all future requests to this endpoint.
+    at ProtocolLib.getErrorSchemaOrThrowBaseException (E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\core\dist-cjs\submodules\protocols\index.js:68:67)
+    at S3RestXmlProtocol.handleError (E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\core\dist-cjs\submodules\protocols\index.js:1854:65)    at S3RestXmlProtocol.deserializeResponse (E:\My Projects\Nexagen Project\my-backend\node_modules\@smithy\core\dist-cjs\submodules\protocols\index.js:356:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@smithy\core\dist-cjs\submodules\schema\index.js:23:24
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\middleware-sdk-s3\dist-cjs\submodules\s3\index.js:365:20
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@smithy\core\dist-cjs\submodules\retry\index.js:170:50
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\checksums\dist-cjs\submodules\flexible-checksums\index.js:234:24
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\middleware-sdk-s3\dist-cjs\submodules\s3\index.js:62:28
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\middleware-sdk-s3\dist-cjs\submodules\s3\index.js:89:20 {
+  '$fault': 'client',
+  '$retryable': undefined,
+  '$metadata': {
+    httpStatusCode: 301,
+    requestId: 'FE829KCZ3DQS224V',
+    extendedRequestId: 'g4ZXDBVpNl1ugl+my5oiaVdEvLnrcO2pazHXhO102AeQVdM9keRlSPS E:\My Projects\Nexagen Project\my-backend> cd .\my-backend\
+cd : Cannot find path 'E:\My Projects\Nexagen 
+Project\my-backend\my-backend\' because it does not exist.
+At line:1 char:1
++ cd .\my-backend\
++ ~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (E:\My Projects\...end\my-bac 
+   kend\:String) [Set-Location], ItemNotFoundException
+    + FullyQualifiedErrorId : PathNotFound,Microsoft.PowerShell.Commands.Se 
+   tLocationCommand
+ 
+PS E:\My Projects\Nexagen Project\my-backend> git push
+PS E:\My Projects\Nexagen Project\my-backend> npm run dev
 
-Console Logo
-Search (/) for resources, docs, products, and more
+> my-backend@1.0.0 dev
+> nodemon server.js
 
-Google Auth Platform
-/
-/
-Client ID for Web application
-Name
-Web client 1
-The name of your OAuth 2.0 client. This name is only used to identify the client in the console and will not be shown to end users.
-The domains of the URIs you add below will be automatically added to your OAuth consent screen as authorized domains .
-
-Authorized JavaScript origins
-For use with requests from a browser
-URIs 1 
-https://localhost:5173
-URIs 2 
-https://127.0.0.1:5173
-URIs 3 
-http://localhost:5173
-URIs 4 
-http://127.0.0.1:5173
-URIs 5 
-https://schedule-ease-a4ur.vercel.app
-URIs 6 
-https://51.20.10.115
-Invalid Origin: must end with a public top-level domain (such as .com or .org).
-
-Authorized redirect URIs
-For use with requests from a web server
-URIs 1 
-https://localhost:5173
-URIs 2 
-https://127.0.0.1:5173
-URIs 3 
-http://localhost:5173
-URIs 4 
-http://127.0.0.1:5173
-URIs 5 
-https://schedule-ease-a4ur.vercel.app/
-URIs 6 
-https://51.20.10.115
-Invalid Redirect: must end with a public top-level domain (such as .com or .org).
-Invalid Redirect: must use a domain that is a valid top private domain .
-Note: It may take 5 minutes to a few hours for settings to take effect
-
-Additional information
-Client ID
-77809119535-r5ivv8inbitphbo2rcf5bik2d7grgf5g.apps.googleusercontent.com
-Creation date
-October 18, 2025, 11:51:16 AM GMT+5
-Last used date
-July 9, 2026 (Note: this data could be delayed by a day or more.)
-Inactive OAuth clients are subject to deletion if they are not used for 6 months. You will be notified of deletion due to inactivity, and can restore clients up to 30 days after deletion. Learn more 
-Client secrets
-If you are in the process of changing client secrets, you can manually rotate them without downtime. Learn more 
-Viewing and downloading client secrets is no longer available. If you have lost the secret below, please add a new one. Remember to store client secrets securely and treat them with extreme care. Secrets should never be checked into code repositories. Learn more 
-Client secret
-****MS6h
-Creation date
-October 18, 2025, 11:51:16 AM GMT+5
-Status
- Enabled
-
-
+[nodemon] 3.1.10
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node server.js`
+[dotenv@17.2.3] injecting env (15) from .env -- tip: 🔐 prevent committing .env to code: https://dotenvx.com/precommit
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 👥 sync secrets across teammates & machines: https://dotenvx.com/ops
+🔄 Initializing database connection...
+⏳ Connecting to MongoDB (SRV)...
+🔐 HTTPS enabled (localhost-key.pem, localhost.pem)
+🌐 HTTP fallback server on port 5002
+✅ Socket.io instance initialized
+📍 Meeting namespace (/meeting) initialized
+✅ Socket.io instance initialized
+✅ Server running on port 5001
+✅ HTTP fallback on port 5002
+⏳ Waiting for DB connection for request: /api/auth/me
+✅ MongoDB connected successfully (SRV)
+   Database: FirstData
+✅ Database initialized successfully
+⏳ Waiting for DB connection for request: /api/auth/me
+⏳ Waiting for DB connection for request: /api/auth/upload-profile-image
+Profile image upload error: PermanentRedirect: The bucket you are attempting 
+to access must be addressed using the specified endpoint. Please send all future requests to this endpoint.
+    at ProtocolLib.getErrorSchemaOrThrowBaseException (E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\core\dist-cjs\submodules\protocols\index.js:68:67)
+    at S3RestXmlProtocol.handleError (E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\core\dist-cjs\submodules\protocols\index.js:1854:65)    at S3RestXmlProtocol.deserializeResponse (E:\My Projects\Nexagen Project\my-backend\node_modules\@smithy\core\dist-cjs\submodules\protocols\index.js:356:24)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@smithy\core\dist-cjs\submodules\schema\index.js:23:24
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\middleware-sdk-s3\dist-cjs\submodules\s3\index.js:365:20
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@smithy\core\dist-cjs\submodules\retry\index.js:170:50
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\checksums\dist-cjs\submodules\flexible-checksums\index.js:234:24
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\middleware-sdk-s3\dist-cjs\submodules\s3\index.js:62:28
+    at async E:\My Projects\Nexagen Project\my-backend\node_modules\@aws-sdk\middleware-sdk-s3\dist-cjs\submodules\s3\index.js:89:20 {
+  '$fault': 'client',
+  '$retryable': undefined,
+  '$metadata': {
+    httpStatusCode: 301,
+    requestId: 'V81CZD05298S2SPB',
+    extendedRequestId: 'T/YmBWltYk9KNjwJgjZ+v1YMTlm8exQhWTDBYEjt75scSTWQqA/QJHcT1btuNXQH+P4JALi0XWg=',
+    cfId: undefined,
+    attempts: 1,
+    totalRetryDelay: 0
+  },
+  Code: 'PermanentRedirect',
+  Endpoint: 'nexgen-meeting-app.s3.eu-north-1.amazonaws.com',
+  Bucket: 'nexgen-meeting-app',
+  RequestId: 'V81CZD05298S2SPB',
+  HostId: 'T/YmBWltYk9KNjwJgjZ+v1YMTlm8exQhWTDBYEjt75scSTWQqA/QJHcT1btuNXQH+P4JALi0XWg='
+}

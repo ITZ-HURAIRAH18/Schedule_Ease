@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Globe, Bell, CheckCircle, Camera, Mail, Calendar, Shield, AtSign } from "lucide-react";
+import { User, Globe, Bell, CheckCircle, Camera, Mail, Calendar, Shield, AtSign, Loader2 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import axiosInstance from "../api/axiosInstance";
 import { useAuth } from "../context/AuthContext";
@@ -24,8 +24,10 @@ const roleLabels = {
 const Profile = () => {
   const { user: authUser, logout } = useAuth();
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState("");
   const [profile, setProfile] = useState({
     fullName: "",
@@ -96,6 +98,45 @@ const Profile = () => {
     }
   };
 
+  const handleFileSelect = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!["image/jpeg", "image/png", "image/gif", "image/webp"].includes(file.type)) {
+      toast.error("Only JPEG, PNG, GIF, and WebP images are allowed");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be under 5MB");
+      return;
+    }
+
+    setUploadingImage(true);
+    const localUrl = URL.createObjectURL(file);
+    setAvatarPreview(localUrl);
+
+    try {
+      const formData = new FormData();
+      formData.append("profileImage", file);
+      const res = await axiosInstance.post("/auth/upload-profile-image", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (res.data?.profilePicture) {
+        setProfile((prev) => ({ ...prev, profilePicture: res.data.profilePicture }));
+        setAvatarPreview(res.data.profilePicture);
+        toast.success("Profile picture updated!");
+      }
+    } catch (err) {
+      setAvatarPreview(profile.profilePicture || "");
+      toast.error(err.response?.data?.message || "Failed to upload image");
+    } finally {
+      setUploadingImage(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   const handleImageError = () => {
     setAvatarPreview("");
   };
@@ -152,31 +193,27 @@ const Profile = () => {
                 {getInitials(profile.fullName)}
               </div>
             )}
-            <label className="absolute inset-0 rounded-full bg-black/0 group-hover:bg-black/30 flex items-center justify-center cursor-pointer transition-all">
-              <Camera className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-all" />
-              <input
-                type="text"
-                className="hidden"
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setProfile({ ...profile, profilePicture: val });
-                  setAvatarPreview(val);
-                }}
-              />
-            </label>
+            <button
+              type="button"
+              disabled={uploadingImage}
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute inset-0 rounded-full bg-black/0 group-hover:bg-black/30 flex items-center justify-center cursor-pointer transition-all disabled:cursor-not-allowed"
+            >
+              {uploadingImage ? (
+                <Loader2 className="w-6 h-6 text-white animate-spin" />
+              ) : (
+                <Camera className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-all" />
+              )}
+            </button>
           </div>
-          <div className="mt-3">
-            <input
-              type="text"
-              value={profile.profilePicture}
-              onChange={(e) => {
-                setProfile({ ...profile, profilePicture: e.target.value });
-                setAvatarPreview(e.target.value);
-              }}
-              placeholder="Paste image URL..."
-              className="w-56 text-center text-[12px] bg-transparent border-b border-[#E8DCC0] pb-1 text-[#8A8A8A] focus:outline-none focus:border-[#FC6C26] transition-all placeholder:text-[#C4B4A0]"
-            />
-          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/gif,image/webp"
+            className="hidden"
+            onChange={handleFileSelect}
+          />
+          <p className="mt-2 text-[11px] text-[#8A8A8A]">Click the camera icon to upload a photo</p>
         </div>
 
         <div className="bg-white border border-[#E8DCC0] rounded-[16px] p-8 shadow-sm space-y-6">

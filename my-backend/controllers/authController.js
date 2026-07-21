@@ -4,6 +4,7 @@ import { OAuth2Client } from "google-auth-library";
 import User from "../models/User.js";
 import Booking from "../models/Booking.js";
 import sendEmail from "../utils/nodemail.js";
+import { uploadToS3 } from "../utils/s3Upload.js";
 import {
   userWelcomeTemplate,
   adminNewUserTemplate,
@@ -310,6 +311,37 @@ export const getMe = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+// Upload profile image to S3
+export const uploadProfileImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No image file provided" });
+    }
+
+    const fileUrl = await uploadToS3(req.file, "profiles");
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: { profilePicture: fileUrl } },
+      { new: true }
+    ).select("-password");
+
+    if (!updatedUser) return res.status(404).json({ message: "User not found" });
+
+    res.json({ success: true, profilePicture: fileUrl, user: updatedUser });
+  } catch (err) {
+    console.error("Profile image upload error:", err);
+
+    if (err.name === "AccessControlListNotSupported" || err.Code === "AccessControlListNotSupported") {
+      return res.status(500).json({
+        message: "Upload succeeded but image is private. Go to AWS S3 console → your bucket → Permissions → uncheck 'Block all public access' and add a bucket policy for public read access."
+      });
+    }
+
+    res.status(500).json({ message: err.message || "Failed to upload image" });
   }
 };
 
